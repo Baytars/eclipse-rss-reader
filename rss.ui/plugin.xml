@@ -13,10 +13,8 @@
          <export name="com.pnehrer.rss.ui.actions.*"/>
          <export name="com.pnehrer.rss.ui.views.*"/>
          <export name="com.pnehrer.rss.ui.wizards.*"/>
-         <packages prefixes="com.pnehrer.rss.ui,com.pnehrer.rss.internal.ui"/>
       </library>
       <library name="htmlparser.jar">
-         <export name="*"/>
       </library>
    </runtime>
 
