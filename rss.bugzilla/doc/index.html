@@ -17,11 +17,11 @@ bugs that may match certain query criteria, as well as any additional comments a
 It works with Bugzilla versions that support XML-based query results and bug details.</P>
 <H2>Query Results</H2>
 <P>To set up a channel based on Bugzilla query results, start with the results page's URL,
-then append "&amp;ctype=rdf" to the end of it. This will cause the results page to be returned
+then append <CODE>"&amp;ctype=rdf"</CODE> to the end of it. This will cause the results page to be returned
 in the RDF format, which is recognized by this plugin. If you want to provide a custom title
 for the channel (the query results don't come with any descriptive titles by default), 
-append <CODE>"&amp;title=&lt;YOUR+TITLE&gt;&amp;ctype=rdf"</CODE>
-to the end of the URL instead. Be careful to properly URL-encode the title parameter.</P>
+append <CODE>"&amp;title=&lt;YOUR+TITLE&gt;"</CODE>
+to the end of the URL as well. Be careful to properly URL-encode the title parameter.</P>
 <P>E.g., <CODE>https://bugs.eclipse.org/bugs/buglist.cgi?query_format=specific&amp;order=relevance+desc&amp;bug_status=__open__&amp;product=&amp;content=rss&amp;title=All+rss&amp;ctype=rdf</CODE></P>
 <H2>Bug Detail</H2>
 <P>To set up a channel based on a Bugzilla bug detail page, start with the page's URL,

@@ -65,6 +65,11 @@ public class BugListTranslator extends XSLBasedTranslator {
 		channel.setAttribute("date", DateFormat.getInstance()
 				.format(new Date()));
 		String link = channel.getAttribute(ATTR_LINK);
+		if (link != null) {
+			link = link.replaceAll("&ctype=rdf", "");
+			channel.setAttribute(ATTR_LINK, link);
+		}
+		
 		try {
 			URL url = new URL(link);
 			String query = url.getQuery();
