@@ -26,15 +26,15 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.pnehrer.rss.core.ISourceTranslator;
+import com.pnehrer.rss.core.ITranslator;
 import com.pnehrer.rss.core.RSSCore;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
-public class SourceTranslator implements ISourceTranslator {
+public class DefaultTranslator implements ITranslator {
     
-    private static final String RSS_URI = "";
+    private static final String RSS_URI = null;
     private static final String RDF_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
     private static final String RSS10_URI = "http://purl.org/rss/1.0/";
 
@@ -50,20 +50,20 @@ public class SourceTranslator implements ISourceTranslator {
     private static Templates templates;
 
     /* (non-Javadoc)
-     * @see com.pnehrer.rss.core.ISourceTranslator#canTranslate(org.w3c.dom.Document)
+     * @see com.pnehrer.rss.core.ITranslator#canTranslate(org.w3c.dom.Document)
      */
     public boolean canTranslate(Document document) {
         Element element = document.getDocumentElement();
-        return ((RSS_ELEMENT.equals(element.getTagName())
-                && RSS_URI.equals(element.getNamespaceURI())
+        return (RSS_ELEMENT.equals(element.getTagName())
+                && (RSS_URI == null ? element.getNamespaceURI() == null : RSS_URI.equals(element.getNamespaceURI()))
                 && RSS_VERSIONS.contains(element.getAttribute(VERSION_ATTR)))
             || (RDF_ELEMENT.equals(element.getTagName())
                 && RDF_URI.equals(element.getNamespaceURI())
-                && hasRSS10Channel(element)));
+                && hasRSS10Channel(element));
     }
 
     /* (non-Javadoc)
-     * @see com.pnehrer.rss.core.ISourceTranslator#translate(org.w3c.dom.Document)
+     * @see com.pnehrer.rss.core.ITranslator#translate(org.w3c.dom.Document)
      */
     public Document translate(Document document) throws CoreException {
         if(templates == null) { 

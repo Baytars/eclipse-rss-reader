@@ -89,7 +89,7 @@ public class SimpleViewPart extends ViewPart implements ISelectionListener {
                 if("rss".equals(file.getFileExtension())) {
                     IChannel channel;
                     try {
-                        channel = RSSCore.getPlugin().create(file);
+                        channel = RSSCore.getPlugin().getChannel(file);
                     }
                     catch(CoreException ex) {
                         channel = null;

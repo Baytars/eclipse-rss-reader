@@ -51,7 +51,7 @@ public class ChannelNavigatorContentProvider extends WorkbenchContentProvider {
                 if(members[i].getType() == IResource.FILE) {
                     if("rss".equals(members[i].getFileExtension())) {                
                         try {
-                            list.add(core.create((IFile)members[i]));
+                            list.add(core.getChannel((IFile)members[i]));
                         }
                         catch(CoreException ex) {
                             // TODO Log me!

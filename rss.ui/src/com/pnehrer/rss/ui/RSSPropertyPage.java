@@ -78,7 +78,7 @@ public class RSSPropertyPage
         IFile file = (IFile)getElement();
         IChannel channel = null;
         try {
-            channel = RSSCore.getPlugin().create(file);
+            channel = RSSCore.getPlugin().getChannel(file);
         }
         catch(CoreException ex) {
             MessageDialog.openError(

@@ -10,7 +10,7 @@ import org.w3c.dom.Document;
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
-public interface ISourceTranslator {
+public interface ITranslator {
 
     public boolean canTranslate(Document document);
     

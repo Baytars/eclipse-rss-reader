@@ -4,9 +4,6 @@
  */
 package com.pnehrer.rss.core.internal;
 
-import java.beans.PropertyChangeSupport;
-
-import org.eclipse.core.runtime.PlatformObject;
 import org.w3c.dom.Element;
 
 import com.pnehrer.rss.core.IChannel;
@@ -15,16 +12,13 @@ import com.pnehrer.rss.core.ITextInput;
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
-public class TextInput extends PlatformObject implements ITextInput {
+public class TextInput implements ITextInput {
 
     private static final String TITLE = "title";
     private static final String DESCRIPTION = "description";
     private static final String NAME = "name";
     private static final String LINK = "link";
 
-    private final PropertyChangeSupport propertyChangeSupport = 
-        new PropertyChangeSupport(this);
-    
     private final Channel channel;
     private String title;
     private String description;
@@ -50,9 +44,7 @@ public class TextInput extends PlatformObject implements ITextInput {
     }
     
     private void setTitle(String title) {
-        Object oldValue = this.title;
         this.title = title;
-        firePropertyChange(TITLE, oldValue, title);
     }
 
     /* (non-Javadoc)
@@ -63,9 +55,7 @@ public class TextInput extends PlatformObject implements ITextInput {
     }
 
     private void setDescription(String description) {
-        Object oldValue = this.description;
         this.description = description;
-        firePropertyChange(DESCRIPTION, oldValue, description);
     }
 
     /* (non-Javadoc)
@@ -76,9 +66,7 @@ public class TextInput extends PlatformObject implements ITextInput {
     }
     
     private void setName(String name) {
-        Object oldValue = this.name;
         this.name = name;
-        firePropertyChange(NAME, oldValue, name);
     }
 
     /* (non-Javadoc)
@@ -89,20 +77,7 @@ public class TextInput extends PlatformObject implements ITextInput {
     }
     
     private void setLink(String link) {
-        Object oldValue = this.link;
         this.link = link;
-        firePropertyChange(LINK, oldValue, link);
-    }
-    
-    private void firePropertyChange(
-        String propertyName, 
-        Object oldValue, 
-        Object newValue) {
-            
-        propertyChangeSupport.firePropertyChange(
-            propertyName, 
-            oldValue, 
-            newValue);
     }
     
     void update(Element textInput) {

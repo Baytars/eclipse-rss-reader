@@ -4,9 +4,6 @@
  */
 package com.pnehrer.rss.core.internal;
 
-import java.beans.PropertyChangeSupport;
-
-import org.eclipse.core.runtime.PlatformObject;
 import org.w3c.dom.Element;
 
 import com.pnehrer.rss.core.IChannel;
@@ -15,14 +12,11 @@ import com.pnehrer.rss.core.IImage;
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
-public class Image extends PlatformObject implements IImage {
+public class Image implements IImage {
     
     private static final String TITLE = "title";
     private static final String URL = "url";
     private static final String LINK = "link";
-    
-    private final PropertyChangeSupport propertyChangeSupport = 
-        new PropertyChangeSupport(this);
     
     private final Channel channel;
     private String title;
@@ -48,9 +42,7 @@ public class Image extends PlatformObject implements IImage {
     }
     
     private void setTitle(String title) {
-        Object oldValue = this.title;
         this.title = title;
-        firePropertyChange(TITLE, oldValue, title);
     }
 
     /* (non-Javadoc)
@@ -61,9 +53,7 @@ public class Image extends PlatformObject implements IImage {
     }
     
     private void setURL(String url) {
-        Object oldValue = this.url;
         this.url = url;
-        firePropertyChange(URL, oldValue, url);
     }
 
     /* (non-Javadoc)
@@ -74,20 +64,7 @@ public class Image extends PlatformObject implements IImage {
     }
     
     private void setLink(String link) {
-        Object oldValue = this.link;
         this.link = link;
-        firePropertyChange(LINK, oldValue, link);
-    }
-    
-    private void firePropertyChange(
-        String propertyName, 
-        Object oldValue, 
-        Object newValue) {
-            
-        propertyChangeSupport.firePropertyChange(
-            propertyName, 
-            oldValue, 
-            newValue);
     }
     
     void update(Element image) {

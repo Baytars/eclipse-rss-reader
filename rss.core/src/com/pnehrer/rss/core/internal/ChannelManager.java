@@ -4,56 +4,88 @@
  */
 package com.pnehrer.rss.core.internal;
 
-import java.util.Collection;
+import java.net.URL;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.w3c.dom.Document;
+
+import com.pnehrer.rss.core.IRegisteredTranslator;
+import com.pnehrer.rss.core.RSSCore;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
 public class ChannelManager {
-
-    private final Map fileChannelMap =  new HashMap();
-    private final Map projectFileMap = new HashMap();
     
-    public synchronized void add(Channel channel) {
-        IFile file = channel.getFile();
-        fileChannelMap.put(channel.getFile(), channel);        
-        IProject project = file.getProject();
-        Collection files = (Collection)projectFileMap.get(project);
-        if(files == null) {
-            files = new HashSet();
-            projectFileMap.put(project, files);
+    private static final long MILISEC_PER_MIN = 60000;
+
+    private static ChannelManager instance;
+    private final Map fileChannelMap =  new HashMap();
+    private final Timer timer = new Timer();
+    
+    public ChannelManager() {
+        instance = this;
+    }
+    
+    static ChannelManager getInstance() {
+        return instance;
+    }
+
+    void scheduleTask(TimerTask task, int updateInterval) {
+        timer.schedule(
+            task, 
+            MILISEC_PER_MIN * updateInterval, 
+            MILISEC_PER_MIN * updateInterval);
+    }
+    
+    public synchronized void cancelPendingTasks() {
+        timer.cancel();
+    }
+    
+    public synchronized Channel getChannel(IFile file) throws CoreException {
+        Channel channel = (Channel)fileChannelMap.get(file);
+        if(channel == null) {
+            channel = Channel.load(file);
+            fileChannelMap.put(file, channel);
         }
         
-        files.add(file);
+        return channel;
     }
     
-    public synchronized void remove(IFile file) {
-        fileChannelMap.remove(file);
-        IProject project = file.getProject();
-        Collection files = (Collection)projectFileMap.get(project);
-        if(files != null) {
-            files.remove(file);                
-            if(files.isEmpty())
-                projectFileMap.remove(project);
+    public synchronized Channel createChannel(
+        IFile file, 
+        IRegisteredTranslator translator,
+        Document document,
+        URL url,
+        Integer updateInterval)
+        throws CoreException {
+    
+        if(fileChannelMap.containsKey(file)) {
+            throw new CoreException(
+                new Status(
+                    IStatus.ERROR,
+                    RSSCore.PLUGIN_ID,
+                    0,
+                    "channel already exists",
+                    null));
         }
-    }
-    
-    public synchronized void remove(IProject project) {
-        Collection files = (Collection)projectFileMap.remove(project);
-        if(files != null)
-            for(Iterator i = files.iterator(); i.hasNext();) {
-                fileChannelMap.remove(i.next());
-            }
-    }
-    
-    public synchronized Channel get(IFile file) {
-        return (Channel)fileChannelMap.get(file);
+        else {
+            Channel channel = Channel.create(
+                file, 
+                translator, 
+                document, 
+                url, 
+                updateInterval);
+
+            fileChannelMap.put(file, channel);
+            return channel;
+        }        
     }
 }

@@ -4,20 +4,19 @@
  */
 package com.pnehrer.rss.ui.views;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
+import com.pnehrer.rss.core.ChannelChangeEvent;
 import com.pnehrer.rss.core.IChannel;
+import com.pnehrer.rss.core.IChannelChangeListener;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
 public class ChannelContentProvider
     implements IStructuredContentProvider, 
-    PropertyChangeListener {
+    IChannelChangeListener {
 
     private Viewer viewer;
     private IChannel channel;
@@ -35,7 +34,7 @@ public class ChannelContentProvider
      */
     public void dispose() {
         if(channel != null)
-            channel.removePropertyChangeListener(this);
+            channel.removeChannelChangeListener(this);
     }
 
     /* (non-Javadoc)
@@ -45,18 +44,18 @@ public class ChannelContentProvider
         this.viewer = viewer;
         
         if(channel != null)
-            channel.removePropertyChangeListener(this);
+            channel.removeChannelChangeListener(this);
             
         channel = (IChannel)newInput;
             
         if(channel != null)
-            channel.addPropertyChangeListener(this);
+            channel.addChannelChangeListener(this);
     }
 
     /* (non-Javadoc)
-     * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
+     * @see com.pnehrer.rss.core.IChannelChangeListener#channelChanged(com.pnehrer.rss.core.ChannelChangeEvent)
      */
-    public void propertyChange(PropertyChangeEvent event) {
+    public void channelChanged(ChannelChangeEvent event) {
         viewer.refresh();
     }
 }

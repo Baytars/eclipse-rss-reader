@@ -4,20 +4,22 @@
  */
 package com.pnehrer.rss.core;
 
-import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.util.Date;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
 public interface IChannel {
 
+    public IFile getFile();
+    
     public URL getURL();
     
-    public IFile getFile();
+    public void setURL(URL url);
     
     public Integer getUpdateInterval();
     
@@ -39,7 +41,9 @@ public interface IChannel {
     
     public ITextInput getTextInput();
     
-    public void addPropertyChangeListener(PropertyChangeListener listener);
+    public void update() throws CoreException;
     
-    public void removePropertyChangeListener(PropertyChangeListener listener);
+    public void addChannelChangeListener(IChannelChangeListener listener);
+    
+    public void removeChannelChangeListener(IChannelChangeListener listener);
 }

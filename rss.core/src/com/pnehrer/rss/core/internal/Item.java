@@ -4,12 +4,10 @@
  */
 package com.pnehrer.rss.core.internal;
 
-import java.beans.PropertyChangeSupport;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 
-import org.eclipse.core.runtime.PlatformObject;
 import org.w3c.dom.Element;
 
 import com.pnehrer.rss.core.IChannel;
@@ -18,16 +16,13 @@ import com.pnehrer.rss.core.IItem;
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
-public class Item extends PlatformObject implements IItem {
+public class Item implements IItem {
 
     private static final String TITLE = "title";
     private static final String DESCRIPTION = "description";
     static final String LINK = "link";
     private static final String DATE = "date";
 
-    private final PropertyChangeSupport propertyChangeSupport = 
-        new PropertyChangeSupport(this);
-    
     private final Channel channel;
     private String title;
     private String description;
@@ -53,9 +48,7 @@ public class Item extends PlatformObject implements IItem {
     }
     
     private void setTitle(String title) {
-        Object oldValue = this.title;
         this.title = title;
-        firePropertyChange(TITLE, oldValue, title);
     }
 
     /* (non-Javadoc)
@@ -66,9 +59,7 @@ public class Item extends PlatformObject implements IItem {
     }
     
     private void setDescription(String description) {
-        Object oldValue = this.description;
         this.description = description;
-        firePropertyChange(DESCRIPTION, oldValue, description);
     }
 
     /* (non-Javadoc)
@@ -79,9 +70,7 @@ public class Item extends PlatformObject implements IItem {
     }
     
     private void setLink(String link) {
-        Object oldValue = this.link;
         this.link = link;
-        firePropertyChange(LINK, oldValue, link);
     }
 
     /* (non-Javadoc)
@@ -92,20 +81,7 @@ public class Item extends PlatformObject implements IItem {
     }
     
     private void setDate(Date date) {
-        Object oldValue = this.date;
         this.date = date;
-        firePropertyChange(DATE, oldValue, date);
-    }
-    
-    private void firePropertyChange(
-        String propertyName, 
-        Object oldValue, 
-        Object newValue) {
-            
-        propertyChangeSupport.firePropertyChange(
-            propertyName, 
-            oldValue, 
-            newValue);
     }
     
     void update(Element item) {

@@ -4,13 +4,8 @@
  */
 package com.pnehrer.rss.ui.wizards;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -26,10 +21,10 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
+import com.pnehrer.rss.core.IChannel;
+import com.pnehrer.rss.core.IRegisteredTranslator;
 import com.pnehrer.rss.core.RSSCore;
-import com.pnehrer.rss.core.SourceTranslatorDelegate;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
@@ -39,11 +34,9 @@ public class NewChannelWizard extends Wizard implements INewWizard {
     
     private IWorkbench workbench;
     private IStructuredSelection selection;
-    private WizardChannelURLPage channelURLPage;
     private WizardChannelOptionsPage channelOptionsPage;
     private WizardNewFileCreationPage newFileCreationPage;
-    private Document document;
-    
+
     public NewChannelWizard() {
         setWindowTitle("New RSS Feed");
     }
@@ -52,9 +45,6 @@ public class NewChannelWizard extends Wizard implements INewWizard {
      * @see org.eclipse.jface.wizard.IWizard#addPages()
      */
     public void addPages() {
-        channelURLPage = new WizardChannelURLPage("url", "Channel URL", null);
-        addPage(channelURLPage);
-        
         channelOptionsPage = new WizardChannelOptionsPage(
             "options",
             "Channel Options",
@@ -77,8 +67,9 @@ public class NewChannelWizard extends Wizard implements INewWizard {
 	 * @see Wizard#performFinish
 	 */
 	public boolean performFinish() {
-        final URL url = channelURLPage.getURL();
-        final SourceTranslatorDelegate translator = 
+        final URL url = channelOptionsPage.getURL();
+        final Document document = channelOptionsPage.getDocument();
+        final IRegisteredTranslator translator = 
             channelOptionsPage.getTranslator();
         final Integer updateInterval = channelOptionsPage.getUpdateInterval();
         final IFile file = newFileCreationPage.createNewFile();
@@ -90,10 +81,12 @@ public class NewChannelWizard extends Wizard implements INewWizard {
                         InvocationTargetException, 
                         InterruptedException {
         
-                        RSSCore.getPlugin().download(
-                            url, 
+                        IChannel channel = RSSCore.getPlugin().createChannel(
                             file, 
-                            monitor);
+                            translator, 
+                            document,
+                            url,
+                            updateInterval);
                             
                         IEditorRegistry registry = workbench.getEditorRegistry();
                         IEditorDescriptor editor = registry.getDefaultEditor(file);
@@ -123,24 +116,4 @@ public class NewChannelWizard extends Wizard implements INewWizard {
         }
 	}
     
-    public void loadDocument(URL url) {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        try {
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            document = builder.parse(url.openStream());
-        }
-        catch(ParserConfigurationException ex) {
-            document = null;
-        }
-        catch(SAXException ex) {
-            document = null;
-        }
-        catch(IOException ex) {
-            document = null;
-        } 
-    }
-    
-    public Document getDocument() {
-        return document;
-    }
 }

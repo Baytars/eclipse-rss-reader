@@ -52,7 +52,7 @@ public class UpdateAction implements IActionDelegate {
 
             final IChannel channel;
             try {
-                channel = RSSCore.getPlugin().create(file);
+                channel = RSSCore.getPlugin().getChannel(file);
             }
             catch(CoreException ex) {
                 RSSUI.getDefault().getLog().log(
@@ -74,11 +74,8 @@ public class UpdateAction implements IActionDelegate {
                             throws CoreException, 
                             InvocationTargetException, 
                             InterruptedException {
-                    
-                            RSSCore.getPlugin().download(
-                                channel.getURL(), 
-                                channel.getFile(),                                
-                                monitor);
+
+                            channel.update();                    
                         }
                     });
             }
