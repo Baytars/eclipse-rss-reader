@@ -9,18 +9,15 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.QualifiedName;
 import org.w3c.dom.Document;
 
 import com.pnehrer.rss.core.ChannelChangeEvent;
@@ -33,8 +30,10 @@ import com.pnehrer.rss.core.RSSCore;
  */
 public class ChannelManager {
     
+    private static final QualifiedName CHANNEL_KEY = 
+        new QualifiedName(RSSCore.PLUGIN_ID, "channel");
+    
     private static ChannelManager instance;
-    private final Map fileChannelMap =  new HashMap();
     private final Timer timer = new Timer();
     private volatile boolean timerCancelled;
     private final Collection listeners = 
@@ -66,12 +65,10 @@ public class ChannelManager {
     }
     
     public synchronized Channel getChannel(IFile file) throws CoreException {
-        Channel channel = (Channel)fileChannelMap.get(file);
-        if(channel == null) {
-            if("rss".equals(file.getFileExtension())) {
-                channel = Channel.load(file);
-                fileChannelMap.put(file, channel);
-            }
+        Channel channel = (Channel)file.getSessionProperty(CHANNEL_KEY);
+        if(channel == null && "rss".equals(file.getFileExtension())) {
+            channel = Channel.load(file);
+            file.setSessionProperty(CHANNEL_KEY, channel);
         }
         
         return channel;
@@ -86,31 +83,25 @@ public class ChannelManager {
         IProgressMonitor monitor)
         throws CoreException {
     
-        if(fileChannelMap.containsKey(file)) {
-            throw new CoreException(
-                new Status(
-                    IStatus.ERROR,
-                    RSSCore.PLUGIN_ID,
-                    0,
-                    "channel already exists",
-                    null));
-        }
-        else {
-            Channel channel = Channel.create(
-                file, 
-                translator, 
-                document, 
-                url, 
-                updateInterval,
-                monitor);
+        Channel channel = Channel.create(
+            file, 
+            translator, 
+            document, 
+            url, 
+            updateInterval,
+            monitor);
 
-            fileChannelMap.put(file, channel);
-            return channel;
-        }        
+        file.setSessionProperty(CHANNEL_KEY, channel);
+        return channel;
     }
     
     synchronized void removeChannel(Channel channel) {
-        fileChannelMap.remove(channel.getFile());
+        try {
+            channel.getFile().setSessionProperty(CHANNEL_KEY, null);
+        }
+        catch(CoreException ex) {
+            RSSCore.getPlugin().getLog().log(ex.getStatus());
+        }
     }
 
     public void addChannelChangeListener(IChannelChangeListener listener) {

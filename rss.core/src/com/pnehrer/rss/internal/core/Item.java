@@ -90,7 +90,10 @@ public class Item extends PlatformObject implements IItem {
         setDescription(item.getAttribute(DESCRIPTION));
         setLink(item.getAttribute(LINK));
         String dateStr = item.getAttribute(DATE); 
-        setDate(dateStr == null ? null : parseDate(dateStr));
+        setDate(
+            dateStr == null || dateStr.trim().length() == 0 ? 
+                null : 
+                parseDate(dateStr));
     }
     
     void save(Element item) {
