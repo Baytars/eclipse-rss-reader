@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<website version="510">
-	<structure>
-		<page src="/doc/web-browser-editor.html" id="1" template="/doc/theme/master.htpl">
-			<title>WSAD Embedded Web Browser</title>
-		</page>
-	</structure>
-</website>
