@@ -63,6 +63,8 @@
 	margin: 8px;
 	background-color: black;
 	float: left;
+	font-family: sans-serif;
+	font-size: smaller;
 }
 
 .content {
@@ -70,9 +72,16 @@
 	border-style: solid;
 	border-width: 1px;
 	border-color: black;
-	margin: 4px;
+	margin: 0px 4px 4px 4px;
 	padding: 4px 4px 4px 8px;
 	background-color: white;
+}
+
+.footer {
+	padding: 4px;
+	text-align: center;
+	clear: left;
+	font-size: smaller;
 }
 
 a:link {
