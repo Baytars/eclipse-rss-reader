@@ -179,8 +179,11 @@ public class ChannelPropertyGroup {
         label.setLayoutData(layoutData);
         label.setText("Select channel source translator:");
     
-        translatorList = new List(topLevel, SWT.SINGLE | SWT.BORDER);
-        layoutData = new GridData(GridData.FILL_BOTH);
+        translatorList = new List(
+            topLevel, 
+            SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+
+        layoutData = new GridData(GridData.FILL_HORIZONTAL);
         layoutData.horizontalSpan = columns;
         translatorList.setLayoutData(layoutData);
         translatorList.addSelectionListener(new SelectionAdapter() {

@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.SelectionListenerAction;
 
 import com.pnehrer.rss.core.IRSSElement;
+import com.pnehrer.rss.ui.BrowserFactoryDescriptor;
 import com.pnehrer.rss.ui.RSSUI;
 
 /**
@@ -54,7 +55,10 @@ public class OpenLinkAction extends SelectionListenerAction {
         IStructuredSelection selection = getStructuredSelection();
         IRSSElement item = (IRSSElement)selection.getFirstElement();
         try {
-            IBrowser browser = RSSUI.getDefault().createBrowser();
+            BrowserFactoryDescriptor bdf = 
+                RSSUI.getDefault().getBrowserFactoryDescriptor(item.getChannel());
+
+            IBrowser browser = bdf.getFactory().createBrowser();
             browser.displayURL(item.getLink());
         }
         catch(CoreException ex) {

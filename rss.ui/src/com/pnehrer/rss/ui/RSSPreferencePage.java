@@ -10,6 +10,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -25,24 +26,49 @@ public class RSSPreferencePage
     extends PreferencePage 
     implements IWorkbenchPreferencePage {
 
-    private final UpdateIntervalGroup updateIntervalGroup;
+    private static final short UPDATE_INTERVAL_COMPLETE = 1;
+    private static final short BROWSER_COMPLETE = 2;
+    private static final short PAGE_COMPLETE =
+        UPDATE_INTERVAL_COMPLETE
+        + BROWSER_COMPLETE;
+
     private IWorkbench workbench;
+    private final UpdateIntervalGroup updateIntervalGroup;
+    private final BrowserGroup browserGroup;
+    private short pageComplete;
 
     public RSSPreferencePage() {
         updateIntervalGroup = new UpdateIntervalGroup(new IPageContainer() {
-
             public void setMessage(String message) {
                 RSSPreferencePage.this.setMessage(message);
             }
-
+        
             public void setErrorMessage(String message) {
                 RSSPreferencePage.this.setErrorMessage(message);
             }
-
+        
             public void setComplete(boolean complete) {
-                setValid(complete);
+                RSSPreferencePage.this.setComplete(
+                    UPDATE_INTERVAL_COMPLETE, 
+                    complete);
             }
-        });        
+        });
+        
+        browserGroup = new BrowserGroup(new IPageContainer() {
+            public void setMessage(String message) {
+                RSSPreferencePage.this.setMessage(message);
+            }
+        
+            public void setErrorMessage(String message) {
+                RSSPreferencePage.this.setErrorMessage(message);
+            }
+        
+            public void setComplete(boolean complete) {
+                RSSPreferencePage.this.setComplete(
+                    BROWSER_COMPLETE, 
+                    complete);
+            }
+        });
     }
 
 	/**
@@ -73,6 +99,18 @@ public class RSSPreferencePage
             
         updateIntervalGroup.setUpdateInterval(updateInterval);
         
+        browserGroup.createContents(topLevel);
+        prefs = RSSUI.getDefault().getPluginPreferences();
+        String id = prefs.getString(RSSUI.PREF_BROWSER);
+        if(id != null && id.length() > 0)
+            try {
+                browserGroup.setSelectedBrowserFactory(
+                    RSSUI.getDefault().getBrowserFactoryDescriptor(id));
+            }
+            catch(CoreException e) {
+                // ignore
+            }
+        
         setErrorMessage(null);
         setMessage(null);
 
@@ -94,6 +132,18 @@ public class RSSPreferencePage
             updateInterval = null;
             
         updateIntervalGroup.setUpdateInterval(updateInterval);
+        
+        prefs = RSSUI.getDefault().getPluginPreferences();
+        prefs.setToDefault(RSSUI.PREF_BROWSER);
+        String id = prefs.getString(RSSUI.PREF_BROWSER);
+        if(id != null && id.length() > 0)
+            try {
+                browserGroup.setSelectedBrowserFactory(
+                    RSSUI.getDefault().getBrowserFactoryDescriptor(id));
+            }
+            catch(CoreException e) {
+                // ignore
+            }        
     }
 
     /* (non-Javadoc)
@@ -114,6 +164,26 @@ public class RSSPreferencePage
         }
                 
         RSSCore.getPlugin().savePluginPreferences();
+
+        BrowserFactoryDescriptor bdf = browserGroup.getSelectedBrowserFactory();
+        prefs = RSSUI.getDefault().getPluginPreferences();
+        if(bdf == null)
+            prefs.setToDefault(RSSUI.PREF_BROWSER);
+        else
+            prefs.setValue(RSSUI.PREF_BROWSER, bdf.getId());
+                            
+        RSSUI.getDefault().savePluginPreferences();
         return true;
+    }
+
+    private void setComplete(short bit, boolean complete) {
+        if(complete) {
+            pageComplete |= bit;
+            setValid(pageComplete == PAGE_COMPLETE);
+        }
+        else {
+            pageComplete &= ~bit;
+            setValid(false);  
+        }
     }
 }

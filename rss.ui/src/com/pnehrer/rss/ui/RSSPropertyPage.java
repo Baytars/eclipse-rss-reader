@@ -23,6 +23,7 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IRSSElement;
 import com.pnehrer.rss.core.RSSCore;
+import com.pnehrer.rss.internal.ui.BrowserGroup;
 import com.pnehrer.rss.internal.ui.ChannelPropertyGroup;
 import com.pnehrer.rss.internal.ui.UpdateIntervalGroup;
 
@@ -36,28 +37,46 @@ public class RSSPropertyPage
 
     private static final short CHANNEL_OPTIONS_COMPLETE = 1;
     private static final short UPDATE_INTERVAL_COMPLETE = 2;
+    private static final short BROWSER_COMPLETE = 4;
     private static final short PAGE_COMPLETE =
         CHANNEL_OPTIONS_COMPLETE
-        + UPDATE_INTERVAL_COMPLETE;
+        + UPDATE_INTERVAL_COMPLETE
+        + BROWSER_COMPLETE;
 
     private ChannelPropertyGroup channelProperties;
     private final UpdateIntervalGroup updateIntervalGroup;
+    private final BrowserGroup browserGroup;
     private short pageComplete;
 
     public RSSPropertyPage() {
         updateIntervalGroup = new UpdateIntervalGroup(new IPageContainer() {
-
             public void setMessage(String message) {
                 RSSPropertyPage.this.setMessage(message);
             }
-
+        
             public void setErrorMessage(String message) {
                 RSSPropertyPage.this.setErrorMessage(message);
             }
-
+        
             public void setComplete(boolean complete) {
                 RSSPropertyPage.this.setComplete(
                     UPDATE_INTERVAL_COMPLETE, 
+                    complete);
+            }
+        });
+        
+        browserGroup = new BrowserGroup(new IPageContainer() {
+            public void setMessage(String message) {
+                RSSPropertyPage.this.setMessage(message);
+            }
+        
+            public void setErrorMessage(String message) {
+                RSSPropertyPage.this.setErrorMessage(message);
+            }
+        
+            public void setComplete(boolean complete) {
+                RSSPropertyPage.this.setComplete(
+                    BROWSER_COMPLETE, 
                     complete);
             }
         });
@@ -94,8 +113,18 @@ public class RSSPropertyPage
             channel);
 
         channelProperties.createContents(topLevel);
+
         updateIntervalGroup.createContents(topLevel);
         updateIntervalGroup.setUpdateInterval(channel.getUpdateInterval());
+        
+        browserGroup.createContents(topLevel);
+        try {
+            browserGroup.setSelectedBrowserFactory(
+                RSSUI.getDefault().getBrowserFactoryDescriptor(channel));
+        }
+        catch(CoreException e) {
+            // ignore
+        }
         
         setErrorMessage(null);
         setMessage(null);
@@ -111,11 +140,22 @@ public class RSSPropertyPage
         Preferences prefs = RSSCore.getPlugin().getPluginPreferences(); 
         Integer updateInterval;
         if(prefs.getBoolean(RSSCore.PREF_UPDATE_PERIODICALLY))
-            updateInterval = new Integer(prefs.getInt(RSSCore.PREF_UPDATE_INTERVAL));
+            updateInterval = new Integer(
+                prefs.getInt(RSSCore.PREF_UPDATE_INTERVAL));
         else
             updateInterval = null;
             
         updateIntervalGroup.setUpdateInterval(updateInterval);
+        
+        prefs = RSSUI.getDefault().getPluginPreferences();
+        try {
+            browserGroup.setSelectedBrowserFactory(
+                RSSUI.getDefault().getBrowserFactoryDescriptor(
+                    prefs.getString(RSSUI.PREF_BROWSER)));
+        }
+        catch(CoreException e) {
+            // ignore
+        }
     }
 
     /* (non-Javadoc)
@@ -138,6 +178,10 @@ public class RSSPropertyPage
                             updateIntervalGroup.getUpdateInterval());
             
                         channel.save(monitor);
+                        
+                        RSSUI.getDefault().setBrowserFactoryDescriptor(
+                            channel, 
+                            browserGroup.getSelectedBrowserFactory());
                     }
                 });
             }
