@@ -2,26 +2,36 @@
 <welcomePage title="Welcome to the Eclipse RSS Reader" format="wrap">
 <intro>The Eclipse RSS Reader allows you to create Rich Site Summary (RSS) channels, connected on-line RSS feeds, and view the items they contain in several Eclipse views. Each channel can be updated from its source at regular intervals. The channel items can be browsed using configured link browsers. This page describes some major features of the Eclipse RSS Reader as well as a simple way to get started.</intro>
 <item><b>Features</b>
+
 <p><b>1. New Channel wizard</b></p>
 <p>This wizard allows you to create a new channel from an external RSS feed and save it as a file in the workspace.</p>
+
 <p><b>2. Channel Navigator</b></p>
 <p>The Channel Navigator provides a hierarchical view of the workspace, similar to the Resource Navigator, with projects, folders, and RSS channels. Each channel can be expanded to display its items. The channels as well as their items can be browsed with the configured link browser. In addition, the Channel Navigator allows you to view only new, unread channels.</p>
+
 <p><b>3. Channel Detail view</b></p>
 <p>This view displays a list of items belonging to the selected channel. To select a channel, click on the channel node in the Channel Navigator, or the channel file in the Resource Navigator. The channel as well as its items can be browsed using the configured link browser. The list can be sorted by column (click on the column header). Also, the view has an option to show only new, unread items.</p>
+
 <p><b>4. Link Browsers</b></p>
 <p>You may choose, using the Channel Properties dialog, how to view the contents of channel and item links. By default, two methods are available: 1). Using the configured Help Browser, or 2). Using a file editor that understands the article format (e.g., HTML). In addition, users of WSAD running under MS-Windows have an option to use its embedded web browser. 3rd-party providers may offer additional link browsers.</p>
+
 <p><b>5. Preference page</b></p>
 <p>The included preference page allows you to specify the default channel update interval and select the default link browser, which are used when creating new channels. In addition, the included link browsers (help and editor) have their own preference pages; the former allows you to select a configured help browser, and the latter an editor to use for browsing channel items.</p>
+
 <p><b>6. Property page</b></p>
 <p>Each channel file has a property page with RSS-specific options, such as the update interval, source translator, and link browser. These can be modified even after the channel has been created.</p>
+
 <p><b>7. RSS feed translators</b></p>
 <p>RSS feeds based on various formats and versions are translated into a uniform channel model, which allows the various RSS views to present their contents in a uniform fashion. The default translator understands RSS versions 0.90, 0.91, 0.92, 1.0, and 2.0. 3rd-party providers may offer translators for new RSS versions, or entirely different formats.</p>
+
 <p><b>8. Periodic updates</b></p>
 <p>For each channel you may specify an interval, in minutes, which dictates how often the channel's contents are updated from its source feed. After an update, any new items are flagged and displayed with different icons and colors in the various RSS views, until they are read (i.e., opened using a link browser).</p>
+
 <p><b>9. Channel content caching</b></p>
 <p>RSS channels are represented in the workspace as files, which contain information on where to get the updates, how often, etc. The channel content, after an update, is cached in a temporary location outside of workspace. Thus it is possible to share the channel files using a Version Control System (e.g., CVS); each user then gets its own copy of the channel contents.</p>
 </item>
 <item><b>Getting Started</b>
+
 <p>1. Start your Workbench with a new or pre-existing workspace. If the workspace is empty, create a new project.</p>
 <p>2. In the Resource Navigator, right-click on a folder and select New -> RSS Channel.</p>
 <p>3. Enter a URL for the RSS Channel; e.g., http://www.ibm.com/developerworks/news/dw_tech_nl.rss. Click "Load".</p>
@@ -31,6 +41,7 @@
 <p>7. Browse and/or create channels in the Channel Navigator. Open the Properties view to see the properties of the selected items. Double-click on selected items to read the channel or item link.</p>
 </item>
 <item><b>Learn more</b>
+
 <p>To learn more please visit the <action pluginId="com.pnehrer.rss.ui" class="com.pnehrer.rss.ui.actions.OpenHomePageAction">Eclipse RSS Reader Home</action>.</p>
 </item>
 </welcomePage>
