@@ -9,6 +9,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.Date;
+import java.util.Properties;
 import java.util.StringTokenizer;
 
 import javax.xml.transform.Templates;
@@ -59,21 +61,68 @@ public class BugListTranslator extends XSLBasedTranslator {
 
 	protected Document postProcessDocument(Document document) {
 		Element channel = document.getDocumentElement();
+		channel.setAttribute("date", new Date().toString());
 		String link = channel.getAttribute(ATTR_LINK);
 		try {
 			URL url = new URL(link);
-			String content = url.getQuery();
-			if (content != null)
-				content = URLDecoder.decode(content, "UTF-8");
-			StringTokenizer t = new StringTokenizer(content, "&");
-			while (t.hasMoreTokens()) {
-				String[] pair = t.nextToken().split("=");
-				if ("content".equals(pair[0]) && pair.length > 1)
-					channel.setAttribute(ATTR_TITLE, pair[1]);
+			String query = url.getQuery();
+			if (query != null) {
+				Properties params = new Properties();
+				StringTokenizer t = new StringTokenizer(query, "&");
+				while (t.hasMoreTokens()) {
+					String[] pair = t.nextToken().split("=");
+					if (pair.length < 2)
+						continue;
+					
+					if ("bug_status".equals(pair[0])
+							|| "product".equals(pair[0])
+							|| "content".equals(pair[0]))
+						try {
+							params.put(pair[0], URLDecoder.decode(pair[1], "UTF-8"));
+						} catch (UnsupportedEncodingException ex) {
+							continue;
+						}
+						
+					if ("title".equals(pair[0]))
+						try {
+							channel.setAttribute(ATTR_TITLE, URLDecoder.decode(
+									pair[1], "UTF-8"));
+						} catch (UnsupportedEncodingException ex) {
+							continue;
+						}
+				}
+
+				StringBuffer buf = new StringBuffer("Bugzilla query ");
+				if (!params.isEmpty())
+					buf.append('(');
+				
+				String content = params.getProperty("content");
+				if (content != null) {
+					buf.append("content=").append(content);
+					if (params.size() > 1)
+						buf.append(", ");
+				}
+				
+				String product = params.getProperty("product");
+				if (product != null) {
+					buf.append("product=").append(product);
+					if ((content == null && params.size() > 1)
+							|| params.size() > 2)
+						buf.append(", ");
+				}
+				
+				String status = params.getProperty("bug_status");
+				if (status != null)
+					buf.append("status=").append(status);
+				
+				if (!params.isEmpty())
+					buf.append(')');
+
+				buf.append("at ");
+				buf.append(channel.getAttribute(ATTR_DESCRIPTION));
+				channel.setAttribute(ATTR_DESCRIPTION, buf.toString());
 			}
 		} catch (MalformedURLException e) {
-			// ignore
-		} catch (UnsupportedEncodingException e) {
 			// ignore
 		}
 

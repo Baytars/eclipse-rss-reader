@@ -13,7 +13,7 @@
 </xsl:template>
 
 <xsl:template match="bug">
-	<channel title="Bugzilla detail: {bug_id}" link="{parent::bugzilla/@urlbase}show_bug.cgi?id={bug_id}" description="{short_desc}" date="{creation_ts}">
+	<channel title="Bug #{bug_id}" link="{parent::bugzilla/@urlbase}show_bug.cgi?id={bug_id}" description="{short_desc}" date="{creation_ts}">
 		<image title="Bugzilla" link="http://www.bugzilla.org" url="platform:/plugin/org.eclipse.debug.ui/icons/full/obj16/ldebug_obj.gif"/>
 		<xsl:apply-templates select="long_desc"/>
 		<textInput title="Search Bugzilla" link="{parent::bugzilla/@urlbase}buglist.cgi" description="Enter Bugzilla query:" name="content"/>

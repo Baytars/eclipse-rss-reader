@@ -16,7 +16,7 @@
     </xsl:template>
     
     <xsl:template match="bz:result">
-    	<channel title="{bz:installation/@rdf:resource}" link="{substring-before(@rdf:about, '&amp;ctype=rdf')}">
+    	<channel title="Bugzilla query" link="{substring-before(@rdf:about, '&amp;ctype=rdf')}" description="{bz:installation/@rdf:resource}">
 			<image title="Bugzilla" link="http://www.bugzilla.org" url="platform:/plugin/org.eclipse.debug.ui/icons/full/obj16/ldebug_obj.gif"/>
     		<xsl:apply-templates select="bz:bugs/rdf:Seq/rdf:li"/>
 			<textInput title="Search Bugzilla" link="{bz:installation/@rdf:resource}buglist.cgi" description="Enter Bugzilla query:" name="content"/>
