@@ -164,8 +164,17 @@ public class DefaultTranslator implements ITranslator {
 				stripHTML(element, "description");
 			
 			if (baseUri != null && element.hasAttribute("link")) {
-				URI itemUri = baseUri.resolve(element.getAttribute("link"));
-				element.setAttribute("link", itemUri.toString());
+				String link = element.getAttribute("link");
+				URI itemUri;
+				try {
+					itemUri = new URI(link);
+				} catch (URISyntaxException e) {
+					element.setAttribute("link", link);
+					continue;
+				}
+
+				URI resolvedUri = baseUri.resolve(itemUri);
+				element.setAttribute("link", resolvedUri.toString());
 			}
 		}
 
