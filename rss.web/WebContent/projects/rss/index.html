@@ -1,8 +1,9 @@
-<!-- tpl:insert page="/theme/home.htpl" --><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<HTML>
-<HEAD>
-<META http-equiv="Content-Type"
-	content="text/html; charset=ANSI_X3.4-1968">
+<!-- tpl:insert page="/theme/home.htpl" -->
+	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+	<HTML>
+	<HEAD>
+	<META http-equiv="Content-Type"
+		content="text/html; charset=ANSI_X3.4-1968">
 <META name="GENERATOR" content="IBM WebSphere Studio">
 <META http-equiv="Content-Style-Type" content="text/css">
 <SCRIPT language="JavaScript" src="/presence/theme/updates.js"></SCRIPT>
@@ -24,67 +25,110 @@
 <LI class="menu" style='list-style-image: url("/presence/theme/icons/view_16.png")'><A class="leftNavLink" href="/presence/projects/rss/screenshots.html">Screenshots</A></LI>
 </UL>
 <!-- /siteedit:navbar -->
-<DIV class="content"><!-- tpl:put name="body" --><H1>Eclipse RSS Reader</H1><P>Publishing web-based news of all kinds via a summary format (RSS) is becoming increasingly popular. The applications include regular headline news (<A
-			href="http://news.yahoo.com">Yahoo! News</A>), web logs (<A
+<DIV class="content"><!-- tpl:put name="body" -->
+		<H1>Eclipse RSS Reader</H1>
+		<P>RSS is a lightweight XML format designed for sharing headlines and
+		other Web content. The applications include on-line news articles
+		(<A href="http://news.yahoo.com">Yahoo! News</A>), web logs (<A
 			href="http://slashdot.org">Slashdot.org</A>), professional bulletins (<A
 			href="http://www.ibm.com/developerWorks">IBM developerWorks</A>), and project updates (<A
-			href="http://sourceforge.net">SourceForge.net</A>). A variety of RSS formats currently exist, which increases application complexity. Often, a reader capable of understanding one format cannot handle another. </P>
-		<P>Eclipse RSS Reader takes advantage of the Eclipse platform in a number of ways:</P>
+			href="http://sourceforge.net">SourceForge.net</A>). A variety of
+		RSS formats currently exist, which increases application complexity.
+		Often, a reader capable of understanding one format cannot handle
+		another. The Eclipse RSS Reader takes advantage of the Eclipse
+		platform in the following ways:</P>
 		<OL>
 			<LI>Extension points and plug-in based architecture support addition
-		of new channel formats. </LI>
+			of new channel formats.</LI>
+
 			<LI>Workbench provides user interface consistency for users of
-			existing Eclipse-based tools (I for one like to keep up-to-date while
-			working in JDT).</LI>
+			existing Eclipse-based tools (I, for one, like to keep up-to-date
+			while working on my projects).</LI>
+
 			<LI>Resource and UI model provides opportunities for integration with
 			other Eclipse-based tools.</LI>
 		</OL>
-		<H2>Features</H2>
-		<P>The following features are currently supported:</P>
-		<DL>
-			<DT>Uniform channel model</DT>
-			<DD>
-RSS Feeds of various versions are coerced into a uniform channel model, which is persisted in the workspace.  Third-party plug-ins may contribute "translators" for various channel formats. The default implementation handles  RSS 0.91, 0.92, 1.0, and 2.0. In case more than one registered translator understands a format, the user is given a  choice to select one they wish to use. In the future, anonymous elements external to the model will be exposed via  untyped property interface (map), thus giving access to third-party plug-ins that may understand them.
 
-</DD>
-			<DT>Periodic updates </DT>
-			<DD>Based on user specification, channels are
-			periodically updated from the source. All viewers are refreshed to
-			display up-to-date information. In the future, markers will be used
-			to identify changes and allow viewers to highlight them.</DD>
-			<DT>Property page</DT>
-			<DD>Individual channel files have a property page
-			with RSS-specific options.</DD>
-			<DT>Preference page </DT>
-			<DD>Preference page allows users to specify
-			default values.</DD>
-			<DT>New Channel wizard </DT>
-			<DD>Allows users to create new channels from an
-			external RSS feed source. </DD>
-			<DT>Channel Navigator </DT>
-			<DD>Allows users to navigate channels in
-			container hierarchy. </DD>
-			<DT>Channel Detail view </DT>
-			<DD>Allows users to view details of selected
-			channel.</DD>
-		</DL>
-		<H2>Planned Work</H2>
-		<P>In future releases you are likely to find:</P>
+		<H2>Features</H2>
+		<H3>1. Uniform channel model</H3>
+
+		<P>RSS Feeds of various versions are coerced into a uniform channel
+		model, which is persisted in the workspace. Third-party plug-ins may
+		contribute "translators" for various channel formats. The default
+		implementation handles RSS 0.90, 0.91, 0.92, 1.0, and 2.0. In case
+		more than one registered translator understands a format, the user is
+		given a choice to select one they wish to use. In the future,
+		annonymous elements external to the model will be exposed via untyped
+		property interface (map), thus making them available to third-party
+		plug-ins that may understand and use them in a specific way.</P>
+
+
+		<H3>2. Periodic updates</H3>
+
+		<P>Based on user specification, channels are periodically updated from
+		the source. All viewers are refreshed to display up-to-date
+		information. In the future, markers will be used to identify changes
+		and allow viewers to highlight them.</P>
+
+
+		<H3>3. Property page</H3>
+
+		<P>Individual channel files have a property page with RSS-specific
+		options, such as update interval, source translator, and link browser.</P>
+
+
+		<H3>4. Preference page</H3>
+
+		<P>Preference page allows the user to specify default values for
+		update interval and link browser. In addition, default link browsers
+		(help and editor) have their own category; the former allows the user
+		to select which configured help browser to use, and the latter which
+		editor to use to browse articles.</P>
+
+
+		<H3>5. New Channel wizard</H3>
+
+		<P>Allows users to create new channels from an external RSS feed.</P>
+
+
+		<H3>6. Channel Navigator</H3>
+
+		<P>Allows users to navigate channels in a project/folder hierarchy.</P>
+
+
+		<H3>7. Channel Detail view</H3>
+
+		<P>Allows users to view details of selected channel, such as title and
+		description. Supports sorting by column.</P>
+
+
+		<H3>8. Pluggable News Article Browsers</H3>
+
+		<P>Users may choose how to view the contents of news articles. By
+		default, two methods are available: 1). Using the configured Help
+		Browser, or 2). Using a file editor that understands the article
+		format (e.g., HTML). In addition, users of WSAD running under
+		MS-Windows have an option to use its Web Browser Editor. This option
+		is specifiable on a per-channel basis. 3rd-party provides may offer
+		additional methods via the provided extension point.</P>
+		<H2>Future Plans</H2>
+		<P>The following items are currently on my to-do list:</P>
 		<UL>
-			<LI>User documentation (plug-in), context help, javadoc...
-:-)</LI>
-			<LI>Internationalization (externalize strings into resource
-			bundles). </LI>
-			<LI>Improve channel change delta; mark changed items with resource
-			markers; extend views to highlight changed items until user reads
-			them. </LI>
+			<LI>Highlight items that were modified after an update until they are read.</LI>
+			<LI>Filter HTML tags from title and description fields.</LI>
 			<LI>Expose data external to the core model via mapped properties so
-			other plug-ins may consume them. </LI>
-			<LI>Multi-page channel editor to allow user to modify the channel.</LI>
+			other plug-ins may consume them.</LI>
+			<LI>Allow user to select channel image.</LI>
+			<LI>Provide migration path for users of other RSS Readers (e.g., listen on port 8888 and process AmphetaDesk-compatible URL requests to subscribe to channels).</LI>
+			<LI>Write user documentation, context-sensitive help, JavaDoc... :-)</LI>
+			<LI>Internationalization (externalize strings into resource bundles).
+			</LI>
 		</UL>
-		<P>Your <A href="mailto:pnehrer@users.sourceforge.net">comments,
+		<P>Your <A href="http://sourceforge.net/forum/?group_id=63674">comments,
 		questions or suggestions</A> are most welcome.</P>
-		<P><A href="http://sourceforge.net"><IMG src="http://sourceforge.net/sflogo.php?group_id=63674&amp;type=2" width="125" height="37" border="0" alt="SourceForge.net Logo" /></A></P><!-- /tpl:put --></DIV>
+		<P><A href="http://sourceforge.net"><IMG
+			src="http://sourceforge.net/sflogo.php?group_id=63674&amp;type=2"
+			width="125" height="37" border="0" alt="SourceForge.net Logo" /></A></P><!-- /tpl:put --></DIV>
 <DIV class="footer">Copyright &copy; 2003 <a href="mailto:pnehrer@users.sourceforge.net">Peter Nehrer</a>.<br>Version $Id$.</DIV>
 </BODY>
 </HTML>

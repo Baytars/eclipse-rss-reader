@@ -39,6 +39,9 @@
 	<xsl:template match="b[parent::item][not(preceding-sibling::b)]">
 		<H2><xsl:apply-templates select="node()"/></H2>
 	</xsl:template>
+	<xsl:template match="p[b][not(node()[self::p])]">
+		<H3><xsl:apply-templates select="b/node()"/></H3>
+	</xsl:template>
 	<xsl:template match="@* | node()">
 		<xsl:copy>
 			<xsl:apply-templates select="@* | node()"/>

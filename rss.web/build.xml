@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="rss.web" default="mirrors">
+	<description>
+		Builds the mirrors page fragment.
+		Author: Peter Nehrer &lt;pnehrer@freeshell.org&gt;
+		Version $Id$
+	</description>
+	
+	<target name="mirrors">
+		<eclipse.convertPath resourcePath="/rss.updates/etc/mirrors.xml" property="mirrors"/>
+		<xslt style="mkmirrorspg.xsl" in="${mirrors}" out="WebContent/mirrors.html"/>
+	</target>
+</project>

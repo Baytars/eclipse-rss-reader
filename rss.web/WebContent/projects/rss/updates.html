@@ -1,0 +1,172 @@
+<!-- tpl:insert page="/theme/home.htpl" --><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type"
+	content="text/html; charset=ANSI_X3.4-1968">
+<META name="GENERATOR" content="IBM WebSphere Studio">
+<META http-equiv="Content-Style-Type" content="text/css">
+<SCRIPT language="JavaScript" src="/presence/theme/updates.js"></SCRIPT>
+<LINK href="/presence/theme/blue.css" rel="stylesheet" type="text/css">
+<LINK rel="shortcut icon" href="/presence/theme/icons/favicon.ico" type="image/x-icon">
+<!-- tpl:put name="head" --><TITLE>Updates</TITLE>
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+function setMirror(mirror) {
+	setCookie("mirror", mirror);
+	var downloadDiv = document.getElementById("downloadDiv");
+	if(downloadDiv)
+		downloadDiv.style.display = mirror ? "block" : "none";
+	
+	var passiveURL = document.getElementById("passiveURL");
+	if(passiveURL)
+		passiveURL.innerHTML = "http://morphine.sourceforge.net/updates/" + mirror + "/";
+}
+
+function getMirror() {
+	var mirrors = document.forms.mirrorForm.mirror;
+	for(var i = 0; i < mirrors.length; ++i) {
+		if(mirrors[i].checked)
+			return mirrors[i].value;
+	}
+	
+	return null;
+}
+
+function download(feature) {
+	var args = getArgs();
+	var mirror = getMirror();
+	if(args.updateURL && mirror) {
+		var updateURL = args.updateURL;
+		var callback = updateURL 
+			+ "?server=" + escape("http://morphine.sourceforge.net/updates/" + mirror + "/")
+			+ "&feature=" + escape(feature) 
+			+ "&backURL=" + escape(window.location);
+
+		window.location.replace(callback);
+	}
+}
+
+function initUpdates() {
+	var mirror = persistMirror();
+	if(mirror) {
+		var mirrorBtn = document.getElementById("mirror_" + mirror);
+		if(mirrorBtn)
+			mirrorBtn.checked = true;
+			
+		setMirror(mirror);
+	}
+	
+	var updateURL = persistUpdateURL();
+	var activeUpdateDiv = document.getElementById("activeUpdateDiv");
+	if(activeUpdateDiv)
+		activeUpdateDiv.style.display = updateURL ? "block" : "none";
+		
+	var passiveUpdateDiv = document.getElementById("passiveUpdateDiv");
+	if(passiveUpdateDiv)
+		passiveUpdateDiv.style.display = updateURL ? "none" : "block";
+
+	var unknownUpdateDiv = document.getElementById("unknownUpdateDiv");
+	if(unknownUpdateDiv)
+		unknownUpdateDiv.style.display = "none";
+}
+//-->
+</SCRIPT>
+<!-- /tpl:put -->
+</HEAD>
+<BODY onload="javascript:return body_onload();">
+<DIV class="extLinkDiv"><SPAN style="vertical-align: bottom"><A class="extLink" href="http://pnehrer.freeshell.org/presence/projects/rss/index.html">pnehrer.com</A> | <A class="extLink" href="http://sourceforge.net/projects/morphine">SourceForge.net</A></SPAN></DIV>
+<DIV class="header"><A href="/presence/projects/rss/index.html"><IMG border="0"
+	src="/presence/theme/icons/rss-banner.png" width="500" height="64" alt="Eclipse RSS Reader"></A></DIV>
+<!-- siteedit:navbar spec="/presence/theme/leftnav.html" target="topchildren" -->
+<UL class="menuBox">
+<LI class="menu" style='list-style-image: url("/presence/theme/icons/navigator_16.png")'><A class="leftNavLink" href="/presence/projects/rss/index.html">About</A></LI>
+<LI class="menu" style='list-style-image: url("/presence/theme/icons/detail_16.png")'><A class="leftNavLink" href="/presence/projects/rss/news.html">News</A></LI>
+<LI class="menu" style='list-style-image: url("/presence/theme/icons/update_16.png")'><A class="leftNavLink" href="/presence/projects/rss/download.html">Download</A></LI>
+<LI class="menu" style='list-style-image: url("/presence/theme/icons/browse_16.png")'><A class="leftNavLink" href="/presence/projects/rss/usage.html">Usage</A></LI>
+<LI class="menu" style='list-style-image: url("/presence/theme/icons/view_16.png")'><A class="leftNavLink" href="/presence/projects/rss/screenshots.html">Screenshots</A></LI>
+</UL>
+<!-- /siteedit:navbar -->
+<DIV class="content"><!-- tpl:put name="body" -->
+<H1>Update Site</H1>
+<P>Please follow these steps to download and install a feature using the Update Manager:</P>
+<H2>1. Select Download Mirror</H2>
+<FORM name="mirrorForm" method="GET" action="updates.html">
+		<!-- tpl:insert page="/mirrors.html" --><!--BEGIN mkmirrorspg.xsl--><TABLE class="tableList" align="center" width="90%" cellspacing="2" cellpadding="2" border="0">
+<CAPTION class="tableList">SourceForge Mirrors</CAPTION>
+<TR>
+<TH class="tableList">Mirror</TH><TH class="tableList">Location</TH>
+</TR>
+<TR>
+<TD class="oddRowOddColumn"><INPUT id="mirror_keihanna" type="radio" name="mirror" value="keihanna" onclick="setMirror(this.value)"><A class="tableListLink" href="http://www.ksc.gr.jp/"><IMG src="http://images.sourceforge.net/prdownloads/keihanna_100x34.gif" alt="keihanna" border="0"></A></TD><TD class="oddRowEvenColumn">Keihanna, Japan (Asia)</TD>
+</TR>
+<TR>
+<TD class="evenRowOddColumn"><INPUT id="mirror_heanet" type="radio" name="mirror" value="heanet" onclick="setMirror(this.value)"><A class="tableListLink" href="http://www.heanet.ie/"><IMG src="http://images.sourceforge.net/prdownloads/heanet_100x34.gif" alt="heanet" border="0"></A></TD><TD class="evenRowEvenColumn">Dublin, Ireland (Europe)</TD>
+</TR>
+<TR>
+<TD class="oddRowOddColumn"><INPUT id="mirror_flow" type="radio" name="mirror" value="flow" onclick="setMirror(this.value)"><A class="tableListLink" href="http://www.flow.com.au/"><IMG src="http://images.sourceforge.net/prdownloads/flow_100x34.png" alt="flow" border="0"></A></TD><TD class="oddRowEvenColumn">Sydney, Australia (Australia)</TD>
+</TR>
+<TR>
+<TD class="evenRowOddColumn"><INPUT id="mirror_easynews" type="radio" name="mirror" value="easynews" onclick="setMirror(this.value)"><A class="tableListLink" href="http://www.easynews.com/"><IMG src="http://images.sourceforge.net/prdownloads/easynews_100x34.jpg" alt="easynews" border="0"></A></TD><TD class="evenRowEvenColumn">Phoenix, AZ (North America)</TD>
+</TR>
+<TR>
+<TD class="oddRowOddColumn"><INPUT id="mirror_aleron" type="radio" name="mirror" value="aleron" onclick="setMirror(this.value)"><A class="tableListLink" href="http://www.aleron.com/"><IMG src="http://images.sourceforge.net/prdownloads/aleron_100x34.jpg" alt="aleron" border="0"></A></TD><TD class="oddRowEvenColumn">Reston, VA (North America)</TD>
+</TR>
+<TR>
+<TD class="evenRowOddColumn"><INPUT id="mirror_unc" type="radio" name="mirror" value="unc" onclick="setMirror(this.value)"><A class="tableListLink" href="http://www.ibiblio.org/"><IMG src="http://images.sourceforge.net/prdownloads/ibiblio_100x34.gif" alt="unc" border="0"></A></TD><TD class="evenRowEvenColumn">Chapel Hill, NC (North America)</TD>
+</TR>
+<TR>
+<TD class="oddRowOddColumn"><INPUT id="mirror_cesnet" type="radio" name="mirror" value="cesnet" onclick="setMirror(this.value)"><A class="tableListLink" href="http://www.cesnet.cz/"><IMG src="http://images.sourceforge.net/prdownloads/cesnet_100x34.png" alt="cesnet" border="0"></A></TD><TD class="oddRowEvenColumn">Prague, Czech Republic (Europe)</TD>
+</TR>
+<TR>
+<TD class="evenRowOddColumn"><INPUT id="mirror_umn" type="radio" name="mirror" value="umn" onclick="setMirror(this.value)"><A class="tableListLink" href="http://www.umn.edu/"><IMG src="http://images.sourceforge.net/prdownloads/umn_100x34.gif" alt="umn" border="0"></A></TD><TD class="evenRowEvenColumn">Minneapolis, MN (North America)</TD>
+</TR>
+<TR>
+<TD class="oddRowOddColumn"><INPUT id="mirror_twtelecom" type="radio" name="mirror" value="twtelecom" onclick="setMirror(this.value)"><A class="tableListLink" href="http://www.twtelecom.com/"><IMG src="http://images.sourceforge.net/prdownloads/twtelecom_100x34.gif" alt="twtelecom" border="0"></A></TD><TD class="oddRowEvenColumn">Brookfield, WI (North America)</TD>
+</TR>
+<TR>
+<TD class="evenRowOddColumn"><INPUT id="mirror_osdn" type="radio" name="mirror" value="osdn" onclick="setMirror(this.value)"><A class="tableListLink" href="http://sourceforge.net/"><IMG src="http://sourceforge.net/sflogo.php?group_id=63674&type=2" alt="osdn" border="0"></A></TD><TD class="evenRowEvenColumn">Default Download Server</TD>
+</TR>
+<TR>
+<TD align="right" colspan="2">
+<HR size="1" noshade="true">
+<INPUT value="Select" type="submit"></TD>
+</TR>
+</TABLE>
+<!--END mkmirrorspg.xsl-->
+<!-- /tpl:insert --></FORM>
+<DIV id="downloadDiv" style="display: none">
+<DIV id="activeUpdateDiv" style="display: none">
+<H2>2. Choose Feature to Install</H2>
+<P>Click on the version number of the feature you wish to install:
+<TABLE border="0" cellpadding="2" cellspacing="2" width="90%" align="center" class="tableList">
+	<CAPTION class="tableList">Available Features</CAPTION>
+	<TR>
+		<TH class="tableList">Name</TH>
+		<TH class="tableList">Version</TH>
+	</TR>
+	<TR>
+		<TD class="oddRowOddColumn">Eclipse RSS Reader</TD>
+		<TD class="oddRowEvenColumn"><A class="tableListLink" href="javascript:download('com.pnehrer.rss_1.1.0')">1.1.0</A></TD>
+	</TR>
+	<TR>
+		<TD class="evenRowOddColumn">IBM WebSphere Studio Extensions for the RSS Reader</TD>
+		<TD class="evenRowEvenColumn"><A class="tableListLink" href="javascript:download('com.pnehrer.rss.wsad_1.1.0')">1.1.0</A></TD>
+	</TR>
+</TABLE>
+</DIV>
+<DIV id="passiveUpdateDiv" style="display: none">
+<H2>2. Point Your Update Manager to Mirrored Update Site</H2>
+<P>The Web-triggered updates feature seems to be unavailable.
+Please ensure that it is enabled in your Workbench under Preferences -&gt; Install/Update -&gt; Web-triggered Updates.
+If you are not viewing this page from within the Update Manager, please do so.
+Otherwise, please point your Update Manager to the following URL: <STRONG id="passiveURL">http://morphine.sourceforge.net/updates/</STRONG></P>
+</DIV>
+<DIV id="unknownUpdateDiv">
+<P>Please wait... Determining availability of Web-triggered updates.</P>
+</DIV>
+</DIV>
+	<!-- /tpl:put --></DIV>
+<DIV class="footer">Copyright &copy; 2003 <a href="mailto:pnehrer@users.sourceforge.net">Peter Nehrer</a>.<br>Version $Id$.</DIV>
+</BODY>
+</HTML>
+<!-- /tpl:insert -->
