@@ -37,7 +37,7 @@ import com.pnehrer.rss.core.RSSCore;
  */
 public class RSSSearchPage extends DialogPage implements ISearchPage {
 
-    static final String PAGE_ID = "com.pnehrer.rss.ui.page1";
+    public static final String PAGE_ID = "com.pnehrer.rss.ui.page1";
 
     private static final int TERM_COMPLETE = 1;
     private static final int FIELD_COMPLETE = 2;

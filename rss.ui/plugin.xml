@@ -282,5 +282,36 @@
             name="link">
       </attribute>
    </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="RSS"
+            visible="true"
+            id="com.pnehrer.rss.ui.actionSet1">
+         <menu
+               label="Se&amp;arch"
+               path="navigate"
+               id="org.eclipse.search.menu">
+            <groupMarker
+                  name="internalDialogGroup">
+            </groupMarker>
+<!-- not to be used by clients  -->
+            <groupMarker
+                  name="dialogGroup">
+            </groupMarker>
+<!-- to be used by clients      -->
+            <separator
+                  name="contextMenuActionsGroup">
+            </separator>
+         </menu>
+         <action
+               label="Channel..."
+               icon="xml_16.gif"
+               class="com.pnehrer.rss.ui.actions.OpenSearchDialogAction"
+               menubarPath="org.eclipse.search.menu/dialogGroup"
+               id="com.pnehrer.rss.ui.actions.OpenSearchDialogAction">
+         </action>
+      </actionSet>
+   </extension>
 
 </plugin>

@@ -32,6 +32,7 @@ public class RSSPerspective implements IPerspectiveFactory {
         layout.addShowViewShortcut(IPageLayout.ID_TASK_LIST);
     
         layout.addActionSet(IPageLayout.ID_NAVIGATE_ACTION_SET);
+        layout.addActionSet("com.pnehrer.rss.ui.actionSet1");
         
         layout.addPerspectiveShortcut("org.eclipse.ui.views.ResourceNavigator");
         

@@ -131,12 +131,14 @@ public class ChannelNavigatorContentProvider
             Object[] affected = new Object[affectedChildren.length];
             for (int i = 0; i < affectedChildren.length; i++) {
                 IResource affectedResource = affectedChildren[i].getResource();
-                IRSSElement affectedRSSElement = (IRSSElement)
-                    affectedResource.getAdapter(IRSSElement.class);
-                if(affectedRSSElement == null)
-                    affected[i] = affectedResource;
-                else
-                    affected[i] = affectedRSSElement;
+                // TODO Get rid of the rss file extension reference.
+                if(affectedResource.getType() == IResource.FILE
+                    && "rss".equals(affectedResource.getFileExtension())) {
+
+                    // There is no way we can get an IRSSElement from a deleted file at this point
+                    ((StructuredViewer)viewer).refresh(resource);
+                    return;
+                }
             }
 
             if (viewer instanceof AbstractTreeViewer) {
