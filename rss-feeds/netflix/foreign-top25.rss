@@ -1,0 +1,5 @@
+#Eclipse RSS Reader v1.2.0
+#Sun Nov 28 10:23:12 EST 2004
+translatorId=com.pnehrer.rss.core.default
+url=http\://rss.netflix.com/Top25RSS?gid\=326
+updateInterval=1440
