@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="com.pnehrer.rss.wsad"
-      label="WSAD Extensions for RSS Reader"
-      version="1.2.0"
+      label="Eclipse RSS Reader for WSAD"
+      version="1.2.1"
       provider-name="Peter Nehrer"
+      plugin="com.pnehrer.rss"
       os="win32"
       ws="win32"
-      image="xml_120.png">
+      image="xml_120.png"
+      primary="true">
 
    <description>
-      WSAD-specific Extensions for the RSS Reader.
+      Eclipse RSS Reader for WSAD.
    </description>
 
    <copyright>
-      Copyright (c) 2003 Peter Nehrer. All rights reserved.
+      Copyright (c) 2003, 2004 Peter Nehrer. All rights reserved.
    </copyright>
 
    <license>
@@ -28,13 +30,29 @@ at http://www.eclipse.org/legal/cpl-v10.html.
    </url>
 
    <requires>
-      <import feature="com.pnehrer.rss" version="1.2.0" patch="true"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.eclipse.help.ui"/>
+      <import plugin="org.eclipse.search"/>
       <import plugin="com.ibm.etools.webbrowser"/>
    </requires>
 
    <plugin
          id="com.pnehrer.rss.ui.wsad"
-         version="1.2.0"
+         version="1.2.1"
          fragment="true"/>
+
+   <plugin
+         id="com.pnehrer.rss"
+         version="1.2.1"/>
+
+   <plugin
+         id="com.pnehrer.rss.core"
+         version="1.2.1"/>
+
+   <plugin
+         id="com.pnehrer.rss.ui"
+         version="1.2.1"/>
 
 </feature>

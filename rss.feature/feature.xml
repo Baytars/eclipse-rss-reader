@@ -2,17 +2,17 @@
 <feature
       id="com.pnehrer.rss"
       label="Eclipse RSS Reader"
-      version="1.2.0"
+      version="1.2.1"
       provider-name="Peter Nehrer"
       image="xml_120.png"
       primary="true">
 
    <description>
-      Rich Site Summary feed browsing and subscription management.
+      Eclipse RSS Reader.
    </description>
 
    <copyright>
-      Copyright (c) 2003 Peter Nehrer. All rights reserved.
+      Copyright (c) 2003, 2004 Peter Nehrer. All rights reserved.
    </copyright>
 
    <license>
@@ -31,18 +31,19 @@ at http://www.eclipse.org/legal/cpl-v10.html.
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.help"/>
       <import plugin="org.eclipse.help.ui"/>
+      <import plugin="org.eclipse.search"/>
    </requires>
 
    <plugin
          id="com.pnehrer.rss.core"
-         version="1.2.0"/>
+         version="1.2.1"/>
 
    <plugin
          id="com.pnehrer.rss.ui"
-         version="1.2.0"/>
+         version="1.2.1"/>
 
    <plugin
          id="com.pnehrer.rss"
-         version="1.2.0"/>
+         version="1.2.1"/>
 
 </feature>
