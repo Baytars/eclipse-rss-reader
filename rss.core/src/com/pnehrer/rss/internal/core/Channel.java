@@ -821,7 +821,7 @@ public class Channel
         }
         catch(ParseException ex) {
         	SimpleDateFormat format = 
-        		new SimpleDateFormat("EEE, d MMM yy hh:mm:ss zzz");
+        		new SimpleDateFormat("EEE, d MMM yy HH:mm:ss zzz");
         	try {
 				return format.parse(str);
 			} 
