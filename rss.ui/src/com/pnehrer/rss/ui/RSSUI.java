@@ -27,11 +27,11 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IRSSElement;
-import com.pnehrer.rss.internal.ui.BrowserEditor;
-import com.pnehrer.rss.internal.ui.HelpBrowser;
 import com.pnehrer.rss.internal.ui.ImageManager;
-import com.pnehrer.rss.internal.ui.LinkBrowserDescriptor;
 import com.pnehrer.rss.internal.ui.WorkbenchAdapterFactory;
+import com.pnehrer.rss.internal.ui.linkbrowser.BrowserEditor;
+import com.pnehrer.rss.internal.ui.linkbrowser.HelpBrowser;
+import com.pnehrer.rss.internal.ui.linkbrowser.LinkBrowserDescriptor;
 
 /**
  * The main plugin class to be used in the desktop.

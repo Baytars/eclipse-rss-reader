@@ -17,6 +17,7 @@
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.help"/>
       <import plugin="org.eclipse.help.ui"/>
+      <import plugin="org.eclipse.search"/>
       <import plugin="com.pnehrer.rss.core"/>
    </requires>
 
@@ -141,13 +142,13 @@
       <page
             name="Help Browser"
             category="com.pnehrer.rss"
-            class="com.pnehrer.rss.internal.ui.HelpBrowserPreferencePage"
+            class="com.pnehrer.rss.internal.ui.linkbrowser.HelpBrowserPreferencePage"
             id="com.pnehrer.rss.ui.HelpBrowser">
       </page>
       <page
             name="User-configured Editor"
             category="com.pnehrer.rss"
-            class="com.pnehrer.rss.internal.ui.BrowserEditorPreferencePage"
+            class="com.pnehrer.rss.internal.ui.linkbrowser.BrowserEditorPreferencePage"
             id="com.pnehrer.rss.ui.BrowserEditor">
       </page>
    </extension>
@@ -229,7 +230,7 @@
    <extension
          point="org.eclipse.ui.elementFactories">
       <factory
-            class="com.pnehrer.rss.internal.ui.LinkEditorInputFactory"
+            class="com.pnehrer.rss.internal.ui.linkbrowser.LinkEditorInputFactory"
             id="com.pnehrer.rss.ui.LinkEditorInputFactory">
       </factory>
    </extension>
@@ -237,19 +238,19 @@
          point="com.pnehrer.rss.ui.linkbrowser">
       <linkbrowser
             label="Help Browser"
-            class="com.pnehrer.rss.internal.ui.HelpBrowser"
+            class="com.pnehrer.rss.internal.ui.linkbrowser.HelpBrowser"
             id="helpbrowser">
       </linkbrowser>
       <linkbrowser
             label="User-configured Editor"
-            class="com.pnehrer.rss.internal.ui.BrowserEditor"
+            class="com.pnehrer.rss.internal.ui.linkbrowser.BrowserEditor"
             id="browsereditor">
       </linkbrowser>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            name="RSS Perspective"
+            name="RSS"
             icon="xml_16.gif"
             class="com.pnehrer.rss.ui.RSSPerspective"
             id="com.pnehrer.rss.ui.RSSPerspective">
@@ -257,6 +258,29 @@
             Eclipse RSS Reader perspective.
          </description>
       </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.search.searchPages">
+      <page
+            showScopeSection="true"
+            label="RSS Search"
+            enabled="true"
+            icon="xml_16.gif"
+            extensions="rss:100"
+            class="com.pnehrer.rss.internal.ui.search.RSSSearchPage"
+            id="com.pnehrer.rss.ui.page1">
+      </page>
+   </extension>
+   <extension
+         id="rsssearchhitmarker"
+         name="RSS Search Hit"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.search.searchmarker">
+      </super>
+      <attribute
+            name="link">
+      </attribute>
    </extension>
 
 </plugin>

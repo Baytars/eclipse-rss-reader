@@ -10,8 +10,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 
-import com.pnehrer.rss.internal.ui.BrowserFactoryDescriptor;
-import com.pnehrer.rss.internal.ui.HelpBrowser;
+import com.pnehrer.rss.internal.ui.linkbrowser.BrowserFactoryDescriptor;
+import com.pnehrer.rss.internal.ui.linkbrowser.HelpBrowser;
 import com.pnehrer.rss.ui.RSSUI;
 
 /**

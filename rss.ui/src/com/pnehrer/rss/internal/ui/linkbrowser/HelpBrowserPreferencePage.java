@@ -2,7 +2,7 @@
  * Created on Dec 18, 2003
  * Version $Id$
  */
-package com.pnehrer.rss.internal.ui;
+package com.pnehrer.rss.internal.ui.linkbrowser;
 
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;

@@ -5,9 +5,14 @@
 package com.pnehrer.rss.core;
 
 import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IAdapterManager;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -31,6 +36,8 @@ public class RSSCore extends Plugin {
     public static final String PREF_UPDATE_INTERVAL = "updateInterval";
     public static final String MARKER_UPDATE = PLUGIN_ID + ".update";
     public static final String ATTR_LINK = "link";
+    public static final int SEARCH_TITLE = 1;
+    public static final int SEARCH_DESCRIPTION = 2;
 
     private static RSSCore instance;
     private ChannelManager channelManager;
@@ -110,5 +117,104 @@ public class RSSCore extends Plugin {
             url,
             updateInterval,
             monitor);
+    }
+    
+    public IItem[] search(
+        String _term, 
+        final boolean caseSensitive,
+        final int fieldMask,
+        Object[] workingSet,
+        IProgressMonitor monitor) 
+        throws CoreException {
+
+        if(monitor != null)
+            monitor.beginTask("Searching for " + _term, workingSet.length);
+                    
+        try {
+            final String term = caseSensitive ? _term : _term.toLowerCase();
+            final Set result = new HashSet();
+            for(int i = 0; i < workingSet.length; ++i) {
+                IRSSElement rssElement = (IRSSElement)
+                    ((IAdaptable)workingSet[i]).getAdapter(IRSSElement.class);
+                if(rssElement != null) {
+                    collectMatches(
+                        result,
+                        term, 
+                        caseSensitive, 
+                        fieldMask, 
+                        rssElement.getChannel());
+    
+                    continue;
+                }
+                
+                IResource resource = (IResource)
+                    ((IAdaptable)workingSet[i]).getAdapter(IResource.class);
+                if(resource != null)
+                    resource.accept(new IResourceVisitor() {
+                        public boolean visit(IResource resource) throws CoreException {
+                            if(resource.getType() == IResource.FILE) {
+                                IRSSElement rssElement = (IRSSElement)
+                                    ((IAdaptable)resource).getAdapter(IRSSElement.class);
+    
+                                if(rssElement != null)
+                                    collectMatches(
+                                        result,
+                                        term, 
+                                        caseSensitive, 
+                                        fieldMask, 
+                                        rssElement.getChannel());
+    
+                                return false;
+                            }
+                            else
+                                return true;
+                        }
+                    });
+                    
+                if(monitor != null)
+                    monitor.worked(1);
+            }
+        
+            return (IItem[])result.toArray(new IItem[result.size()]);
+        }
+        finally {
+            if(monitor != null)
+                monitor.done();
+        }
+    }
+    
+    private void collectMatches(
+        Set result, 
+        String term, 
+        boolean caseSensitive,
+        int fieldMask, 
+        IChannel channel) {
+    
+        IItem[] items = channel.getItems();
+        for(int i = 0; i < items.length; ++i) {
+            if((fieldMask & SEARCH_TITLE) != 0) {
+                String title = items[i].getTitle();
+                if(title != null) { 
+                    if(!caseSensitive)
+                        title = title.toLowerCase();
+
+                    if(title.indexOf(term) >= 0) {
+                        result.add(items[i]);
+                        continue;
+                    }
+                }
+            }
+
+            if((fieldMask & SEARCH_DESCRIPTION) != 0) {
+                String description = items[i].getTitle();
+                if(description != null) { 
+                    if(caseSensitive)
+                        description = description.toLowerCase();
+
+                    if(description.indexOf(term) >= 0)
+                        result.add(items[i]);
+                }
+            }
+        }
     }
 }

@@ -2,7 +2,7 @@
  * Created on Dec 18, 2003
  * Version $Id$
  */
-package com.pnehrer.rss.internal.ui;
+package com.pnehrer.rss.internal.ui.linkbrowser;
 
 import java.net.URL;
 import java.util.ArrayList;

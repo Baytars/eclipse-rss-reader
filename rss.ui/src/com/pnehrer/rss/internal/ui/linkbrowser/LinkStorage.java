@@ -2,7 +2,7 @@
  * Created on Dec 17, 2003
  * Version $Id$
  */
-package com.pnehrer.rss.internal.ui;
+package com.pnehrer.rss.internal.ui.linkbrowser;
 
 import java.io.IOException;
 import java.io.InputStream;

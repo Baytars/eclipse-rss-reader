@@ -120,7 +120,7 @@
          point="com.pnehrer.rss.ui.linkbrowser">
       <linkbrowser
             label="WSAD&apos;s Embedded Web Browser"
-            class="com.pnehrer.rss.internal.ui.WebBrowserEditor"
+            class="com.pnehrer.rss.internal.ui.linkbrowser.WebBrowserEditor"
             id="webbrowsereditor">
       </linkbrowser>
    </extension>
