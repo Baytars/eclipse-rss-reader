@@ -2,7 +2,7 @@
 <project name="rss.updates" default="sfsite">
 	<description>
 		Builds artifacts for a SourceForge-based update site.
-		Author: <a href="pnehrer@freeshell.org">Peter Nehrer</a>
+		Author: Peter Nehrer &lt;pnehrer@freeshell.org&gt;
 		Version $Id$
 	</description>
 	
@@ -18,6 +18,33 @@
 		<xslt style="etc/mksfsite.xsl" in="site.xml" out="dist/sfsite.xml">
 			<param name="featureMap" expression="etc/featureMap.xml"/>
 		</xslt>
+	</target>
+	
+	<target name="upload">
+		<ftp 
+			server="upload.sourceforge.net" 
+			userid="anonymous" 
+			password="pnehrer@users.sourceforge.net"
+			passive="yes">
+			
+			<fileset>
+				<include name="plugins/*.jar"/>
+			</fileset>
+			
+			<mapper type="glob" from="plugins/*.jar" to="p_*.jar"/>
+		</ftp>
+		<ftp 
+			server="upload.sourceforge.net" 
+			userid="anonymous" 
+			password="pnehrer@users.sourceforge.net"
+			passive="yes">
+			
+			<fileset>
+				<include name="features/*.jar"/>
+			</fileset>
+			
+			<mapper type="glob" from="features/*.jar" to="f_*.jar"/>
+		</ftp>
 	</target>
 	
 	<target name="clean">

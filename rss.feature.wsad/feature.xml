@@ -2,8 +2,10 @@
 <feature
       id="com.pnehrer.rss.wsad"
       label="WSAD Extensions for RSS Reader"
-      version="1.0.0"
+      version="1.1.0"
       provider-name="Peter Nehrer"
+      os="win32"
+      ws="win32"
       image="xml_120.png">
 
    <description>
@@ -26,15 +28,13 @@ at http://www.eclipse.org/legal/cpl-v10.html.
    </url>
 
    <requires>
-      <import feature="com.pnehrer.rss" version="1.0.0" patch="true"/>
+      <import feature="com.pnehrer.rss" version="1.1.0" patch="true"/>
       <import plugin="com.ibm.etools.webbrowser"/>
    </requires>
 
    <plugin
          id="com.pnehrer.rss.ui.wsad"
-         os="win32"
-         ws="win32"
-         version="1.0.0"
+         version="1.1.0"
          fragment="true"/>
 
 </feature>

@@ -9,5 +9,5 @@
 	<mirror id="cesnet" image="http://images.sourceforge.net/prdownloads/cesnet_100x34.png" link="http://www.cesnet.cz/" location="Prague, Czech Republic (Europe)" />
 	<mirror id="umn" image="http://images.sourceforge.net/prdownloads/umn_100x34.gif" link="http://www.umn.edu/" location="Minneapolis, MN (North America)" />
 	<mirror id="twtelecom" image="http://images.sourceforge.net/prdownloads/twtelecom_100x34.gif" link="http://www.twtelecom.com/" location="Brookfield, WI (North America)" />
-	<mirror id="osdn" link="http://sourceforge.net/" location="Default OSDN Download Server" />
+	<mirror id="osdn" image="http://sourceforge.net/sflogo.php?group_id=63674&amp;type=2" link="http://sourceforge.net/" location="Default Download Server" />
 </mirrors>

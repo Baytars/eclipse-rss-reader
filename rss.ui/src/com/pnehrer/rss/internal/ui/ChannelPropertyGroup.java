@@ -186,7 +186,7 @@ public class ChannelPropertyGroup {
 
         layoutData = new GridData(GridData.FILL_HORIZONTAL);
         layoutData.horizontalSpan = columns;
-        layoutData.heightHint = 200;
+        layoutData.heightHint = 60;
         translatorList.setLayoutData(layoutData);
         translatorList.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {

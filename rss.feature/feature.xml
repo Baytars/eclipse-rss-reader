@@ -2,7 +2,7 @@
 <feature
       id="com.pnehrer.rss"
       label="Eclipse RSS Reader"
-      version="1.0.0"
+      version="1.1.0"
       provider-name="Peter Nehrer"
       image="xml_120.png"
       primary="true">
@@ -28,7 +28,6 @@ at http://www.eclipse.org/legal/cpl-v10.html.
 
    <requires>
       <import plugin="org.eclipse.core.resources"/>
-      <import plugin="com.ibm.etools.xalanrt"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.help"/>
       <import plugin="org.eclipse.help.ui"/>
@@ -38,18 +37,18 @@ at http://www.eclipse.org/legal/cpl-v10.html.
          id="com.pnehrer.rss.core"
          download-size="0"
          install-size="0"
-         version="1.0.0"/>
+         version="1.1.0"/>
 
    <plugin
          id="com.pnehrer.rss.ui"
          download-size="0"
          install-size="0"
-         version="1.0.0"/>
+         version="1.1.0"/>
 
    <plugin
          id="com.pnehrer.rss"
          download-size="0"
          install-size="0"
-         version="1.0.0"/>
+         version="1.1.0"/>
 
 </feature>

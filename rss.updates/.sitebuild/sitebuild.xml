@@ -3,8 +3,10 @@
       feature-location="features"
       plugin-location="plugins"
       autobuild="false"
-      scrub-output="false"
+      scrub-output="true"
       use-console="true">
    <feature id="com.pnehrer.rss" version="1.0.0"/>
    <feature id="com.pnehrer.rss.wsad" version="1.0.0"/>
+   <feature id="com.pnehrer.rss" version="1.1.0"/>
+   <feature id="com.pnehrer.rss.wsad" version="1.1.0"/>
 </site-build>

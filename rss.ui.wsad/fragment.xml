@@ -2,7 +2,7 @@
 <fragment
    id="com.pnehrer.rss.ui.wsad"
    name="RSS UI extensions for WSAD"
-   version="1.0.0"
+   version="1.1.0"
    provider-name="Peter Nehrer"
    plugin-id="com.pnehrer.rss.ui"
    plugin-version="1.0.0">
@@ -119,7 +119,7 @@
    <extension
          point="com.pnehrer.rss.ui.linkbrowser">
       <linkbrowser
-            label="WSAD's Web Browser"
+            label="WSAD&apos;s Web Browser"
             class="com.pnehrer.rss.internal.ui.WebBrowserEditor"
             id="webbrowsereditor">
       </linkbrowser>
