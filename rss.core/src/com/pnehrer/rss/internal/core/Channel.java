@@ -312,6 +312,35 @@ public class Channel
                 t));
     }
     
+    private void cache(Document document) throws CoreException {
+        File cache = getCache();
+        File parent = cache.getParentFile();
+        if(!parent.exists())
+            parent.mkdirs();
+            
+        SerializerFactory factory = 
+            SerializerFactory.getSerializerFactory(Method.XML);
+        try {
+            FileWriter writer = new FileWriter(getCache()); 
+            Serializer serializer = 
+                factory.makeSerializer(
+                    writer,
+                    new OutputFormat(document));
+
+            serializer.asDOMSerializer().serialize(document);
+            writer.close();
+        }
+        catch(IOException ex) {
+            throw new CoreException(
+                new Status(
+                    IStatus.ERROR,
+                    RSSCore.PLUGIN_ID,
+                    0,
+                    "Could not cache channel contents. File: " + file,
+                    ex));   
+        }
+    }
+    
     private synchronized void update(
         Document sourceDocument,
         IProgressMonitor monitor) 
@@ -322,34 +351,8 @@ public class Channel
 
         try {
             Document document = translator.translate(sourceDocument);
-
-            File cache = getCache();
-            File parent = cache.getParentFile();
-            if(!parent.exists())
-                parent.mkdirs();
-            
-            SerializerFactory factory = 
-                SerializerFactory.getSerializerFactory(Method.XML);
-            try {
-                FileWriter writer = new FileWriter(getCache()); 
-                Serializer serializer = 
-                    factory.makeSerializer(
-                        writer,
-                        new OutputFormat(document));
-
-                serializer.asDOMSerializer().serialize(document);
-                writer.close();
-                updateSchedule();
-            }
-            catch(IOException ex) {
-                throw new CoreException(
-                    new Status(
-                        IStatus.ERROR,
-                        RSSCore.PLUGIN_ID,
-                        0,
-                        "Could not cache channel contents. File: " + file,
-                        ex));   
-            }
+            cache(document);
+            updateSchedule();
             
             if(monitor != null)
                 monitor.worked(1);
@@ -468,9 +471,9 @@ public class Channel
     }
 
     private void loadContents() throws CoreException {
-        Document document = null;
         File cache = getCache();
-        if(cache.isFile())
+        if(cache.isFile()) {
+            Document document = null;
             try {
                 FileInputStream in = new FileInputStream(cache);
                 DocumentBuilderFactory factory = 
@@ -491,12 +494,21 @@ public class Channel
                 }
             }
             catch(IOException ex) {
-                throwCouldNotParseChannelSourceException(ex);
+                RSSCore.getPlugin().getLog().log(
+                    new Status(
+                        IStatus.ERROR,
+                        RSSCore.PLUGIN_ID,
+                        0,
+                        "Could not parse channel source. File: " + file,
+                        ex));
             }
-    
-        Element channel = document.getDocumentElement();
-        if(CHANNEL.equals(channel.getLocalName()))
-            update(channel, false);
+
+            Element channel;
+            if(document != null && 
+                CHANNEL.equals((channel = document.getDocumentElement()).getLocalName()))
+                
+                update(channel, false);
+        }
     }
     
     private void load_1_1() throws CoreException {
@@ -517,7 +529,7 @@ public class Channel
             throwCouldNotParseChannelSourceException(ex);
         }
         
-        Element channel = document.getDocumentElement();
+        final Element channel = document.getDocumentElement();
         if(CHANNEL.equals(channel.getLocalName())) {
             do {
                 String str = channel.getAttribute(TRANSLATOR_ID);
@@ -545,7 +557,15 @@ public class Channel
                     throwInvalidChannelURL(str, ex);
                 }
                 
-                update(channel, false);
+                cache(document);
+                
+                IWorkspaceRunnable action = new IWorkspaceRunnable() {
+                    public void run(IProgressMonitor monitor) throws CoreException {
+                        update(channel, true);
+                    }
+                };
+
+                ResourcesPlugin.getWorkspace().run(action, null);
 
                 str = channel.getAttribute(UPDATE_INTERVAL);
                 updateInterval = str == null ? null : new Integer(str);
