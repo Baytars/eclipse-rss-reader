@@ -20,6 +20,7 @@ public class RSSPerspective implements IPerspectiveFactory {
     public void createInitialLayout(IPageLayout layout) {
         // Add "new wizards".
         layout.addNewWizardShortcut("com.pnehrer.rss.ui.wizards.NewChannelWizard");
+        layout.addNewWizardShortcut("com.pnehrer.rss.ui.wizards.NewChannelAutoWizard");
         layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.folder");
 
         // Add "show views".
