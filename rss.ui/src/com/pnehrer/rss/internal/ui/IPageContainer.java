@@ -2,7 +2,7 @@
  * Created on Nov 24, 2003
  * Version $Id$
  */
-package com.pnehrer.rss.ui;
+package com.pnehrer.rss.internal.ui;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>

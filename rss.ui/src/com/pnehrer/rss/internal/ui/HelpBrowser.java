@@ -4,6 +4,8 @@
  */
 package com.pnehrer.rss.internal.ui;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,35 +36,9 @@ public class HelpBrowser implements ILinkBrowser {
     private final Map browserFactoryMap = new HashMap();
     
     public HelpBrowser() {
-        IConfigurationElement configElements[] =
-            Platform.getPluginRegistry().getConfigurationElementsFor(
-                "org.eclipse.help",
-                "browser");
-
-        for(int i = 0; i < configElements.length; i++) {
-            if(configElements[i].getName().equals("browser")) {
-                IBrowserFactory factory;
-                try {
-                    factory = (IBrowserFactory)
-                        configElements[i].createExecutableExtension(
-                            "factoryclass");
-                }
-                catch(CoreException e) {
-                    continue;
-                }
-
-                if(!factory.isAvailable())
-                    continue;
-
-                String id = configElements[i].getAttribute("id");
-                BrowserFactoryDescriptor bfd = new BrowserFactoryDescriptor(
-                    id, 
-                    configElements[i].getAttribute("name"),
-                    factory);
-
-                browserFactoryMap.put(id, bfd);
-            }
-        }
+        BrowserFactoryDescriptor[] bfd = getBrowserFactoryDescriptors();
+        for(int i = 0, n = bfd.length; i < n; ++i)
+            browserFactoryMap.put(bfd[i].getId(), bfd[i]);
     }
 
     public void open(IRSSElement rssElement, IWorkbenchPage page) 
@@ -99,6 +75,40 @@ public class HelpBrowser implements ILinkBrowser {
                         ex));
             }
         }
+    }
+    
+    public static BrowserFactoryDescriptor[] getBrowserFactoryDescriptors() {
+        IConfigurationElement configElements[] =
+            Platform.getPluginRegistry().getConfigurationElementsFor(
+                "org.eclipse.help.browser");
+
+        Collection list = new ArrayList(configElements.length / 2 + 1);
+        for(int i = 0; i < configElements.length; i++) {
+            if(configElements[i].getName().equals("browser")) {
+                IBrowserFactory factory;
+                try {
+                    factory = (IBrowserFactory)
+                        configElements[i].createExecutableExtension(
+                            "factoryclass");
+                }
+                catch(CoreException e) {
+                    continue;
+                }
+
+                if(!factory.isAvailable())
+                    continue;
+
+                BrowserFactoryDescriptor bfd = new BrowserFactoryDescriptor(
+                configElements[i].getAttribute("id"), 
+                    configElements[i].getAttribute("name"),
+                    factory);
+                
+                list.add(bfd);
+            }
+        }
+        
+        return (BrowserFactoryDescriptor[])list.toArray(
+            new BrowserFactoryDescriptor[list.size()]);
     }
 
     public static String getHelpBrowser(IRSSElement rssElement) 

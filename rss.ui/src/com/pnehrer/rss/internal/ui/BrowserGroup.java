@@ -14,7 +14,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 
 import com.pnehrer.rss.ui.ILinkBrowserDescriptor;
-import com.pnehrer.rss.ui.IPageContainer;
 import com.pnehrer.rss.ui.RSSUI;
 
 /**

@@ -2,7 +2,7 @@
  * Created on Nov 5, 2003
  * Version $Id$
  */
-package com.pnehrer.rss.ui;
+package com.pnehrer.rss.internal.ui;
 
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.preference.PreferencePage;
@@ -15,8 +15,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import com.pnehrer.rss.core.RSSCore;
-import com.pnehrer.rss.internal.ui.BrowserGroup;
-import com.pnehrer.rss.internal.ui.UpdateIntervalGroup;
+import com.pnehrer.rss.ui.RSSUI;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>

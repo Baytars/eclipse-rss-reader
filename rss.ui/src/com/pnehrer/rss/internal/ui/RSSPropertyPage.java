@@ -2,7 +2,7 @@
  * Created on Nov 16, 2003
  * Version $Id$
  */
-package com.pnehrer.rss.ui;
+package com.pnehrer.rss.internal.ui;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -23,9 +23,7 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IRSSElement;
 import com.pnehrer.rss.core.RSSCore;
-import com.pnehrer.rss.internal.ui.BrowserGroup;
-import com.pnehrer.rss.internal.ui.ChannelPropertyGroup;
-import com.pnehrer.rss.internal.ui.UpdateIntervalGroup;
+import com.pnehrer.rss.ui.RSSUI;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>

@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.help.internal.HelpPlugin;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -238,7 +239,8 @@ public class RSSUI extends AbstractUIPlugin {
                 PLUGIN_ID + ".helpbrowser");
             prefs.setDefault(
                 HelpBrowser.PREF_HELP_BROWSER,
-                "org.eclipse.help.ui.systembrowser");
+                HelpPlugin.getDefault().getPluginPreferences().getString(
+                    "default_browser"));
             prefs.setDefault(
                 BrowserEditor.PREF_BROWSER_EDITOR,
                 getWorkbench().getEditorRegistry().getDefaultEditor().getId());

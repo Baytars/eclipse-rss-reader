@@ -31,7 +31,6 @@ import org.xml.sax.SAXException;
 import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IRegisteredTranslator;
 import com.pnehrer.rss.core.RSSCore;
-import com.pnehrer.rss.ui.IPageContainer;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>

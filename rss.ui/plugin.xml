@@ -119,7 +119,7 @@
             adaptable="true"
             name="RSS"
             icon="xml_16.gif"
-            class="com.pnehrer.rss.ui.RSSPropertyPage"
+            class="com.pnehrer.rss.internal.ui.RSSPropertyPage"
             id="rss.ui.page1">
       </page>
       <page
@@ -127,7 +127,7 @@
             name="RSS"
             icon="xml_16.gif"
             nameFilter="*.rss"
-            class="com.pnehrer.rss.ui.RSSPropertyPage"
+            class="com.pnehrer.rss.internal.ui.RSSPropertyPage"
             id="rss.ui.page2">
       </page>
    </extension>
@@ -135,8 +135,20 @@
          point="org.eclipse.ui.preferencePages">
       <page
             name="RSS"
-            class="com.pnehrer.rss.ui.RSSPreferencePage"
+            class="com.pnehrer.rss.internal.ui.RSSPreferencePage"
             id="com.pnehrer.rss">
+      </page>
+      <page
+            name="Help Browser"
+            category="com.pnehrer.rss"
+            class="com.pnehrer.rss.internal.ui.HelpBrowserPreferencePage"
+            id="com.pnehrer.rss.ui.HelpBrowser">
+      </page>
+      <page
+            name="Browser Editor"
+            category="com.pnehrer.rss"
+            class="com.pnehrer.rss.internal.ui.BrowserEditorPreferencePage"
+            id="com.pnehrer.rss.ui.BrowserEditor">
       </page>
    </extension>
    <extension

@@ -19,8 +19,8 @@ import com.pnehrer.rss.core.IRegisteredTranslator;
 import com.pnehrer.rss.core.RSSCore;
 import com.pnehrer.rss.internal.ui.BrowserGroup;
 import com.pnehrer.rss.internal.ui.ChannelPropertyGroup;
+import com.pnehrer.rss.internal.ui.IPageContainer;
 import com.pnehrer.rss.internal.ui.UpdateIntervalGroup;
-import com.pnehrer.rss.ui.IPageContainer;
 import com.pnehrer.rss.ui.RSSUI;
 
 /**
