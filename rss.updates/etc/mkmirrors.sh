@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ @# -lt 2 ] ; then \
+if [ $# -lt 2 ] ; then \
 	echo usage: `basename $0` SITE_XML FEATURE_MAP
 	exit 1
 fi
