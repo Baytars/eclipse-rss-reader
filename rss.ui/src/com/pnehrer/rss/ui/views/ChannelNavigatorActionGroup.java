@@ -4,6 +4,7 @@
  */
 package com.pnehrer.rss.ui.views;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Iterator;
 
@@ -29,6 +30,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.actions.AddBookmarkAction;
 import org.eclipse.ui.actions.AddTaskAction;
@@ -39,8 +41,8 @@ import org.eclipse.ui.actions.OpenResourceAction;
 import org.eclipse.ui.actions.OpenWithMenu;
 import org.eclipse.ui.actions.RefreshAction;
 import org.eclipse.ui.dialogs.PropertyDialogAction;
+import org.eclipse.ui.ide.IDEActionFactory;
 import org.eclipse.ui.views.navigator.OpenActionGroup;
-import org.eclipse.ui.views.navigator.ResourceNavigatorMessages;
 
 import com.pnehrer.rss.core.IRSSElement;
 import com.pnehrer.rss.ui.RSSUI;
@@ -83,15 +85,14 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
         propertyDialogAction =
             new PropertyDialogAction(shell, navigator.getViewer());
         
-        collapseAllAction = new Action(ResourceNavigatorMessages.getString("CollapseAllAction.title")) {
+        collapseAllAction = new Action("Co&llapse All") {
             public void run() {
                 ChannelNavigatorActionGroup.this.navigator.getViewer().collapseAll();
             }
         };
         
-        collapseAllAction.setToolTipText(ResourceNavigatorMessages.getString("CollapseAllAction.toolTip")); //$NON-NLS-1$
+        collapseAllAction.setToolTipText("Collapse All"); //$NON-NLS-1$
         collapseAllAction.setImageDescriptor(getImageDescriptor("elcl16/collapseall.gif")); //$NON-NLS-1$
-        collapseAllAction.setHoverImageDescriptor(getImageDescriptor("clcl16/collapseall.gif")); //$NON-NLS-1$
 
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         openProjectAction = new OpenResourceAction(shell);
@@ -101,7 +102,6 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
         refreshAction = new RefreshAction(shell);
         refreshAction.setDisabledImageDescriptor(getImageDescriptor("dlcl16/refresh_nav.gif"));//$NON-NLS-1$
         refreshAction.setImageDescriptor(getImageDescriptor("elcl16/refresh_nav.gif"));//$NON-NLS-1$
-        refreshAction.setHoverImageDescriptor(getImageDescriptor("clcl16/refresh_nav.gif"));//$NON-NLS-1$       
         
         ImageRegistry reg = RSSUI.getDefault().getImageRegistry();
         
@@ -136,8 +136,7 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
         IStructuredSelection selection =
             (IStructuredSelection) getContext().getSelection();
         
-        MenuManager newMenu =
-            new MenuManager(ResourceNavigatorMessages.getString("ResourceNavigator.new"));
+        MenuManager newMenu = new MenuManager("Ne&w");
         menu.add(newMenu);
         new NewWizardMenu(newMenu, navigator.getSite().getWorkbenchWindow(), false);
         
@@ -303,23 +302,23 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
 
     public void fillActionBars(IActionBars actionBars) {
         actionBars.setGlobalActionHandler(
-            IWorkbenchActionConstants.PROPERTIES,
+            ActionFactory.PROPERTIES.getId(),
             propertyDialogAction);
         actionBars.setGlobalActionHandler(
-            IWorkbenchActionConstants.BOOKMARK,
+            IDEActionFactory.BOOKMARK.getId(),
             addBookmarkAction);
         actionBars.setGlobalActionHandler(
-            IWorkbenchActionConstants.ADD_TASK,
+            IDEActionFactory.ADD_TASK.getId(),
             addTaskAction);
             
         actionBars.setGlobalActionHandler(
-            IWorkbenchActionConstants.REFRESH,
+            ActionFactory.REFRESH.getId(),
             refreshAction);
         actionBars.setGlobalActionHandler(
-            IWorkbenchActionConstants.OPEN_PROJECT,
+            IDEActionFactory.OPEN_PROJECT.getId(),
             openProjectAction);
         actionBars.setGlobalActionHandler(
-            IWorkbenchActionConstants.CLOSE_PROJECT,
+            IDEActionFactory.CLOSE_PROJECT.getId(),
             closeProjectAction);
         
         IToolBarManager toolBar = actionBars.getToolBarManager();
@@ -359,7 +358,13 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
         			Platform.getBundle(PlatformUI.PLUGIN_ID), 
 					new Path(iconPath + relativePath));
 
-        return ImageDescriptor.createFromURL(url);
+        try {
+			return url == null ? 
+				ImageDescriptor.getMissingImageDescriptor() : 
+					ImageDescriptor.createFromURL(Platform.resolve(url));
+		} catch (IOException e) {
+			return ImageDescriptor.getMissingImageDescriptor();
+		}
     }
 
     public void setShowNewOnly(boolean value) {
