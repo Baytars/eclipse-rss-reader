@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="com.pnehrer.rss.wsad"
+      label="WSAD Extensions for RSS Reader"
+      version="1.0.0"
+      provider-name="Peter Nehrer"
+      image="xml_120.png">
+
+   <description>
+      WSAD-specific Extensions for the RSS Reader.
+   </description>
+
+   <copyright>
+      Copyright (c) 2003 Peter Nehrer. All rights reserved.
+   </copyright>
+
+   <license>
+      This program and the accompanying materials are made available
+under the terms of the Common Public License v1.0, which is available
+at http://www.eclipse.org/legal/cpl-v10.html.
+   </license>
+
+   <requires>
+      <import feature="com.pnehrer.rss" version="1.0.0" patch="true"/>
+   </requires>
+
+   <plugin
+         id="com.pnehrer.rss.ui.wsad"
+         download-size="0"
+         install-size="0"
+         version="1.0.0"
+         fragment="true"/>
+
+</feature>
