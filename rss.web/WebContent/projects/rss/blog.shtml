@@ -24,8 +24,9 @@
 <LI class="menuSelf" style='list-style-image: url("/presence/theme/icons/detail_16.png")'>Blog</LI>
 </UL>
 <!-- /siteedit:navbar -->
-<DIV style="float: right; clear: right; margin: 4px"><SCRIPT type="text/javascript"><!--
+<DIV style="float: right; clear: right; margin: 4px"><script type="text/javascript"><!--
 google_ad_client = "pub-5464643717210088";
+google_alternate_color = "ff6600";
 google_ad_width = 160;
 google_ad_height = 600;
 google_ad_format = "160x600_as";
@@ -35,16 +36,19 @@ google_color_bg = "FFFFFF";
 google_color_link = "FF6600";
 google_color_url = "FF6600";
 google_color_text = "000000";
-//--></SCRIPT>
-<SCRIPT type="text/javascript"
+//--></script>
+<script type="text/javascript"
   src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-</SCRIPT></DIV>
+</script></DIV>
 <DIV class="content"><!-- tpl:put name="body" -->
+<H1>Blog</H1>
 <!--#if expr="$SERVER_NAME=/pnehrer.freeshell.org/" -->
 	<!--#include virtual="/presence/projects/rss/blog.cgi" -->
 <!--#elif expr="$SERVER_NAME=/morphine.sourceforge.net/" -->
 	<!--#include file="blog.html" -->
 <!--#endif -->
+		<HR size="1" noshade>
+		<P>Please use the <A href="http://sourceforge.net/forum/?group_id=63674">project's forums</A> on SourceForge to submit your comments.</P>
 <P><SMALL>This page is powered by <A href="http://blogger.com/" title="BLOGGER">Blogger. <IMG src="http://buttons.blogger.com/bloggerbutton1.gif" border="0" align="middle"/></A></SMALL></P>
 <!-- /tpl:put --></DIV>
 <DIV class="footer"><A href="http://sourceforge.net"><IMG

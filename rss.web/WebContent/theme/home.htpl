@@ -14,8 +14,9 @@
 <DIV class="header"><A href="/presence/projects/rss/index.html"><IMG border="0"
 	src="/presence/theme/icons/rss-banner.png" width="500" height="64" alt="Eclipse RSS Reader"></A></DIV>
 <!-- siteedit:navbar target="topchildren" spec="/presence/theme/leftnav.html" --><!-- /siteedit:navbar -->
-<DIV style="float: right; clear: right; margin: 4px"><SCRIPT type="text/javascript"><!--
+<DIV style="float: right; clear: right; margin: 4px"><script type="text/javascript"><!--
 google_ad_client = "pub-5464643717210088";
+google_alternate_color = "ff6600";
 google_ad_width = 160;
 google_ad_height = 600;
 google_ad_format = "160x600_as";
@@ -25,10 +26,10 @@ google_color_bg = "FFFFFF";
 google_color_link = "FF6600";
 google_color_url = "FF6600";
 google_color_text = "000000";
-//--></SCRIPT>
-<SCRIPT type="text/javascript"
+//--></script>
+<script type="text/javascript"
   src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-</SCRIPT></DIV>
+</script></DIV>
 <DIV class="content"><!-- tpl:insert attribute="body" -->
 	<H1>RSS</H1>
 	<P>This page is under construction.</P>
