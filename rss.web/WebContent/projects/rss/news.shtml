@@ -41,11 +41,13 @@ google_color_text = "000000";
   src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
 </SCRIPT></DIV>
 <DIV class="content"><!-- tpl:put name="body" -->
+	<H1>News</H1>
 <!--#if expr="$SERVER_NAME=/pnehrer.freeshell.org/" -->
 	<!--#include virtual="/presence/projects/rss/news.cgi" -->
 <!--#elif expr="$SERVER_NAME=/morphine.sourceforge.net/" -->
 	<!--#include file="news.html" -->
 <!--#endif -->
+	<P>And of course, this project's news feed is available here: <a href="http://sourceforge.net/export/rss2_projnews.php?group_id=63674"><img src="http://images.sourceforge.net/images/xml.png" border="0" alt="RSS Feed Available" width="36" height="14"/></a></P>
 <!-- /tpl:put --></DIV>
 <DIV class="footer"><A href="http://sourceforge.net"><IMG
 	src="http://sourceforge.net/sflogo.php?group_id=63674&amp;type=2"
