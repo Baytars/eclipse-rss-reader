@@ -69,7 +69,7 @@ public class BrowserEditorPreferencePage
         topLevel.setFont(parent.getFont());
 
         Label label = new Label(topLevel, SWT.SINGLE);
-        label.setText("Select preferred Browser Editor:");
+        label.setText("Select editor to use for browsing RSS links:");
         
         Table table = new Table(
             topLevel, 

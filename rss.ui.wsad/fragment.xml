@@ -5,7 +5,7 @@
    version="1.2.0"
    provider-name="Peter Nehrer"
    plugin-id="com.pnehrer.rss.ui"
-   plugin-version="1.0.0">
+   plugin-version="1.2.0">
 
    <runtime>
       <library name="wsad.jar"/>
@@ -119,7 +119,7 @@
    <extension
          point="com.pnehrer.rss.ui.linkbrowser">
       <linkbrowser
-            label="WSAD&apos;s Web Browser"
+            label="WSAD&apos;s Embedded Web Browser"
             class="com.pnehrer.rss.internal.ui.WebBrowserEditor"
             id="webbrowsereditor">
       </linkbrowser>

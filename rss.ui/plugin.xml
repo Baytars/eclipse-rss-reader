@@ -145,7 +145,7 @@
             id="com.pnehrer.rss.ui.HelpBrowser">
       </page>
       <page
-            name="Browser Editor"
+            name="User-configured Editor"
             category="com.pnehrer.rss"
             class="com.pnehrer.rss.internal.ui.BrowserEditorPreferencePage"
             id="com.pnehrer.rss.ui.BrowserEditor">
@@ -241,7 +241,7 @@
             id="helpbrowser">
       </linkbrowser>
       <linkbrowser
-            label="Browser Editor"
+            label="User-configured Editor"
             class="com.pnehrer.rss.internal.ui.BrowserEditor"
             id="browsereditor">
       </linkbrowser>

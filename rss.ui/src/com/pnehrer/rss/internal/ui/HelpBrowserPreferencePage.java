@@ -46,7 +46,7 @@ public class HelpBrowserPreferencePage
         topLevel.setFont(parent.getFont());
 
         Label label = new Label(topLevel, SWT.SINGLE);
-        label.setText("Select preferred Help Browser:");
+        label.setText("Select help browser to use for opening RSS links:");
         
         browserList = new List(
             topLevel, 

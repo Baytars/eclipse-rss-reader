@@ -15,7 +15,6 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -35,13 +34,13 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionContext;
-import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.ISetSelectionTarget;
 import org.eclipse.ui.part.IShowInSource;
 import org.eclipse.ui.part.IShowInTarget;
 import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
 
+import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IItem;
 import com.pnehrer.rss.core.IRSSElement;
 
@@ -170,10 +169,7 @@ public class ChannelNavigator
         });
         
         viewer.setContentProvider(new ChannelNavigatorContentProvider());
-        viewer.setLabelProvider(
-            new DecoratingLabelProvider(
-                new WorkbenchLabelProvider(), 
-                new ChannelNavigatorLabelDecorator()));
+        viewer.setLabelProvider(new ChannelNavigatorLabelProvider());
 
         viewer.addFilter(new ViewerFilter() {
             public boolean select(
@@ -183,12 +179,14 @@ public class ChannelNavigator
 
                 if(element instanceof IItem)
                     return (((IItem)element).isUpdated() || !isShowNewOnly());
+                else if(element instanceof IChannel)
+                    return (((IChannel)element).hasUpdates() || !isShowNewOnly());
                 else
                     return true;
             }
         });
 
-        viewer.setInput(ResourcesPlugin.getWorkspace());
+        viewer.setInput(ResourcesPlugin.getWorkspace().getRoot());
 
         initContextMenu();
         actionGroup = new ChannelNavigatorActionGroup(this);

@@ -1,0 +1,106 @@
+<!-- tpl:insert page="/theme/home.htpl" --><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type"
+	content="text/html; charset=ANSI_X3.4-1968">
+<META name="GENERATOR" content="IBM WebSphere Studio">
+<META http-equiv="Content-Style-Type" content="text/css">
+<SCRIPT language="JavaScript" src="/presence/theme/updates.js"></SCRIPT>
+<LINK href="/presence/theme/blue.css" rel="stylesheet" type="text/css">
+<LINK rel="shortcut icon" href="/presence/theme/icons/favicon.ico" type="image/x-icon">
+<!-- tpl:put name="head" --><TITLE>Eclipse RSS Reader Features</TITLE><!-- /tpl:put -->
+</HEAD>
+<BODY onload="javascript:return body_onload();">
+<DIV class="extLinkDiv"><SPAN style="vertical-align: bottom"><A class="extLink" href="http://pnehrer.freeshell.org/presence/projects/rss/index.html">pnehrer.com</A> | <A class="extLink" href="http://sourceforge.net/projects/morphine">SourceForge.net</A></SPAN></DIV>
+<DIV class="header"><A href="/presence/projects/rss/index.html"><IMG border="0"
+	src="/presence/theme/icons/rss-banner.png" width="500" height="64" alt="Eclipse RSS Reader"></A></DIV>
+<!-- siteedit:navbar spec="/presence/theme/leftnav.html" target="topchildren" -->
+<DIV class="leftnav">
+<DIV class="taba0"><img src="/presence/theme/icons/navigator_16.png" alt="Home" border="0" class="icon">&nbsp;Home</DIV>
+<DIV class="tabi1"><a href="/presence/projects/rss/news.html"><img src="/presence/theme/icons/detail_16.png" alt="News" border="0" class="icon">&nbsp;News</a></DIV>
+<DIV class="tabi1"><a href="#"><img src="/presence/theme/icons/update_16.png" alt="Download" border="0" class="icon">&nbsp;Download</a></DIV>
+</DIV>
+<!-- /siteedit:navbar -->
+<DIV class="content"><!-- tpl:put name="body" --><H1>Features</H1>
+		<P>At the moment, the Eclipse RSS Reader provides the following functionality:</P>
+		<H2>1. Uniform channel model</H2>
+
+		<P>RSS Feeds of various versions are coerced into a uniform channel
+		model, which is persisted in the workspace. Third-party plug-ins may
+		contribute "translators" for various channel formats. The default
+		implementation handles RSS 0.90, 0.91, 0.92, 1.0, and 2.0. In case
+		more than one registered translator understands a format, the user is
+		given a choice to select one they wish to use. In the future,
+		annonymous elements external to the model will be exposed via untyped
+		property interface (map), thus making them available to third-party
+		plug-ins that may understand and use them in a specific way.</P>
+
+
+		<H2>2. Periodic updates</H2>
+
+		<P>Based on user specification, channels are periodically updated from
+		the source. All viewers are refreshed to display up-to-date
+		information. In the future, markers will be used to identify changes
+		and allow viewers to highlight them.</P>
+
+
+		<H2>3. Property page</H2>
+
+		<P>Individual channel files have a property page with RSS-specific
+		options, such as update interval, source translator, and link browser.</P>
+
+
+		<H2>4. Preference page</H2>
+
+		<P>Preference page allows the user to specify default values for
+		update interval and link browser. In addition, default link browsers
+		(help and editor) have their own category; the former allows the user
+		to select which configured help browser to use, and the latter which
+		editor to use to browse articles.</P>
+
+
+		<H2>5. New Channel wizard</H2>
+
+		<P>Allows users to create new channels from an external RSS feed.</P>
+
+
+		<H2>6. Channel Navigator</H2>
+
+		<P>Allows users to navigate channels in a project/folder hierarchy.</P>
+
+
+		<H2>7. Channel Detail view</H2>
+
+		<P>Allows users to view details of selected channel, such as title and
+		description. Supports sorting by column.</P>
+
+
+		<H2>8. Pluggable Link Browsers</H2>
+
+		<P>Users may choose how to view the contents of news articles. By
+		default, two methods are available: 1). Using the configured Help
+		Browser, or 2). Using a file editor that understands the article
+		format (e.g., HTML). In addition, users of WSAD running under
+		MS-Windows have an option to use its Web Browser Editor. This option
+		is specifiable on a per-channel basis. 3rd-party provides may offer
+		additional methods via the provided extension point.</P>
+		<H2>Future Plans</H2>
+		<P>The following items are currently on my to-do list:</P>
+		<UL>
+			<LI>Highlight items that were modified after an update until they are
+			read.</LI>
+			<LI>Filter HTML tags from title and description fields.</LI>
+			<LI>Expose data external to the core model via mapped properties so
+			other plug-ins may consume them.</LI>
+			<LI>Allow user to select channel image.</LI>
+			<LI>Provide migration path for users of other RSS Readers (e.g.,
+			listen on port 8888 and process AmphetaDesk-compatible URL requests
+			to subscribe to channels).</LI>
+			<LI>Write user documentation, context-sensitive help, JavaDoc... :-)</LI>
+			<LI>Internationalization (externalize strings into resource bundles).
+			</LI>
+		</UL><!-- /tpl:put --></DIV>
+<DIV class="footer">Copyright &copy; 2003, 2004 <a href="mailto:pnehrer@users.sourceforge.net">Peter Nehrer</a>.<br>Version $Id$.</DIV>
+</BODY>
+</HTML>
+<!-- /tpl:insert -->

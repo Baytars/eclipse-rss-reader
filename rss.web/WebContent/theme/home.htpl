@@ -22,6 +22,6 @@
 </DIV>
 <!-- /siteedit:navbar -->
 <DIV class="content"><!-- tpl:insert attribute="body" --><H1>RSS</H1><P>This page is under construction.</P><!-- /tpl:insert --></DIV>
-<DIV class="footer">Copyright &copy; 2003 <a href="mailto:pnehrer@users.sourceforge.net">Peter Nehrer</a>.<br>Version $Id$.</DIV>
+<DIV class="footer">Copyright &copy; 2003, 2004 <a href="mailto:pnehrer@users.sourceforge.net">Peter Nehrer</a>.<br>Version $Id$.</DIV>
 </BODY>
 </HTML>

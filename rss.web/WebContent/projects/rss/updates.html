@@ -78,18 +78,24 @@ function initUpdates() {
 <DIV class="header"><A href="/presence/projects/rss/index.html"><IMG border="0"
 	src="/presence/theme/icons/rss-banner.png" width="500" height="64" alt="Eclipse RSS Reader"></A></DIV>
 <!-- siteedit:navbar spec="/presence/theme/leftnav.html" target="topchildren" -->
-<UL class="menuBox">
-<LI class="menu" style='list-style-image: url("/presence/theme/icons/navigator_16.png")'><A class="leftNavLink" href="/presence/projects/rss/index.html">About</A></LI>
-<LI class="menu" style='list-style-image: url("/presence/theme/icons/detail_16.png")'><A class="leftNavLink" href="/presence/projects/rss/news.html">News</A></LI>
-<LI class="menu" style='list-style-image: url("/presence/theme/icons/update_16.png")'><A class="leftNavLink" href="/presence/projects/rss/download.html">Download</A></LI>
-<LI class="menu" style='list-style-image: url("/presence/theme/icons/browse_16.png")'><A class="leftNavLink" href="/presence/projects/rss/usage.html">Usage</A></LI>
-<LI class="menu" style='list-style-image: url("/presence/theme/icons/view_16.png")'><A class="leftNavLink" href="/presence/projects/rss/screenshots.html">Screenshots</A></LI>
-</UL>
+<DIV class="leftnav">
+<DIV class="taba0"><img src="/presence/theme/icons/navigator_16.png" alt="Home" border="0" class="icon">&nbsp;Home</DIV>
+<DIV class="tabi1"><a href="/presence/projects/rss/news.html"><img src="/presence/theme/icons/detail_16.png" alt="News" border="0" class="icon">&nbsp;News</a></DIV>
+<DIV class="tabi1"><a href="#"><img src="/presence/theme/icons/update_16.png" alt="Download" border="0" class="icon">&nbsp;Download</a></DIV>
+</DIV>
 <!-- /siteedit:navbar -->
 <DIV class="content"><!-- tpl:put name="body" -->
 <H1>Update Site</H1>
-<P>Please follow these steps to download and install a feature using the Update Manager:</P>
-<H2>1. Select Download Mirror</H2>
+<P>This page will allow you to install the Eclipse RSS Reader into your  workbench using the Update Manager. However, you must do the following to make it work:</P>
+
+		<OL>
+			<LI>Make sure the <EM>Web-triggered updates</EM> feature is enabled in your workbench Preferences. To enable this feature, open the Preferences by choosing to Window -&gt; Preferences, then select Install/Update -&gt; Web-triggered Updates. Check <EM>Accept
+			Internet connections for Web-triggered updates</EM>. </LI>
+			<LI>View this page from within the Update Manager. To do that, start the Update Manager by choosing Help -&gt; Software Updates -&gt; Update Manager. Create a new web bookmark and point it to <STRONG>http://morphine.sourceforge.net/updates</STRONG>. In the preview window, click the <EM>Site
+			home page</EM> link.</LI>
+		</OL>
+		<P>To get started, please choose a SourceForge mirror to download from:</P>
+		<H2>1. Select Download Mirror</H2>
 <FORM name="mirrorForm" method="GET" action="updates.html">
 		<!-- tpl:insert page="/mirrors.html" --><!--BEGIN mkmirrorspg.xsl--><TABLE class="tableList" align="center" width="90%" cellspacing="2" cellpadding="2" border="0">
 <CAPTION class="tableList">SourceForge Mirrors</CAPTION>
@@ -137,7 +143,7 @@ function initUpdates() {
 <DIV id="downloadDiv" style="display: none">
 <DIV id="activeUpdateDiv" style="display: none">
 <H2>2. Choose Feature to Install</H2>
-<P>Click on the version number of the feature you wish to install:
+<P>Click the version number of the feature you wish to install:
 <TABLE border="0" cellpadding="2" cellspacing="2" width="90%" align="center" class="tableList">
 	<CAPTION class="tableList">Available Features</CAPTION>
 	<TR>
@@ -146,27 +152,26 @@ function initUpdates() {
 	</TR>
 	<TR>
 		<TD class="oddRowOddColumn">Eclipse RSS Reader</TD>
-		<TD class="oddRowEvenColumn"><A class="tableListLink" href="javascript:download('com.pnehrer.rss_1.1.0')">1.1.0</A></TD>
+		<TD class="oddRowEvenColumn"><A class="tableListLink" href="javascript:download('com.pnehrer.rss_1.2.0')">1.2.0</A></TD>
 	</TR>
 	<TR>
 		<TD class="evenRowOddColumn">IBM WebSphere Studio Extensions for the RSS Reader</TD>
-		<TD class="evenRowEvenColumn"><A class="tableListLink" href="javascript:download('com.pnehrer.rss.wsad_1.1.0')">1.1.0</A></TD>
+		<TD class="evenRowEvenColumn"><A class="tableListLink" href="javascript:download('com.pnehrer.rss.wsad_1.2.0')">1.2.0</A></TD>
 	</TR>
 </TABLE>
 </DIV>
 <DIV id="passiveUpdateDiv" style="display: none">
 <H2>2. Point Your Update Manager to Mirrored Update Site</H2>
 <P>The Web-triggered updates feature seems to be unavailable.
-Please ensure that it is enabled in your Workbench under Preferences -&gt; Install/Update -&gt; Web-triggered Updates.
 If you are not viewing this page from within the Update Manager, please do so.
-Otherwise, please point your Update Manager to the following URL: <STRONG id="passiveURL">http://morphine.sourceforge.net/updates/</STRONG></P>
+Otherwise, please point your Update Manager to the following URL: <STRONG id="passiveURL">http://morphine.sourceforge.net/updates</STRONG></P>
 </DIV>
 <DIV id="unknownUpdateDiv">
 <P>Please wait... Determining availability of Web-triggered updates.</P>
 </DIV>
 </DIV>
 	<!-- /tpl:put --></DIV>
-<DIV class="footer">Copyright &copy; 2003 <a href="mailto:pnehrer@users.sourceforge.net">Peter Nehrer</a>.<br>Version $Id$.</DIV>
+<DIV class="footer">Copyright &copy; 2003, 2004 <a href="mailto:pnehrer@users.sourceforge.net">Peter Nehrer</a>.<br>Version $Id$.</DIV>
 </BODY>
 </HTML>
 <!-- /tpl:insert -->

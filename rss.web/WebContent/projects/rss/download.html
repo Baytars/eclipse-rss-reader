@@ -16,13 +16,11 @@
 <DIV class="header"><A href="/presence/projects/rss/index.html"><IMG border="0"
 	src="/presence/theme/icons/rss-banner.png" width="500" height="64" alt="Eclipse RSS Reader"></A></DIV>
 <!-- siteedit:navbar spec="/presence/theme/leftnav.html" target="topchildren" -->
-<UL class="menuBox">
-<LI class="menu" style='list-style-image: url("/presence/theme/icons/navigator_16.png")'><A class="leftNavLink" href="/presence/projects/rss/index.html">About</A></LI>
-<LI class="menu" style='list-style-image: url("/presence/theme/icons/detail_16.png")'><A class="leftNavLink" href="/presence/projects/rss/news.html">News</A></LI>
-<LI class="menuSelf" style='list-style-image: url("/presence/theme/icons/update_16.png")'>Download</LI>
-<LI class="menu" style='list-style-image: url("/presence/theme/icons/browse_16.png")'><A class="leftNavLink" href="/presence/projects/rss/usage.html">Usage</A></LI>
-<LI class="menu" style='list-style-image: url("/presence/theme/icons/view_16.png")'><A class="leftNavLink" href="/presence/projects/rss/screenshots.html">Screenshots</A></LI>
-</UL>
+<DIV class="leftnav">
+<DIV class="taba0"><img src="/presence/theme/icons/navigator_16.png" alt="Home" border="0" class="icon">&nbsp;Home</DIV>
+<DIV class="tabi1"><a href="/presence/projects/rss/news.html"><img src="/presence/theme/icons/detail_16.png" alt="News" border="0" class="icon">&nbsp;News</a></DIV>
+<DIV class="tabi1"><a href="#"><img src="/presence/theme/icons/update_16.png" alt="Download" border="0" class="icon">&nbsp;Download</a></DIV>
+</DIV>
 <!-- /siteedit:navbar -->
 <DIV class="content"><!-- tpl:put name="body" -->
 		<H1>Download</H1>
@@ -34,12 +32,13 @@
 			Application Developer, v5.1</A></LI>
 			<LI>Web browser with Internet connection</LI>
 		</UL>
+		<P>Note that this version has NOT been developed for, or tested on, Eclipse 3.0.</P>
 		<P>You can use the <A href="http://morphine.sourceforge.net/presence/projects/rss/updates.html">Eclipse Update Manager</A> to install the Eclipse RSS Reader into your Workbench. Alternatively, you can download the <A
-			href="http://prdownloads.sourceforge.net/morphine/com.pnehrer.rss_1.1.0.zip?download">latest feature archive</A> and unzip it into your Eclipse product installation directory (i.e., the one that contains the main <EM>eclipse</EM> subdirectory). If you're using WSAD in MS-Windows you may also <A
-			href="http://prdownloads.sourceforge.net/morphine/com.pnehrer.rss.wsad_1.1.0.zip?download">download
-		an extension</A> that will allow you to view the links in a web browser editor instead of an external browser.</P>
-		<P>This software has been developed and tested on Slackware Linux 9.1 w/ GTK, and MS Windows 2000.</P><!-- /tpl:put --></DIV>
-<DIV class="footer">Copyright &copy; 2003 <a href="mailto:pnehrer@users.sourceforge.net">Peter Nehrer</a>.<br>Version $Id$.</DIV>
+			href="http://prdownloads.sourceforge.net/morphine/com.pnehrer.rss_1.2.0.zip?download">latest feature archive</A> and unzip it into your Eclipse product installation directory (i.e., the one that contains the main <EM>eclipse</EM> subdirectory). If you're using WSAD in MS-Windows you may also <A
+			href="http://prdownloads.sourceforge.net/morphine/com.pnehrer.rss.wsad_1.2.0.zip?download">download
+		an extension</A> that will allow you to view the links in an embedded web browser instead of an external web browser.</P>
+		<P>This software has been developed and tested on Slackware Linux 9.1 with GTK, as well as MS Windows 2000.</P><!-- /tpl:put --></DIV>
+<DIV class="footer">Copyright &copy; 2003, 2004 <a href="mailto:pnehrer@users.sourceforge.net">Peter Nehrer</a>.<br>Version $Id$.</DIV>
 </BODY>
 </HTML>
 <!-- /tpl:insert -->
