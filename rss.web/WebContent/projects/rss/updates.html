@@ -32,10 +32,9 @@ function getMirror() {
 }
 
 function download(feature) {
-	var args = getArgs();
+	var updateURL = getCookie("updateURL");
 	var mirror = getMirror();
-	if(args.updateURL && mirror) {
-		var updateURL = args.updateURL;
+	if(updateURL && mirror) {
 		var callback = updateURL 
 			+ "?server=" + escape("http://morphine.sourceforge.net/updates/" + mirror + "/")
 			+ "&feature=" + escape(feature) 
