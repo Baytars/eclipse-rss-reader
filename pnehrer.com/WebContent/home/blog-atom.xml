@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed version="0.3" xml:lang="en-US" xmlns="http://purl.org/atom/ns#">
+<link href="http://www.blogger.com/atom/8787377" rel="service.post" title="Peter's Blog" type="application/atom+xml"/>
+<link href="http://www.blogger.com/atom/8787377" rel="service.feed" title="Peter's Blog" type="application/atom+xml"/>
+<title mode="escaped" type="text/html">Peter's Blog</title>
+<tagline mode="escaped" type="text/html">What I browse, what I read, what I think... (aaah! Scary...)</tagline>
+<link href="http://pnehrer.freeshell.org/presence/home/blog.shtml" rel="alternate" title="Peter's Blog" type="text/html"/>
+<id>tag:blogger.com,1999:blog-8787377</id>
+<info mode="xml" type="text/html">
+<div xmlns="http://www.w3.org/1999/xhtml">The site is being updated. Please check back later.</div>
+</info>
+</feed>
