@@ -59,7 +59,6 @@ public class NewChannelWizard extends Wizard implements INewWizard {
         newFileCreationPage = new WizardNewFileCreationPage("file", selection);
         newFileCreationPage.setDescription("Specify channel file (*.rss).");
         newFileCreationPage.setTitle("Channel File");
-        newFileCreationPage.setFileName("channel1.rss");
         addPage(newFileCreationPage);
     }
 

@@ -38,7 +38,7 @@
     	<xsl:attribute name="link"><xsl:value-of select="@href"/></xsl:attribute>
     </xsl:template>
 
-    <xsl:template match="atom:tagline[parent::feed]">
+    <xsl:template match="atom:tagline[parent::atom:feed]">
     	<xsl:attribute name="description"><xsl:value-of select="."/></xsl:attribute>
     </xsl:template>
 
@@ -47,7 +47,7 @@
     </xsl:template>
 
     <xsl:template match="atom:modified[parent::atom:feed | parent::atom:entry]">
-    	<xsl:attribute name="date"><xsl:choose><xsl:when test="substring(., string-length(.)) = 'Z'"><xsl:value-of select="substring(., 1, string-length(.) - 1)"></xsl:when><xsl:otherwise><xsl:value-of select="."/></xsl:otherwise></xsl:choose></xsl:attribute>
+    	<xsl:attribute name="date"><xsl:choose><xsl:when test="substring(., string-length(.)) = 'Z'"><xsl:value-of select="substring(., 1, string-length(.) - 1)"/>-0000</xsl:when><xsl:otherwise><xsl:value-of select="."/></xsl:otherwise></xsl:choose></xsl:attribute>
     </xsl:template>
     
     <xsl:template match="text()[parent::atom:feed | parent::atom:entry]"/>

@@ -45,6 +45,10 @@ public class LinkEditorInput
     public IRSSElement getRSSElement() {
         return rssElement;
     }
+    
+    public URL getUrl() {
+    	return url;
+    }
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.IStorageEditorInput#getStorage()

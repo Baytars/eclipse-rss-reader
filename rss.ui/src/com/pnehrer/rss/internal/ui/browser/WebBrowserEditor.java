@@ -244,7 +244,7 @@ public class WebBrowserEditor extends EditorPart {
 	 */
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		if(input instanceof LinkEditorInput) {
-			initialUrl = ((LinkEditorInput)input).getRSSElement().getLink();
+			initialUrl = ((LinkEditorInput)input).getUrl().toExternalForm();
 		}
 		else if(!(input instanceof IStorageEditorInput))
 			throw new PartInitException("Unknown input type.");

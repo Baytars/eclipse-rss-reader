@@ -4,8 +4,6 @@
  */
 package com.pnehrer.rss.internal.core;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.Date;
 
 import org.eclipse.core.resources.IFile;
@@ -131,7 +129,7 @@ public class Item extends PlatformObject implements IItem {
         setDate(
             dateStr == null || dateStr.trim().length() == 0 ? 
                 null : 
-                parseDate(dateStr));
+                Channel.parseDate(dateStr));
     }
 
     public boolean equals(Object other) {
@@ -147,14 +145,5 @@ public class Item extends PlatformObject implements IItem {
     
     public String toString() {
         return link;
-    }
-
-    private Date parseDate(String str) {
-        try {
-            return DateFormat.getInstance().parse(str);
-        }
-        catch(ParseException ex) {
-            return null;
-        }
     }
 }

@@ -5,6 +5,7 @@
 package com.pnehrer.rss.internal.ui.linkbrowser;
 
 import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -31,6 +32,7 @@ public class LinkEditorInputFactory implements IElementFactory {
     private static final String TAG_PATH = "path";
     private static final String TAG_LINK = "link";
     private static final String TAG_KIND = "kind";
+    private static final String TAG_URL = "url";
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.IElementFactory#createElement(org.eclipse.ui.IMemento)
@@ -51,7 +53,8 @@ public class LinkEditorInputFactory implements IElementFactory {
                 try {
                     if("textinput".equals(kind))
                         return new LinkEditorInput(
-                            rssElement.getChannel().getTextInput());
+                            rssElement.getChannel().getTextInput(),
+							new URL(memento.getString(TAG_URL)));
                     else if("image".equals(kind))
                         return new LinkEditorInput(
                             rssElement.getChannel().getImage());
@@ -98,6 +101,9 @@ public class LinkEditorInputFactory implements IElementFactory {
             memento.putString(
                 TAG_KIND, 
                 "textinput");
+            memento.putString(
+            	TAG_URL,
+				input.getUrl().toExternalForm());
         }
     }
 }

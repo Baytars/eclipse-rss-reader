@@ -785,7 +785,7 @@ public class Channel
         return file.toString();
     }
 
-    private Date parseDate(String str) {
+    static Date parseDate(String str) {
         try {
             return DateFormat.getInstance().parse(str);
         }

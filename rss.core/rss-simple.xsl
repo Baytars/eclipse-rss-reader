@@ -35,7 +35,7 @@
     	</xsl:element>
     </xsl:template>
 
-    <xsl:template match="textinput">
+    <xsl:template match="textInput">
     	<xsl:element name="textInput">
     		<xsl:apply-templates select="title | link | description | name"/>
     		<xsl:apply-templates select="@*"/>
@@ -55,7 +55,7 @@
     	<xsl:attribute name="{local-name()}"><xsl:value-of select="."/></xsl:attribute>
     </xsl:template>
 
-    <xsl:template match="node()[parent::textinput][self::title | self::link | self::description | self::name]">
+    <xsl:template match="node()[parent::textInput][self::title | self::link | self::description | self::name]">
     	<xsl:attribute name="{local-name()}"><xsl:value-of select="."/></xsl:attribute>
     </xsl:template>
 
@@ -63,7 +63,7 @@
     	<xsl:attribute name="date"><xsl:value-of select="."/></xsl:attribute>
     </xsl:template>
     
-    <xsl:template match="text()[parent::channel | parent::image | parent::item | parent::textinput]"/>
+    <xsl:template match="text()[parent::channel | parent::image | parent::item | parent::textInput]"/>
     
     <xsl:template match="node() | @*">
     	<xsl:copy>
