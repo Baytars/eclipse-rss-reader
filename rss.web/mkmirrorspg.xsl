@@ -13,11 +13,10 @@
 			<TR>
 				<TH class="tableList">Mirror</TH>
 				<TH class="tableList">Location</TH>
-				<TH class="tableList">Continent</TH>
 			</TR>
 			<xsl:apply-templates select="mirror"/>
 			<TR>
-				<TD colspan="4" align="right"><HR noshade="true" size="1"/><INPUT type="submit" value="Select"/></TD>
+				<TD colspan="2" align="right"><HR noshade="true" size="1"/><INPUT type="submit" value="Select"/></TD>
 			</TR>
 		</TABLE>
 		<xsl:comment>END mkmirrorspg.xsl</xsl:comment>
@@ -42,11 +41,13 @@
 				<xsl:element name="A">
 					<xsl:attribute name="class">tableListLink</xsl:attribute>
 					<xsl:attribute name="href"><xsl:value-of select="@link"/></xsl:attribute>
-					<xsl:element name="IMG">
-						<xsl:attribute name="src"><xsl:value-of select="@image"/></xsl:attribute>
-						<xsl:attribute name="alt"><xsl:value-of select="@id"/></xsl:attribute>
-						<xsl:attribute name="border">0</xsl:attribute>
-					</xsl:element>
+					<xsl:if test="@image">
+						<xsl:element name="IMG">
+							<xsl:attribute name="src"><xsl:value-of select="@image"/></xsl:attribute>
+							<xsl:attribute name="alt"><xsl:value-of select="@id"/></xsl:attribute>
+							<xsl:attribute name="border">0</xsl:attribute>
+						</xsl:element>
+					</xsl:if>
 				</xsl:element>
 			</xsl:element>
 			<xsl:element name="TD">
@@ -57,15 +58,6 @@
 					<xsl:attribute name="class">evenRowEvenColumn</xsl:attribute>
 				</xsl:if>
 				<xsl:value-of select="@location"/>
-			</xsl:element>
-			<xsl:element name="TD">
-				<xsl:if test="count(preceding-sibling::mirror) mod 2 = 0">
-					<xsl:attribute name="class">oddRowOddColumn</xsl:attribute>
-				</xsl:if>
-				<xsl:if test="count(preceding-sibling::mirror) mod 2 = 1">
-					<xsl:attribute name="class">evenRowOddColumn</xsl:attribute>
-				</xsl:if>
-				<xsl:value-of select="@continent"/>
 			</xsl:element>
 		</TR>
 	</xsl:template>

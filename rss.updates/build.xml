@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="rss.updates" default="sfsite">
+	<description>
+		Builds artifacts for a SourceForge-based update site.
+		Author: <a href="pnehrer@freeshell.org">Peter Nehrer</a>
+		Version $Id$
+	</description>
+	
+	<target name="build">
+		<echo>not implemented</echo>
+	</target>
+
+	<target name="init">
+		<mkdir dir="dist"/>
+	</target>
+
+	<target name="sfsite" depends="init">
+		<xslt style="etc/mksfsite.xsl" in="site.xml" out="dist/sfsite.xml">
+			<param name="featureMap" expression="etc/featureMap.xml"/>
+		</xslt>
+	</target>
+	
+	<target name="clean">
+		<delete failonerror="false">
+			<fileset dir="dist"/>
+		</delete>
+	</target>
+</project>
