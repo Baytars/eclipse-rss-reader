@@ -1,11 +1,10 @@
 <!-- tpl:insert page="/theme/home.htpl" --><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML>
 <HEAD>
-<META http-equiv="Content-Type"
-	content="text/html; charset=ANSI_X3.4-1968">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <META name="GENERATOR" content="IBM WebSphere Studio">
 <META http-equiv="Content-Style-Type" content="text/css">
-<SCRIPT language="JavaScript" src="/presence/theme/updates.js"></SCRIPT>
+<SCRIPT language="JavaScript" src="/presence/theme/updates.js" type="text/javascript"></SCRIPT>
 <LINK href="/presence/theme/blue.css" rel="stylesheet" type="text/css">
 <LINK rel="shortcut icon" href="/presence/theme/icons/favicon.ico" type="image/x-icon">
 <!-- tpl:put name="head" -->
@@ -18,7 +17,7 @@
 <!-- siteedit:navbar target="topchildren" spec="/presence/theme/leftnav.html" -->
 <UL class="menuBox">
 <LI class="menuSelf" style='list-style-image: url("/presence/theme/icons/detail_16.png")'>About</LI>
-<LI class="menu" style='list-style-image: url("/presence/theme/icons/item_new_16.gif")'><A class="leftNavLink" href="/presence/projects/rss/news.html">News</A></LI>
+<LI class="menu" style='list-style-image: url("/presence/theme/icons/item_new_16.gif")'><A class="leftNavLink" href="/presence/projects/rss/news.php">News</A></LI>
 <LI class="menu" style='list-style-image: url("/presence/theme/icons/update_16.png")'><A class="leftNavLink" href="/presence/projects/rss/download.html">Download</A></LI>
 <LI class="menu" style='list-style-image: url("/presence/theme/icons/navigator_16.png")'><A class="leftNavLink" href="/presence/projects/rss/features.html">Features</A></LI>
 <LI class="menu" style='list-style-image: url("/presence/theme/icons/browse_16.png")'><A class="leftNavLink" href="/presence/projects/rss/usage.html">Usage</A></LI>
@@ -70,7 +69,24 @@ google_color_text = "000000";
 		questions or suggestions</A> are most welcome.</P>
 		<P><A href="http://sourceforge.net"><IMG
 			src="http://sourceforge.net/sflogo.php?group_id=63674&amp;type=2"
-			width="125" height="37" border="0" alt="SourceForge.net Logo" /></A></P><!-- /tpl:put --></DIV>
+			width="125" height="37" border="0" alt="SourceForge.net Logo" /></A>
+			<A href="http://validator.w3.org/check?uri=referer"><IMG border="0"
+		          src="http://www.w3.org/Icons/valid-html401"
+		          alt="Valid HTML 4.01!" height="31" width="88"></A>
+			<A href="http://jigsaw.w3.org/css-validator/">
+			<IMG style="border:0;width:88px;height:31px"
+			      src="http://jigsaw.w3.org/css-validator/images/vcss" 
+			      alt="Valid CSS!">
+			</A>
+			<A href="http://www.gimp.org/"><IMG alt="Graphics by GIMP"
+				src="http://www.gimp.org/images/gfx_by_gimp.png" border="0"
+				width="90" height="36" /></A>
+		    <A href="http://www.mozilla.org/products/firefox/"
+				title="Get Firefox - Web Browsing Redefined"><IMG
+				src="http://www.mozilla.org/products/firefox/buttons/takebacktheweb_small.png"
+				width="125" height="50" border="0" alt="Get Firefox"></A>
+		</P>
+<!-- /tpl:put --></DIV>
 <DIV class="footer">Copyright &copy; 2003, 2004 <a
 	href="mailto:pnehrer@users.sourceforge.net">Peter Nehrer</a>.<br>
 Version $Id$.</DIV>
