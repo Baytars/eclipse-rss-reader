@@ -4,7 +4,7 @@
 	border-width: 1px;
 	margin: 0px 1px 0px 1px;
 	padding: 4px;
-	background-color: #ccdddd;
+	background-color: #ccccdd;
 }
 
 .tabi2 {
@@ -13,7 +13,7 @@
 	border-width: 1px;
 	margin: 0px 1px 0px 1px;
 	padding: 4px 4px 4px 19px;
-	background-color: #cceeee;
+	background-color: #ccccee;
 }
 
 .tabi3 {
@@ -22,7 +22,7 @@
 	border-width: 1px;
 	margin: 0px 1px 0px 1px;
 	padding: 4px 4px 4px 34px;
-	background-color: #ccffff;
+	background-color: #ccccff;
 }
 
 .taba {
@@ -60,7 +60,7 @@
 	border-style: solid none solid none;
 	border-width: 1px 0px 1px 0px;
 	border-color: black;
-	margin: 8px;
+	margin: 4px 8px 8px 4px;
 	background-color: black;
 	float: left;
 	font-family: sans-serif;

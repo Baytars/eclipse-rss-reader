@@ -11,10 +11,11 @@
 <!-- /siteedit:navtrail -->
 </head>
 <body>
-<A href="/presence/home/index.html"><IMG border="0"
+<a href="/presence/home/index.html"><img border="0"
 	src="/presence/theme/banner.png" width="604" height="45"
-	alt="pnehrer.com"></A>
-<div class="leftnav"><!-- siteedit:navbar target="sibling,self,children,ancestor,topchildren" spec="/presence/theme/leftnav.html" -->
+	alt="pnehrer.com"></a>
+<div class="content">
+<div class="leftnav"><!-- siteedit:navbar target="sibling,self,children,ancestor,topchildren" spec="/presence/theme/leftnav.html" targetlevel="2-3" onlychilden="true" -->
 <div class="tabi1"></div>
 <div class="tabi1"><a href="/presence/home/index.html">Home</a></div>
 <div class="tabi1"><span style="font-weight: bolder"><a href="/presence/projects/index.html">Projects</a></span></div>
@@ -27,8 +28,18 @@
 <div class="tabi2"><a href="/presence/projects/jelly4eclipse/index.html">Eclipse Scripting</a></div>
 <div class="tabi1"></div>
 <!-- /siteedit:navbar --></div>
-<div class="content"><!-- tpl:put name="body" -->Under construction.<!-- /tpl:put --></div>
-<div class="footer"><!-- tpl:insert page="/footer.html" -->Copyright &copy; 2003 <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>.<!-- /tpl:insert --><br>Last modified on <!-- tpl:put name="lastmodified" -->9/22/03<!-- /tpl:put -->.</div>
+<!-- tpl:put name="body" -->
+		<H1>Castor Plug-in for Eclipse</H1>
+		<P>The goal of this project is to provide support for the <A
+			href="http://castor.eclipse.org">Castor</A> framework and tools within the <A
+			href="http://www.eclipse.org">Eclipse</A> platform. Some of the project's short-term objectives include:</P>
+		<OL>
+			<LI>Exposing Castor Source Generator as an incremental project builder.</LI>
+			<LI>Providing a visual editor for Castor's XML Binding files, which are used during generation of XML marshalling code.</LI>
+			<LI>Providing a visual editor for Castor's XML Mapping files, which are used during marshalling and demarshalling of Java objects to and from XML.</LI>
+		</OL>
+		<P>Please visit the project's <A href="news.html">News</A> page to learn about the latest developments.</P><!-- /tpl:put --></div>
+<div class="footer"><!-- tpl:insert page="/footer.html" -->Copyright &copy; 2003 <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>.<br>Version $Id$.<!-- /tpl:insert --></div>
 </body>
 </html>
 <!-- /tpl:insert -->
