@@ -40,20 +40,24 @@ public class ChannelManager {
     }
 
     void scheduleTask(TimerTask task, Date lastUpdated, int updateInterval) {
-        if(timerCancelled)
-            return;
-            
-        Calendar cal = Calendar.getInstance();
-        if(lastUpdated != null)
-            cal.setTime(lastUpdated);
-
-        cal.add(Calendar.MINUTE, updateInterval);
-        timer.schedule(task, cal.getTime());
+    	synchronized(timer) {
+	        if(timerCancelled)
+	            return;
+	            
+	        Calendar cal = Calendar.getInstance();
+	        if(lastUpdated != null)
+	            cal.setTime(lastUpdated);
+	
+	        cal.add(Calendar.MINUTE, updateInterval);
+	        timer.schedule(task, cal.getTime());
+    	}
     }
     
-    public synchronized void cancelPendingTasks() {
-        timer.cancel();
-        timerCancelled = true;
+    public void cancelPendingTasks() {
+    	synchronized(timer) {
+	        timer.cancel();
+	        timerCancelled = true;
+    	}
     }
     
     public synchronized Channel getChannel(IFile file) throws CoreException {

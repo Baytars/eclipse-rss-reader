@@ -42,6 +42,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -99,17 +100,15 @@ public class Channel
     private final List items = new ArrayList();
     private TextInput textInput;
     
-    private long selfModificationStamp = IFile.NULL_STAMP;
-
+    private long selfModificationStamp;
+    
     private Channel(IFile file) {
         this.file = file;
-        activate();
     }
     
     private Channel(IFile file, IRegisteredTranslator translator) {
         this.file = file;
         this.translator = translator;
-        activate();
     }
     
     private void activate() {
@@ -118,8 +117,10 @@ public class Channel
     
     private void passivate() {
         synchronized(this) {
-            if(updateTask != null)
+            if(updateTask != null) {
                 updateTask.cancel();
+                updateTask = null;
+            }
         }
             
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
@@ -313,7 +314,7 @@ public class Channel
                 t));
     }
     
-    private void cache(Document document) throws CoreException {
+    private synchronized void cache(Document document) throws CoreException {
         File cache = getCache();
         File parent = cache.getParentFile();
         if(!parent.exists())
@@ -326,6 +327,7 @@ public class Channel
 	        serializer.transform(
 	        		new DOMSource(document),
 	        		new StreamResult(cache));
+	        updateSchedule();
 		} 
         catch(TransformerException ex) {
             throw new CoreException(
@@ -338,9 +340,7 @@ public class Channel
 		}
     }
     
-    private synchronized void update(
-        Document sourceDocument,
-        IProgressMonitor monitor) 
+    private void update(Document sourceDocument, IProgressMonitor monitor) 
         throws CoreException {
             
         if(monitor != null)
@@ -349,7 +349,6 @@ public class Channel
         try {
             Document document = translator.translate(sourceDocument);
             cache(document);
-            updateSchedule();
             
             if(monitor != null)
                 monitor.worked(1);
@@ -565,8 +564,6 @@ public class Channel
                     throwInvalidChannelURL(str, ex);
                 }
                 
-                cache(document);
-                
                 IWorkspaceRunnable action = new IWorkspaceRunnable() {
                     public void run(IProgressMonitor monitor) throws CoreException {
                         update(channel, true);
@@ -586,7 +583,9 @@ public class Channel
         throwInvalidChannelFile();
     }
     
-    private void update(Element channel, boolean processChanges) 
+    private synchronized void update(
+    	Element channel, 
+		boolean processChanges) 
         throws CoreException {
             
         title = channel.getAttribute(TITLE);
@@ -691,19 +690,28 @@ public class Channel
                     "Could not save channel properties to file " + file,
                     ex));
         }
-        
-        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-        if(file.exists())
-            file.setContents(in, false, true, monitor);
-        else
-            file.create(in, false, monitor);
 
-        selfModificationStamp = file.getModificationStamp();
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+        workspace.removeResourceChangeListener(this);
+        try {
+	        if(file.exists())
+	            file.setContents(in, false, true, monitor);
+	        else
+	            file.create(in, false, monitor);
+	        
+	        selfModificationStamp = file.getModificationStamp();
+        }
+        finally {
+        	workspace.addResourceChangeListener(this);
+        }
     }
     
-    private void updateSchedule() {
-        if(updateTask != null)
+    private synchronized void updateSchedule() {
+        if(updateTask != null) {
             updateTask.cancel();
+            updateTask = null;
+        }
 
         if(updateInterval != null) {
             updateTask = new UpdateTask();
@@ -734,9 +742,9 @@ public class Channel
                         switch(delta.getKind()) {
                             case IResourceDelta.CHANGED:
                                 if((delta.getFlags() & IResourceDelta.CONTENT) != 0
-                                    && file.getModificationStamp() > selfModificationStamp)
+                                	&& selfModificationStamp != file.getModificationStamp())
 
-                                    loadProperties(true);
+                                	loadProperties(true);
                                             
                                 break;
                         
@@ -863,13 +871,13 @@ public class Channel
                 monitor == null ?
                     null :
                     new SubProgressMonitor(monitor, 1));
-            channel.updateSchedule();
         }
         finally {
             if(monitor != null)
                 monitor.done();
         }
 
+        channel.activate();
         return channel;
     }
     
@@ -905,6 +913,7 @@ public class Channel
             channel.save(null);
         }
 
+        channel.activate();
         return channel;
     }
     
