@@ -13,6 +13,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -31,6 +35,7 @@ import org.xml.sax.SAXException;
 import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IRegisteredTranslator;
 import com.pnehrer.rss.core.RSSCore;
+import com.pnehrer.rss.ui.RSSUI;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
@@ -50,6 +55,7 @@ public class ChannelPropertyGroup {
     private IRegisteredTranslator[] translators;
     private List translatorList;
     private String defaultTranslatorId;
+    private Button flushAuthButton;
     private short complete;
 
     public ChannelPropertyGroup(IPageContainer pageContainer) {
@@ -137,29 +143,6 @@ public class ChannelPropertyGroup {
         layoutData.widthHint = 200;
         layoutData.horizontalSpan = columns - 2;
         urlText.setLayoutData(layoutData);
-        urlText.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                if(urlText.getText().trim().length() == 0) {
-                    url = null;
-                    setComplete(URL_COMPLETE, false);
-                    pageContainer.setErrorMessage("Channel URL must be a valid URL.");
-                }
-                else {
-                    try {
-                        url = new URL(urlText.getText().trim());
-                        loadButton.setEnabled(true);
-                        setComplete(URL_COMPLETE, true);
-                        pageContainer.setErrorMessage(null);
-                    }
-                    catch(MalformedURLException ex) {
-                        url = null;
-                        loadButton.setEnabled(false);
-                        setComplete(URL_COMPLETE, false);
-                        pageContainer.setErrorMessage("Channel URL must be a valid URL.");
-                    }
-                }
-            }
-        });
             
         loadButton = new Button(topLevel, SWT.PUSH | SWT.BORDER);
         layoutData = new GridData(
@@ -207,6 +190,84 @@ public class ChannelPropertyGroup {
 
         if(defaultTranslatorId != null) 
             selectTranslator(defaultTranslatorId);
+        
+        flushAuthButton = new Button(topLevel, SWT.PUSH);
+        layoutData = new GridData(GridData.VERTICAL_ALIGN_FILL);
+        layoutData.horizontalSpan = columns;
+        flushAuthButton.setLayoutData(layoutData);
+        flushAuthButton.setFont(topLevel.getFont());
+        flushAuthButton.setText("Flush Cached Authentication Credentials");
+        flushAuthButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				if (url == null)
+					return;
+				
+				URL authURL;
+				try {
+					authURL = new URL(
+							url.getProtocol(), 
+							url.getHost(), 
+							url.getPort() == -1 
+								? url.getDefaultPort() 
+								: url.getPort(), 
+								"/");
+				} catch (MalformedURLException ex) {
+					// for now, ignore
+					return;
+				}
+				
+				String realm = Platform.getProtectionSpace(authURL);
+				try {
+					Platform.flushAuthorizationInfo(authURL, realm, "");
+					MessageDialog.openInformation(
+							flushAuthButton.getShell(),
+							"Credentials Flushed",
+							"Your cached authentication credentials have been removed." +
+							" You must restart your workbench for this to take effect.");
+				} catch (CoreException ex) {
+					RSSUI.getDefault().getLog().log(
+							new Status(
+									Status.ERROR,
+									RSSUI.PLUGIN_ID,
+									0,
+									"Could not flush cached authentication credentials.",
+									ex));
+					ErrorDialog.openError(
+							flushAuthButton.getShell(), 
+							"Authentication Error", 
+							"Could not flush cached authentication credentials.", 
+							ex.getStatus());
+				}
+			}
+        });
+
+        urlText.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                if(urlText.getText().trim().length() == 0) {
+                    url = null;
+                    loadButton.setEnabled(false);
+                    flushAuthButton.setEnabled(false);
+                    setComplete(URL_COMPLETE, false);
+                    pageContainer.setErrorMessage("Channel URL must be a valid URL.");
+                }
+                else {
+                    try {
+                        url = new URL(urlText.getText().trim());
+                        loadButton.setEnabled(true);
+                        flushAuthButton.setEnabled(true);
+                        setComplete(URL_COMPLETE, true);
+                        pageContainer.setErrorMessage(null);
+                    }
+                    catch(MalformedURLException ex) {
+                        url = null;
+                        loadButton.setEnabled(false);
+                        flushAuthButton.setEnabled(false);
+                        setComplete(URL_COMPLETE, false);
+                        pageContainer.setErrorMessage("Channel URL must be a valid URL.");
+                    }
+                }
+            }
+        });
     }
     
     public void setFocus() {
