@@ -1,5 +1,5 @@
 #Eclipse RSS Reader v1.2.0
-#Fri Oct 22 09:37:59 EDT 2004
+#Mon Oct 25 08:16:27 EDT 2004
 translatorId=com.pnehrer.rss.core.default
 url=http\://pnehrer.freeshell.org/socialphysics.xml
-updateInterval=30
+updateInterval=60
