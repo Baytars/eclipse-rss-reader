@@ -1,0 +1,5 @@
+#Eclipse RSS Reader v1.2.0
+#Sun Apr 04 17:47:41 EDT 2004
+translatorId=com.pnehrer.rss.core.default
+url=http\://jroller.com/rss
+updateInterval=30

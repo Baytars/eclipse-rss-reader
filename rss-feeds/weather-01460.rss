@@ -1,0 +1,5 @@
+#Eclipse RSS Reader v1.2.0
+#Mon May 10 21:05:40 EDT 2004
+translatorId=com.pnehrer.rss.core.default
+url=http\://www.rssweather.com/rss.php?hwvUT\=F&hwvUP\=in&hwvUS\=mph&hwvUV\=mi&hwvCCChange\=forecast&hwvSF\=Y&maxdays\=2&daysonly\=2&hwvStyle\=pt&hwvTTL\=60&place\=littleton&state\=ma&zipcode\=01460&country\=us&county\=25017&zone\=MAZ005&alt\=rss20a
+updateInterval=60
