@@ -68,8 +68,8 @@ public class BugListTranslator extends XSLBasedTranslator {
 			StringTokenizer t = new StringTokenizer(content, "&");
 			while (t.hasMoreTokens()) {
 				String[] pair = t.nextToken().split("=");
-				if ("content".equals(pair[0]))
-					channel.setAttribute(ATTR_TITLE, "Bugzilla query: " + pair[1]);
+				if ("content".equals(pair[0]) && pair.length > 1)
+					channel.setAttribute(ATTR_TITLE, pair[1]);
 			}
 		} catch (MalformedURLException e) {
 			// ignore
