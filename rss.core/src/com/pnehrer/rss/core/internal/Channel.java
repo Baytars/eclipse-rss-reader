@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TimerTask;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -33,6 +34,7 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.PlatformObject;
@@ -48,6 +50,7 @@ import com.pnehrer.rss.core.IImage;
 import com.pnehrer.rss.core.IItem;
 import com.pnehrer.rss.core.ITextInput;
 import com.pnehrer.rss.core.RSSCore;
+import com.pnehrer.rss.core.SourceTranslatorDelegate;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
@@ -58,6 +61,7 @@ public class Channel
         IResourceChangeListener {
     
     private static final String CHANNEL = "channel";
+    private static final String TRANSLATOR_ID = "translatorId";
     public static final String URL = "url";
     public static final String UPDATE_INTERVAL = "updateInterval";
     public static final String TITLE = "title";
@@ -71,8 +75,12 @@ public class Channel
 
     private final PropertyChangeSupport propertyChangeSupport = 
         new PropertyChangeSupport(this);
+        
+    private UpdateTask updateTask;
+    private final Object updateTaskLock = new Object();
 
     private final IFile file;
+    private SourceTranslatorDelegate translator;
     private URL url;
     private Integer updateInterval;
     private String title;
@@ -88,6 +96,17 @@ public class Channel
 
     private Channel(IFile file) {
         this.file = file;
+        startListening();
+    }
+    
+    private Channel(IFile file, SourceTranslatorDelegate translator) {
+        this.file = file;
+        this.translator = translator;
+        startListening();
+    }
+    
+    private void startListening() {
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
     }
 
     /* (non-Javadoc)
@@ -223,7 +242,53 @@ public class Channel
             newValue);
     }
     
-    public void update(Document document) throws CoreException {
+    public void update() throws CoreException {
+        if(translator != null && url != null) {
+            DocumentBuilderFactory factory = 
+                DocumentBuilderFactory.newInstance();
+            Document document;
+            try {
+                DocumentBuilder builder = factory.newDocumentBuilder();
+                document = builder.parse(url.openStream());
+            }
+            catch(ParserConfigurationException ex) {
+                throw new CoreException(
+                    new Status(
+                        IStatus.ERROR,
+                        RSSCore.PLUGIN_ID,
+                        0,
+                        "could not parse channel source",
+                        ex));
+            }
+            catch(SAXException ex) {
+                throw new CoreException(
+                    new Status(
+                        IStatus.ERROR,
+                        RSSCore.PLUGIN_ID,
+                        0,
+                        "could not parse channel source",
+                        ex));
+            }
+            catch(IOException ex) {
+                throw new CoreException(
+                    new Status(
+                        IStatus.ERROR,
+                        RSSCore.PLUGIN_ID,
+                        0,
+                        "could not parse channel source",
+                        ex));
+            }
+            
+            update(document);
+        }
+    }
+    
+    private synchronized void update(Document sourceDocument) 
+        throws CoreException {
+            
+        Document document = 
+            translator.getTranslator().translate(sourceDocument);
+        
         Element channel = document.getDocumentElement();
         if(CHANNEL.equals(channel.getTagName())) {
             update(channel);
@@ -236,13 +301,13 @@ public class Channel
                     IStatus.ERROR,
                     RSSCore.PLUGIN_ID,
                     0,
-                    "invalid channel source document",
+                    "invalid channel format",
                     null));
         }
     }
     
-    private void load() throws CoreException {
-        DocumentBuilderFactory factory  = DocumentBuilderFactory.newInstance();
+    private synchronized void load() throws CoreException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         Document document;
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -278,36 +343,60 @@ public class Channel
         
         Element channel = document.getDocumentElement();
         if(CHANNEL.equals(channel.getTagName())) {
-            update(channel);
-        }
-        else {
-            throw new CoreException(
-                new Status(
-                    IStatus.ERROR,
-                    RSSCore.PLUGIN_ID,
-                    0,
-                    "invalid channel file",
-                    null));
-        }
-    }
+            do {
+                String str = channel.getAttribute(TRANSLATOR_ID);
+                if(str == null)
+                    break;
+                    
+                if(translator == null || !str.equals(translator.getId())) 
+                    translator = RSSCore.getPlugin().getTranslator(str); 
+
+                if(translator == null)
+                    throw new CoreException(
+                        new Status(
+                            IStatus.ERROR,
+                            RSSCore.PLUGIN_ID,
+                            0,
+                            "could not find source translator with id: " + str,
+                            null));
+
+                str = channel.getAttribute(URL);
+                if(str == null)
+                    break;
+
+                try {
+                    setURL(new URL(str));
+                }
+                catch(MalformedURLException ex) {
+                    throw new CoreException(
+                        new Status(
+                            IStatus.ERROR,
+                            RSSCore.PLUGIN_ID,
+                            0,
+                            "invalid channel url: " + str,
+                            ex));
+                }
     
-    private synchronized void update(Element channel) 
-        throws CoreException {
-            
-        try {
-            setURL(new URL(channel.getAttribute(URL)));
-        }
-        catch(MalformedURLException ex) {
-            throw new CoreException(
-                new Status(
-                    IStatus.ERROR,
-                    RSSCore.PLUGIN_ID,
-                    0,
-                    "invalid channel url",
-                    ex));
+                str = channel.getAttribute(UPDATE_INTERVAL);
+                setUpdateInterval(str == null ? null : new Integer(str));
+                update(channel);
+                return;
+            }
+            while(false);
         }
 
-        setUpdateInterval(new Integer(channel.getAttribute(UPDATE_INTERVAL)));
+        throw new CoreException(
+            new Status(
+                IStatus.ERROR,
+                RSSCore.PLUGIN_ID,
+                0,
+                "invalid channel file",
+                null));
+    }
+    
+    private void update(Element channel) 
+        throws CoreException {
+            
         setTitle(channel.getAttribute(TITLE));
         setLink(channel.getAttribute(LINK));
         setDescription(channel.getAttribute(DESCRIPTION));
@@ -378,6 +467,7 @@ public class Channel
         
         Element channel = document.createElement(CHANNEL);
         document.appendChild(channel);
+        channel.setAttribute(TRANSLATOR_ID, translator.getId());
         channel.setAttribute(URL, url.toExternalForm());
         if(updateInterval != null)
             channel.setAttribute(UPDATE_INTERVAL, updateInterval.toString());
@@ -433,6 +523,18 @@ public class Channel
         }
     }
     
+    private void updateUpdateSchedule() {
+        synchronized(updateTaskLock) {
+            if(updateTask != null)
+                updateTask.cancel();
+
+            if(updateInterval != null) {
+                updateTask = new UpdateTask();
+                // TODO Schedule new update task!
+            }
+        }
+    }
+    
     /* (non-Javadoc)
      * @see com.pnehrer.rss.core.IChannel#addPropertyChangeListener(java.beans.PropertyChangeListener)
      */
@@ -451,6 +553,9 @@ public class Channel
      * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
      */
     public void resourceChanged(IResourceChangeEvent event) {
+        if(ignoreResourceChange)
+            return;
+            
         if(event.getType() == IResourceChangeEvent.POST_CHANGE) {
             try {
                 if(event.getDelta() == null) {
@@ -524,10 +629,13 @@ public class Channel
         }
     }
     
-    public static Channel create(IFile file, Document document) 
+    public static Channel create(
+        IFile file, 
+        SourceTranslatorDelegate translator,
+        Document document) 
         throws CoreException {
             
-        Channel channel = new Channel(file);
+        Channel channel = new Channel(file, translator);
         channel.update(document);
         return channel;
     }
@@ -536,5 +644,26 @@ public class Channel
         Channel channel = new Channel(file);
         channel.load();
         return channel;
+    }
+    
+    private class UpdateTask extends TimerTask {
+
+        /* (non-Javadoc)
+         * @see java.util.TimerTask#run()
+         */
+        public void run() {
+            try {
+                update();
+            }
+            catch(CoreException ex) {
+                RSSCore.getPlugin().getLog().log(
+                    new Status(
+                        IStatus.ERROR,
+                        RSSCore.PLUGIN_ID,
+                        0,
+                        "could not update channel",
+                        ex));
+            }
+        }
     }
 }
