@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type"
+	content="text/html; charset=ANSI_X3.4-1968">
+<META name="GENERATOR" content="IBM WebSphere Studio">
+<META http-equiv="Content-Style-Type" content="text/css">
+<LINK href="/presence/theme/blue.css" rel="stylesheet" type="text/css">
+<!-- tpl:insert attribute="head" --><TITLE>RSS</TITLE><!-- /tpl:insert -->
+</HEAD>
+<BODY>
+<DIV class="extLinkDiv"><SPAN style="vertical-align: bottom"><A class="extLink" href="http://pnehrer.freeshell.org/presence/projects/rss">pnehrer.com</A> | <A class="extLink" href="http://sourceforge.net/projects/morphine">SourceForge.net</A></SPAN></DIV>
+<DIV class="header"><IMG border="0"
+	src="/presence/theme/icons/rss-banner.png" width="500" height="64" alt="Eclipse RSS Reader"></DIV>
+<!-- siteedit:navbar target="sibling,self" spec="/presence/theme/leftnav.html" -->
+<DIV class="leftnav">
+<DIV class="taba0"><img src="/presence/theme/icons/navigator_16.png" alt="Home" border="0" class="icon">&nbsp;Home</DIV>
+<DIV class="tabi1"><a href="/presence/projects/rss/news.html"><img src="/presence/theme/icons/detail_16.png" alt="News" border="0" class="icon">&nbsp;News</a></DIV>
+<DIV class="tabi1"><a href="#"><img src="/presence/theme/icons/update_16.png" alt="Download" border="0" class="icon">&nbsp;Download</a></DIV>
+</DIV>
+<!-- /siteedit:navbar -->
+<DIV class="content"><!-- tpl:insert attribute="body" -->This page is under construction.<!-- /tpl:insert --></DIV>
+<DIV class="footer">Copyright &copy; 2003 <a href="mailto:pnehrer@users.sourceforge.net">Peter Nehrer</a>.<br>Version $Id$.</DIV>
+</BODY>
+</HTML>
