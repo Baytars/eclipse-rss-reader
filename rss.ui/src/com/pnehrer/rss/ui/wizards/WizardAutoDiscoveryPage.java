@@ -9,6 +9,7 @@ package com.pnehrer.rss.ui.wizards;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -32,8 +33,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
+import org.htmlparser.Node;
 import org.htmlparser.Parser;
 import org.htmlparser.filters.TagNameFilter;
+import org.htmlparser.lexer.Page;
+import org.htmlparser.tags.BaseHrefTag;
 import org.htmlparser.tags.Tag;
 import org.htmlparser.util.LinkProcessor;
 import org.htmlparser.util.NodeList;
@@ -48,6 +52,11 @@ import org.htmlparser.util.SimpleNodeIterator;
  */
 public class WizardAutoDiscoveryPage extends WizardPage {
 
+	private static final String RSS_TYPE = "application/rss+xml";
+	private static final String ATOM_TYPE = "application/atom+xml";
+	private static final String[] RSS_RELS = {"alternate"};
+	private static final String[] ATOM_RELS = {"alternate", "service.feed"};
+	
 	private Text urlText;
 	private TableViewer feedList;
 	
@@ -74,7 +83,7 @@ public class WizardAutoDiscoveryPage extends WizardPage {
         topLevel.setFont(parent.getFont());
 
         Label label = new Label(topLevel, SWT.LEFT);
-        label.setText("URL:");
+        label.setText("Web Page URL:");
         label.setLayoutData(
         	new GridData(
         		GridData.HORIZONTAL_ALIGN_END | GridData.VERTICAL_ALIGN_CENTER));
@@ -101,23 +110,37 @@ public class WizardAutoDiscoveryPage extends WizardPage {
 			public void widgetSelected(SelectionEvent e) {
 				try {
 					Parser parser = new Parser(urlText.getText().trim());
+					Page page = parser.getLexer().getPage();
+					String pageUrl = page.getUrl();
+					Node[] bases = parser.extractAllNodesThatAre(BaseHrefTag.class);
+					if (bases != null && bases.length > 0)
+						((BaseHrefTag)bases[0]).doSemanticAction();
+
+					parser.reset();
 					NodeList nodes = 
 						parser.extractAllNodesThatMatch(
 							new TagNameFilter("link"));
+					LinkProcessor linkProcessor = page.getLinkProcessor();
 					ArrayList list = new ArrayList();
 					for (SimpleNodeIterator i = nodes.elements(); i.hasMoreNodes();) {
 						Tag tag = (Tag)i.nextNode();
-						String rel = tag.getAttribute("rel");
 						String type = tag.getAttribute("type");
-						if ("alternate".equalsIgnoreCase(rel)
-							&& ("application/rss+xml".equalsIgnoreCase(type)
-								|| "application/atom+xml".equalsIgnoreCase(type))) {
-							
-							list.add(
-								new Link(
-									tag.getAttribute("title"), 
-									tag.getAttribute("href")));
+						if (RSS_TYPE.equalsIgnoreCase(type)) {
+							if (!containsKeyword(tag.getAttribute("rel"), RSS_RELS))
+								continue;
 						}
+						else if (ATOM_TYPE.equalsIgnoreCase(type)) {
+							if (!containsKeyword(tag.getAttribute("rel"), ATOM_RELS))
+								continue;
+						}
+						else
+							continue;
+
+						String href = tag.getAttribute("href"); 
+						list.add(
+							new Link(
+								tag.getAttribute("title"), 
+								linkProcessor.extract(href, pageUrl)));
 					}
 					
 					feedList.setInput(list.toArray());
@@ -198,12 +221,8 @@ public class WizardAutoDiscoveryPage extends WizardPage {
 				(WizardChannelOptionsPage)nextPage;
 			Link link = (Link)
 				((IStructuredSelection)feedList.getSelection()).getFirstElement();
-			String href = link.href;
-			if (!LinkProcessor.isURL(href))
-				href = LinkProcessor.removeLastSlash(urlText.getText().trim()) + href;
-
 			try {
-				channelOptionsPage.setURL(new URL(href));
+				channelOptionsPage.setURL(new URL(link.url));
 			} 
 			catch (MalformedURLException e) {
 				MessageDialog.openError(
@@ -221,26 +240,38 @@ public class WizardAutoDiscoveryPage extends WizardPage {
     	
     	private final String title;
     	
-    	private final String href;
+    	private final String url;
     	
-    	public Link(String title, String href) {
+    	public Link(String title, String url) {
     		this.title = title;
-    		this.href = href;
+    		this.url = url;
     	}
     	
     	public boolean equals(Object other) {
     		if (other instanceof Link)
-    			return href.equals(((Link)other).href);
+    			return url.equals(((Link)other).url);
     		else
     			return false;
     	}
     	
     	public int hashCode() {
-    		return href.hashCode();
+    		return url.hashCode();
     	}
     	
     	public String toString() {
-    		return title == null ? href : title;
+    		return title == null ? url : title;
     	}
+    }
+
+    private static boolean containsKeyword(String list, String[] keywords) {   	
+		StringTokenizer t = new StringTokenizer(list, " ");
+		while (t.hasMoreTokens()) {
+			String token = t.nextToken();
+			for (int i = 0; i < keywords.length; ++i) 
+				if (keywords[i].equalsIgnoreCase(token))
+					return true;
+		}
+			
+		return false;
     }
 }
