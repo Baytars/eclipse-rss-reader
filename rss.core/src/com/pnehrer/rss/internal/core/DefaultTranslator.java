@@ -5,6 +5,8 @@
 package com.pnehrer.rss.internal.core;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -142,6 +144,16 @@ public class DefaultTranslator implements ITranslator {
 		if (channel.hasAttribute("description"))
 			stripHTML(channel, "description");
 
+		URI baseUri;
+		if (channel.hasAttribute("link"))
+			try {
+				baseUri = new URI(channel.getAttribute("link"));
+			} catch (URISyntaxException e) {
+				baseUri = null;
+			}
+		else
+			baseUri = null;
+		
 		NodeList list = channel.getElementsByTagName("item");
 		for (int i = 0, n = list.getLength(); i < n; ++i) {
 			Element element = (Element) list.item(i);
@@ -150,6 +162,11 @@ public class DefaultTranslator implements ITranslator {
 
 			if (element.hasAttribute("description"))
 				stripHTML(element, "description");
+			
+			if (baseUri != null && element.hasAttribute("link")) {
+				URI itemUri = baseUri.resolve(element.getAttribute("link"));
+				element.setAttribute("link", itemUri.toString());
+			}
 		}
 
 		return document;
