@@ -23,6 +23,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.help.browser.IBrowserFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import com.pnehrer.rss.core.IChannel;
@@ -50,6 +52,12 @@ public class RSSUI extends AbstractUIPlugin {
     public static final String PREF_BROWSER = "browser";
     private static final QualifiedName PROP_BROWSER = 
         new QualifiedName(PLUGIN_ID, PREF_BROWSER);
+    public static final String PREF_EDITOR = "editor";
+    private static final QualifiedName PROP_EDITOR =
+        new QualifiedName(PLUGIN_ID, PREF_EDITOR);
+    public static final String PREF_OPEN_LINK = "openLink";
+    private static final QualifiedName PROP_OPEN_LINK =
+        new QualifiedName(PLUGIN_ID, PREF_OPEN_LINK);
     
 	//The shared instance.
 	private static RSSUI plugin;
@@ -206,9 +214,8 @@ public class RSSUI extends AbstractUIPlugin {
             (BrowserFactoryDescriptor)browserFactoryMap.get(id);
 
         if(bfInfo == null) {
-            id = getPluginPreferences().getString(PREF_BROWSER);
-            if(id != null && id.length() > 0)
-                bfInfo = (BrowserFactoryDescriptor)browserFactoryMap.get(id);
+            bfInfo = (BrowserFactoryDescriptor)browserFactoryMap.get(
+                getPluginPreferences().getString(PREF_BROWSER));
         }
         
         if(bfInfo == null)
@@ -234,6 +241,34 @@ public class RSSUI extends AbstractUIPlugin {
             channel.getFile().setPersistentProperty(PROP_BROWSER, bfd.getId());            
     }
 
+    public String getOpenLinkEditorId(IChannel channel) throws CoreException {
+        String result = channel.getFile().getPersistentProperty(PROP_EDITOR);
+        if(result == null)
+            return getPluginPreferences().getString(PREF_EDITOR);
+        else
+            return result;
+    }
+    
+    public void setOpenLinkEditorId(IChannel channel, String id)
+        throws CoreException {
+    
+        channel.getFile().setPersistentProperty(PROP_EDITOR, id);        
+    }
+    
+    public String getOpenLinkChoice(IChannel channel) throws CoreException {
+        String result = channel.getFile().getPersistentProperty(PROP_OPEN_LINK);
+        if(result == null)
+            return getPluginPreferences().getString(PREF_OPEN_LINK);
+        else
+            return result;
+    }
+    
+    public void setOpenLinkChoice(IChannel channel, String choice)
+        throws CoreException {
+    
+        channel.getFile().setPersistentProperty(PROP_OPEN_LINK, choice);
+    }
+
     /* (non-Javadoc)
      * @see org.eclipse.ui.plugin.AbstractUIPlugin#initializeImageRegistry(org.eclipse.jface.resource.ImageRegistry)
      */
@@ -256,6 +291,7 @@ public class RSSUI extends AbstractUIPlugin {
         if(!prefsInit) {
             prefsInit = true;
             Preferences prefs = getPluginPreferences();
+            prefs.setDefault(PREF_OPEN_LINK, PREF_BROWSER);
             try {
                 if(browserFactoryMap == null)
                     initBrowserFactoryDescriptors();
@@ -268,6 +304,13 @@ public class RSSUI extends AbstractUIPlugin {
                 prefs.setDefault(
                     PREF_BROWSER, 
                     browserFactoryMap.keySet().iterator().next().toString());
+
+            IEditorRegistry reg = getWorkbench().getEditorRegistry();
+            IEditorDescriptor ed = reg.getDefaultEditor("x.html");
+            if(ed == null)
+                prefs.setDefault(PREF_EDITOR, reg.getDefaultEditor().getId());
+            else
+                prefs.setDefault(PREF_EDITOR, ed.getId());
         }
     }
     

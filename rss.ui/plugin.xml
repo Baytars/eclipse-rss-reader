@@ -82,15 +82,6 @@
             </separator>
          </menu>
          <action
-               label="Open &amp;Link"
-               icon="browse_16.png"
-               tooltip="Open channel link in browser."
-               class="com.pnehrer.rss.ui.actions.OpenLinkActionDelegate"
-               menubarPath="rss.ui.menu1/browse"
-               enablesFor="1"
-               id="rss.ui.action2">
-         </action>
-         <action
                label="Text &amp;Input..."
                icon="textinput_16.png"
                tooltip="Submit text to channel site."
@@ -98,6 +89,15 @@
                menubarPath="rss.ui.menu1/browse"
                enablesFor="1"
                id="rss.ui.action3">
+         </action>
+         <action
+               label="Open &amp;Link"
+               icon="browse_16.png"
+               tooltip="Open channel link in browser."
+               class="com.pnehrer.rss.ui.actions.OpenLinkActionDelegate"
+               menubarPath="rss.ui.menu1/browse"
+               enablesFor="1"
+               id="rss.ui.action2">
          </action>
          <action
                label="&amp;Update from Source"
@@ -158,6 +158,13 @@
                id="com.pnehrer.rss.ui.views.ChannelNavigator">
          </showInPart>
       </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.elementFactories">
+      <factory
+            class="com.pnehrer.rss.internal.ui.LinkEditorInputFactory"
+            id="com.pnehrer.rss.ui.LinkEditorInputFactory">
+      </factory>
    </extension>
 
 </plugin>

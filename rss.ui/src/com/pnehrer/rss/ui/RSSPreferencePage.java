@@ -111,6 +111,12 @@ public class RSSPreferencePage
                 // ignore
             }
         
+        id = prefs.getString(RSSUI.PREF_EDITOR);
+        if(id != null && id.length() > 0)
+            browserGroup.setSelectedEditorId(id);
+            
+        browserGroup.setChoice(prefs.getString(RSSUI.PREF_OPEN_LINK));
+        
         setErrorMessage(null);
         setMessage(null);
 
@@ -135,15 +141,20 @@ public class RSSPreferencePage
         
         prefs = RSSUI.getDefault().getPluginPreferences();
         prefs.setToDefault(RSSUI.PREF_BROWSER);
-        String id = prefs.getString(RSSUI.PREF_BROWSER);
-        if(id != null && id.length() > 0)
-            try {
-                browserGroup.setSelectedBrowserFactory(
-                    RSSUI.getDefault().getBrowserFactoryDescriptor(id));
-            }
-            catch(CoreException e) {
-                // ignore
-            }        
+        try {
+            browserGroup.setSelectedBrowserFactory(
+                RSSUI.getDefault().getBrowserFactoryDescriptor(
+                    prefs.getString(RSSUI.PREF_BROWSER)));
+        }
+        catch(CoreException e) {
+            // ignore
+        }        
+            
+        prefs.setToDefault(RSSUI.PREF_EDITOR);
+        browserGroup.setSelectedEditorId(prefs.getString(RSSUI.PREF_EDITOR));
+
+        prefs.setToDefault(RSSUI.PREF_OPEN_LINK);        
+        browserGroup.setChoice(prefs.getString(RSSUI.PREF_OPEN_LINK));
     }
 
     /* (non-Javadoc)
@@ -165,12 +176,20 @@ public class RSSPreferencePage
                 
         RSSCore.getPlugin().savePluginPreferences();
 
-        BrowserFactoryDescriptor bdf = browserGroup.getSelectedBrowserFactory();
         prefs = RSSUI.getDefault().getPluginPreferences();
+        BrowserFactoryDescriptor bdf = browserGroup.getSelectedBrowserFactory();
         if(bdf == null)
             prefs.setToDefault(RSSUI.PREF_BROWSER);
         else
             prefs.setValue(RSSUI.PREF_BROWSER, bdf.getId());
+
+        String id = browserGroup.getSelectedEditorId();
+        if(id == null)
+            prefs.setToDefault(RSSUI.PREF_EDITOR);
+        else
+            prefs.setValue(RSSUI.PREF_EDITOR, id);
+            
+        prefs.setValue(RSSUI.PREF_OPEN_LINK, browserGroup.getChoice());        
                             
         RSSUI.getDefault().savePluginPreferences();
         return true;

@@ -14,11 +14,16 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IEditorRegistry;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.SelectionListenerAction;
 
 import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IRSSElement;
 import com.pnehrer.rss.core.ITextInput;
+import com.pnehrer.rss.internal.ui.LinkEditorInput;
 import com.pnehrer.rss.ui.BrowserFactoryDescriptor;
 import com.pnehrer.rss.ui.RSSUI;
 
@@ -92,14 +97,38 @@ public class TextInputAction extends SelectionListenerAction {
             buf.append(URLEncoder.encode(term));
             String url = buf.toString();
                 
+            RSSUI ui = RSSUI.getDefault(); 
             try {
-                BrowserFactoryDescriptor bdf = 
-                    RSSUI.getDefault().getBrowserFactoryDescriptor(
-                        item.getChannel());
+                String choice = ui.getOpenLinkChoice(channel);
+                if(RSSUI.PREF_BROWSER.equals(choice)) {
+                    BrowserFactoryDescriptor bdf = 
+                        ui.getBrowserFactoryDescriptor(channel);
+                    IBrowser browser = bdf.getFactory().createBrowser();
+                    browser.displayURL(url);
+                }
+                else {
+                    IWorkbench wb = ui.getWorkbench();
+                    IEditorRegistry reg = wb.getEditorRegistry();
+                    IEditorDescriptor ed = 
+                        reg.findEditor(ui.getOpenLinkEditorId(channel));
+                    
+                    if(ed == null)
+                        ed = reg.getDefaultEditor();
 
-                IBrowser browser = bdf.getFactory().createBrowser();
-                browser.displayURL(url);
+                    IWorkbenchWindow window = wb.getActiveWorkbenchWindow();
+                    if(window == null) {
+                        IWorkbenchWindow[] windows = wb.getWorkbenchWindows();
+                        if(windows != null && windows.length > 0)
+                            window = windows[0];
+                    }
                 
+                    if(window != null) {
+                        window.getActivePage().openEditor(
+                            new LinkEditorInput(textInput), 
+                            ed.getId(), 
+                            true);
+                    }
+                }
             }
             catch(CoreException ex) {
                 ErrorDialog.openError(

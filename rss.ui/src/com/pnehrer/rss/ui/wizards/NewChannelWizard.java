@@ -5,7 +5,6 @@
 package com.pnehrer.rss.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -24,10 +23,10 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.ContainerGenerator;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
-import org.w3c.dom.Document;
 
-import com.pnehrer.rss.core.IRegisteredTranslator;
+import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.RSSCore;
+import com.pnehrer.rss.ui.RSSUI;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
@@ -74,11 +73,6 @@ public class NewChannelWizard extends Wizard implements INewWizard {
 	 * @see Wizard#performFinish
 	 */
 	public boolean performFinish() {
-        final URL url = channelOptionsPage.getURL();
-        final Document document = channelOptionsPage.getDocument();
-        final IRegisteredTranslator translator = 
-            channelOptionsPage.getTranslator();
-        final Integer updateInterval = channelOptionsPage.getUpdateInterval();
         setNeedsProgressMonitor(true);
         try {
             getContainer().run(false, true, new WorkspaceModifyOperation() {
@@ -117,15 +111,26 @@ public class NewChannelWizard extends Wizard implements INewWizard {
     
                         IFile file = container.getFile(
                             new Path(newFileCreationPage.getFileName()));
-                        RSSCore.getPlugin().createChannel(
+                        IChannel channel = RSSCore.getPlugin().createChannel(
                             file, 
-                            translator, 
-                            document,
-                            url,
-                            updateInterval,
+                            channelOptionsPage.getTranslator(), 
+                            channelOptionsPage.getDocument(),
+                            channelOptionsPage.getURL(),
+                            channelOptionsPage.getUpdateInterval(),
                             monitor == null ?
                                 null :
                                 new SubProgressMonitor(monitor, 1));
+                                
+                        RSSUI ui = RSSUI.getDefault();
+                        ui.setBrowserFactoryDescriptor(
+                            channel, 
+                            channelOptionsPage.getSelectedBrowserFactory());
+                        ui.setOpenLinkEditorId(
+                            channel,
+                            channelOptionsPage.getSelectedEditorId());
+                        ui.setOpenLinkChoice(
+                            channel,
+                            channelOptionsPage.getOpenLinkChoice());
 
 //                        Display.getDefault().asyncExec(new Runnable() {
 //                            public void run() {    

@@ -6,6 +6,7 @@ package com.pnehrer.rss.ui.wizards;
 
 import java.net.URL;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
@@ -17,9 +18,12 @@ import org.w3c.dom.Document;
 
 import com.pnehrer.rss.core.IRegisteredTranslator;
 import com.pnehrer.rss.core.RSSCore;
-import com.pnehrer.rss.ui.IPageContainer;
+import com.pnehrer.rss.internal.ui.BrowserGroup;
 import com.pnehrer.rss.internal.ui.ChannelPropertyGroup;
 import com.pnehrer.rss.internal.ui.UpdateIntervalGroup;
+import com.pnehrer.rss.ui.BrowserFactoryDescriptor;
+import com.pnehrer.rss.ui.IPageContainer;
+import com.pnehrer.rss.ui.RSSUI;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
@@ -29,12 +33,15 @@ public class WizardChannelOptionsPage extends WizardPage {
     private static final IRegisteredTranslator[] NO_TRANSLATORS = {};
     private static final short CHANNEL_OPTIONS_COMPLETE = 1;
     private static final short UPDATE_INTERVAL_COMPLETE = 2;
+    private static final short BROWSER_COMPLETE = 4;
     private static final short PAGE_COMPLETE =
         CHANNEL_OPTIONS_COMPLETE
-        + UPDATE_INTERVAL_COMPLETE;
+        + UPDATE_INTERVAL_COMPLETE
+        + BROWSER_COMPLETE;
 
     private ChannelPropertyGroup channelProperties;
     private final UpdateIntervalGroup updateIntervalGroup;
+    private final BrowserGroup browserGroup;
     private short pageComplete;
 
     /**
@@ -49,7 +56,6 @@ public class WizardChannelOptionsPage extends WizardPage {
 
         super(pageName, title, titleImage);
         updateIntervalGroup = new UpdateIntervalGroup(new IPageContainer() {
-
             public void setMessage(String message) {
                 WizardChannelOptionsPage.this.setMessage(message);
             }
@@ -61,6 +67,22 @@ public class WizardChannelOptionsPage extends WizardPage {
             public void setComplete(boolean complete) {
                 WizardChannelOptionsPage.this.setComplete(
                     UPDATE_INTERVAL_COMPLETE, 
+                    complete);
+            }
+        });
+
+        browserGroup = new BrowserGroup(new IPageContainer() {
+            public void setMessage(String message) {
+                WizardChannelOptionsPage.this.setMessage(message);
+            }
+
+            public void setErrorMessage(String message) {
+                WizardChannelOptionsPage.this.setErrorMessage(message);
+            }
+
+            public void setComplete(boolean complete) {
+                WizardChannelOptionsPage.this.setComplete(
+                    BROWSER_COMPLETE, 
                     complete);
             }
         });
@@ -104,6 +126,20 @@ public class WizardChannelOptionsPage extends WizardPage {
             updateInterval = null;
             
         updateIntervalGroup.setUpdateInterval(updateInterval);
+
+        browserGroup.createContents(topLevel);
+        prefs = RSSUI.getDefault().getPluginPreferences();
+        try {
+            browserGroup.setSelectedBrowserFactory(
+                RSSUI.getDefault().getBrowserFactoryDescriptor(
+                    prefs.getString(RSSUI.PREF_BROWSER)));
+        }
+        catch(CoreException e) {
+            // ignore
+        }
+            
+        browserGroup.setSelectedEditorId(prefs.getString(RSSUI.PREF_EDITOR));
+        browserGroup.setChoice(prefs.getString(RSSUI.PREF_OPEN_LINK));
         
         setErrorMessage(null);
         setMessage(null);
@@ -124,6 +160,18 @@ public class WizardChannelOptionsPage extends WizardPage {
     
     public Integer getUpdateInterval() {
         return updateIntervalGroup.getUpdateInterval();
+    }
+    
+    public BrowserFactoryDescriptor getSelectedBrowserFactory() {
+        return browserGroup.getSelectedBrowserFactory();
+    }
+    
+    public String getSelectedEditorId() {
+        return browserGroup.getSelectedEditorId();
+    }
+    
+    public String getOpenLinkChoice() {
+        return browserGroup.getChoice();
     }
 
     private void setComplete(short bit, boolean complete) {

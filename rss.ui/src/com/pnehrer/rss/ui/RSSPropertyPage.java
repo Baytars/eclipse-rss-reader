@@ -119,12 +119,17 @@ public class RSSPropertyPage
         
         browserGroup.createContents(topLevel);
         try {
+            RSSUI ui = RSSUI.getDefault();
             browserGroup.setSelectedBrowserFactory(
-                RSSUI.getDefault().getBrowserFactoryDescriptor(channel));
+                ui.getBrowserFactoryDescriptor(channel));
+            browserGroup.setSelectedEditorId(
+                ui.getOpenLinkEditorId(channel));
+            browserGroup.setChoice(
+                ui.getOpenLinkChoice(channel));
         }
         catch(CoreException e) {
             // ignore
-        }
+        }        
         
         setErrorMessage(null);
         setMessage(null);
@@ -149,13 +154,19 @@ public class RSSPropertyPage
         
         prefs = RSSUI.getDefault().getPluginPreferences();
         try {
+            RSSUI ui = RSSUI.getDefault();
             browserGroup.setSelectedBrowserFactory(
-                RSSUI.getDefault().getBrowserFactoryDescriptor(
+                ui.getBrowserFactoryDescriptor(
                     prefs.getString(RSSUI.PREF_BROWSER)));
         }
         catch(CoreException e) {
             // ignore
         }
+
+        browserGroup.setSelectedEditorId(
+            prefs.getString(RSSUI.PREF_EDITOR));
+        browserGroup.setChoice(
+            prefs.getString(RSSUI.PREF_OPEN_LINK));
     }
 
     /* (non-Javadoc)
@@ -179,9 +190,16 @@ public class RSSPropertyPage
             
                         channel.save(monitor);
                         
-                        RSSUI.getDefault().setBrowserFactoryDescriptor(
+                        RSSUI ui = RSSUI.getDefault(); 
+                        ui.setBrowserFactoryDescriptor(
                             channel, 
                             browserGroup.getSelectedBrowserFactory());
+                        ui.setOpenLinkEditorId(
+                            channel,
+                            browserGroup.getSelectedEditorId());
+                        ui.setOpenLinkChoice(
+                            channel,
+                            browserGroup.getChoice());
                     }
                 });
             }
