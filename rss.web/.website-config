@@ -6,7 +6,7 @@
 			<page src="/WebContent/projects/rss/index.html" template="/WebContent/theme/home.htpl" id="1" icon="/presence/theme/icons/textinput_16.png">
 				<title>About</title>
 			</page>
-			<page src="/WebContent/projects/rss/news.php" id="2" template="/WebContent/theme/home.htpl" icon="/presence/theme/icons/item_new_16.gif">
+			<page src="/WebContent/projects/rss/news.shtml" id="2" template="/WebContent/theme/home.htpl" icon="/presence/theme/icons/item_new_16.gif">
 				<title>News</title>
 			</page>
 			<page src="/WebContent/projects/rss/download.html" id="3" icon="/presence/theme/icons/update_16.png" template="/WebContent/theme/home.htpl">
@@ -24,7 +24,7 @@
 			<page src="/WebContent/projects/rss/screenshots.html" id="7" template="/WebContent/theme/home.htpl" icon="/presence/theme/icons/view_16.png">
 				<title>Screenshots</title>
 			</page>
-			<page src="/WebContent/projects/rss/blog.php" template="/WebContent/theme/home.htpl" id="9" icon="/presence/theme/icons/detail_16.png">
+			<page src="/WebContent/projects/rss/blog.shtml" template="/WebContent/theme/home.htpl" id="9" icon="/presence/theme/icons/detail_16.png">
 				<title>Blog</title>
 			</page>
 		</page>
