@@ -122,6 +122,7 @@ public class Channel
     private TextInput textInput;
     
     private long selfModificationStamp;
+	private Date lastUpdateAttempt;
     
     private Channel(IFile file) {
         this.file = file;
@@ -299,6 +300,7 @@ public class Channel
                 monitor.beginTask("Update: ", 2);
             
             try {
+				lastUpdateAttempt = new Date();
                 DocumentBuilder builder = factory.newDocumentBuilder();
                 Document document = builder.parse(
                 		RSSCore.getPlugin().getAuthenticatedStream(url));
@@ -735,10 +737,13 @@ public class Channel
     }
     
     private synchronized void updateSchedule() {
-		updateTask.cancel();
+		if (updateTask.getState() == Job.WAITING)
+			updateTask.cancel();
+		
         if(updateInterval != null && updateInterval.intValue() > 0) {
 			long delay = 60000 * updateInterval.longValue();
-			Date lastUpdated = getLastUpdated();
+			Date lastUpdated = lastUpdateAttempt == null 
+				? getLastUpdated() : lastUpdateAttempt;
 			if (lastUpdated != null)
 				delay -= System.currentTimeMillis() - lastUpdated.getTime();
 				
@@ -865,6 +870,7 @@ public class Channel
 
         Channel channel = new Channel(file, translator);
         try {
+			channel.lastUpdateAttempt = new Date();
             channel.url = url;
             channel.updateInterval = updateInterval;
             channel.save(

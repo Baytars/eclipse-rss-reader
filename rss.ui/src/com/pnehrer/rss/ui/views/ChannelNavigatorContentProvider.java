@@ -230,9 +230,10 @@ public class ChannelNavigatorContentProvider
                 IResource addedResource = addedChildren[i].getResource();
                 IRSSElement addedRSSElement = (IRSSElement)
                     addedResource.getAdapter(IRSSElement.class);
-                if(addedRSSElement == null)
-                    addedObjects[i] = addedResource;
-                else
+                if(addedRSSElement == null) {
+					if (addedResource.getType() != IResource.FILE)
+						addedObjects[i] = addedResource;
+                } else
                     addedObjects[i] = addedRSSElement;
             }
 		} else
