@@ -1,0 +1,5 @@
+#Eclipse RSS Reader v1.2.0
+#Fri Oct 22 13:21:12 EDT 2004
+translatorId=com.pnehrer.rss.core.default
+url=http\://rss.sme.sk/rss/export/smeonline.xml
+updateInterval=30
