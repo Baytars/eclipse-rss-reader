@@ -4,13 +4,12 @@
  */
 package com.pnehrer.rss.ui.views;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Color;
@@ -31,15 +30,19 @@ public class ChannelNavigatorLabelProvider
     extends LabelProvider
     implements IColorProvider {
             
-    private Map imageTable;
-    private ImageDescriptor newItemIcon;
+    private Map images;
+    private Map newImages;
+    private Image itemIcon;
+    private Image newItemIcon;
     private ImageDescriptor newDecoratorIcon;
     private Color oldItemColor;
 
     public ChannelNavigatorLabelProvider() {
-        ImageRegistry reg = RSSUI.getDefault().getImageRegistry(); 
-        newItemIcon = reg.getDescriptor(RSSUI.ITEM_NEW_ICON);
-        newDecoratorIcon = reg.getDescriptor(RSSUI.NEW_DECORATOR_ICON);
+        newDecoratorIcon = 
+    		RSSUI
+				.getDefault()
+				.getImageRegistry()
+				.getDescriptor(RSSUI.NEW_DECORATOR_ICON);
         
         Display display = Display.getCurrent();
         oldItemColor = new Color(display, 0x80, 0x80, 0x80); 
@@ -74,7 +77,6 @@ public class ChannelNavigatorLabelProvider
      * Method declared on ILabelProvider
      */
     public final Image getImage(Object element) {
-        //obtain the base image by querying the element
         IWorkbenchAdapter adapter = getAdapter(element);
         if(adapter == null)
             return null;
@@ -83,21 +85,60 @@ public class ChannelNavigatorLabelProvider
         if(descriptor == null)
             return null;
 
-        //add any annotations to the image descriptor
-        descriptor = decorateImage(descriptor, element);
+        IRSSElement rssElement = (IRSSElement)
+        	((IAdaptable)element).getAdapter(IRSSElement.class);
+	    if(rssElement instanceof IItem) {
+	        if(((IItem)rssElement).isUpdated()) {
+	        	if (newItemIcon == null) {
+		            descriptor = 
+		            	RSSUI
+							.getDefault()
+							.getImageRegistry()
+							.getDescriptor(RSSUI.ITEM_NEW_ICON);
+		            if (descriptor != null)
+		            	newItemIcon = descriptor.createImage();
+	        	}
+	        	
+	        	return newItemIcon;
+	        }
+	        else {
+	        	if (itemIcon == null)
+		            itemIcon = descriptor.createImage();
+	        	
+	        	return itemIcon;
+	        }
+	    }
+	    else {
+	    	if(rssElement instanceof IChannel && ((IChannel)rssElement).hasUpdates()) {
+	    		if (newImages == null)
+	    			newImages = new HashMap();
 
-        //obtain the cached image corresponding to the descriptor
-        if(imageTable == null) {
-            imageTable = new Hashtable(40);
-        }
-        
-        Image image = (Image)imageTable.get(descriptor);
-        if(image == null) {
-            image = descriptor.createImage();
-            imageTable.put(descriptor, image);
-        }
-        
-        return image;
+	        	Image image = (Image)newImages.get(rssElement);
+	        	if (image == null) {
+		        	descriptor = 
+		        		new NewChannelImageDescriptor(
+		        				descriptor.getImageData(), 
+								newDecoratorIcon.getImageData());
+		        	
+		        	image = descriptor.createImage();
+		        	newImages.put(rssElement, image);
+	        	}
+
+	        	return image;
+	    	}
+	    	else {
+	    		if (images == null)
+	    			images = new HashMap();
+	        	
+	        	Image image = (Image)images.get(element);
+	        	if (image == null) {
+		        	image = descriptor.createImage();
+		        	images.put(element, image);
+	        	}
+
+	        	return image;
+	        }
+	    }
     }
 
     /* (non-Javadoc)
@@ -113,23 +154,6 @@ public class ChannelNavigatorLabelProvider
         return label == null ? "" : label;
     }
 
-    private ImageDescriptor decorateImage(ImageDescriptor image, Object element) {
-        IRSSElement rssElement = (IRSSElement)
-            ((IAdaptable)element).getAdapter(IRSSElement.class);
-        if(rssElement instanceof IItem) {
-            if(((IItem)rssElement).isUpdated())
-                return newItemIcon;
-        }
-        else if(rssElement instanceof IChannel) {
-            if(((IChannel)rssElement).hasUpdates())
-                return new NewChannelImageDescriptor(
-                    image.getImageData(), 
-                    newDecoratorIcon.getImageData());
-        }
-        
-        return image;
-    }
-
     private IWorkbenchAdapter getAdapter(Object o) {
         if(o instanceof IAdaptable)
             return (IWorkbenchAdapter)((IAdaptable) o).getAdapter(
@@ -142,12 +166,28 @@ public class ChannelNavigatorLabelProvider
      * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
      */
     public void dispose() {
-        if(imageTable != null) {
-            for(Iterator i = imageTable.values().iterator(); i.hasNext();) {
+    	if (itemIcon != null) {
+    		itemIcon.dispose();
+    		itemIcon = null;
+    	}
+    	
+    	if (newItemIcon != null) {
+    		newItemIcon.dispose();
+    		newItemIcon = null;
+    	}
+    	
+        if(images != null) {
+            for(Iterator i = images.values().iterator(); i.hasNext();)
                 ((Image)i.next()).dispose();
-            }
             
-            imageTable = null;
+            images = null;
+        }
+
+        if(newImages != null) {
+            for(Iterator i = newImages.values().iterator(); i.hasNext();)
+                ((Image)i.next()).dispose();
+            
+            newImages = null;
         }
 
         oldItemColor.dispose();

@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IStatusLineManager;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.LocationAdapter;
@@ -35,6 +36,7 @@ import org.eclipse.swt.browser.TitleEvent;
 import org.eclipse.swt.browser.TitleListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -72,6 +74,7 @@ public class WebBrowserEditor extends EditorPart {
 	private Browser browser;
 	private Text location;
 	private String initialUrl;
+	private Image image;
 	
 	private Action backAction = new Action("Back") {
 		public void run() {
@@ -244,7 +247,13 @@ public class WebBrowserEditor extends EditorPart {
 	 */
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		if(input instanceof LinkEditorInput) {
-			initialUrl = ((LinkEditorInput)input).getUrl().toExternalForm();
+			LinkEditorInput linkEditorInput = (LinkEditorInput)input; 
+			initialUrl = linkEditorInput.getUrl().toExternalForm();
+			setPartName(linkEditorInput.getName());
+			setContentDescription(linkEditorInput.getToolTipText());
+			ImageDescriptor imageDescriptor = linkEditorInput.getImageDescriptor();
+			if (imageDescriptor != null)
+				setTitleImage(image = imageDescriptor.createImage());
 		}
 		else if(!(input instanceof IStorageEditorInput))
 			throw new PartInitException("Unknown input type.");
@@ -265,5 +274,15 @@ public class WebBrowserEditor extends EditorPart {
 	 */
 	public boolean isSaveAsAllowed() {
 		return false;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.IWorkbenchPart#dispose()
+	 */
+	public void dispose() {
+		if (image != null)
+			image.dispose();
+		
+		super.dispose();
 	}
 }

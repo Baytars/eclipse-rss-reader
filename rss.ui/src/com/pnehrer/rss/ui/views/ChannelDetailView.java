@@ -89,7 +89,8 @@ public class ChannelDetailView
 
     private final ImageDescriptor newItemDecoration;
     private final Image detailIcon;
-    private final Map images = new HashMap();
+    private Map images;
+    private Map newImages;
     
     public ChannelDetailView() {
         ImageRegistry reg = RSSUI.getDefault().getImageRegistry();
@@ -406,8 +407,20 @@ public class ChannelDetailView
     public void dispose() {
         getSite().getPage().removeSelectionListener(this);
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
-        for(Iterator i = images.values().iterator(); i.hasNext();)
-            ((Image)i.next()).dispose();
+        
+        if (images != null) {
+	        for(Iterator i = images.values().iterator(); i.hasNext();)
+	            ((Image)i.next()).dispose();
+	        
+	        images = null;
+        }
+
+        if (newImages != null) {
+	        for(Iterator i = newImages.values().iterator(); i.hasNext();)
+	            ((Image)i.next()).dispose();
+	        
+	        newImages = null;
+        }
         
         super.dispose();
     }
@@ -476,17 +489,32 @@ public class ChannelDetailView
             ImageDescriptor imageDescriptor =
                 RSSUI.getDefault().getImageDescriptor16(channel);
             Image image = null;
-            if(hasUpdates && imageDescriptor != null) {
-                image = (Image)images.get(imageDescriptor);
-                if(image == null) {
-                    ImageDescriptor decoratedImageDescriptor = 
-                        new NewChannelImageDescriptor(
-                            imageDescriptor.getImageData(),
-                            newItemDecoration.getImageData());
-                            
-                    image = decoratedImageDescriptor.createImage();
-                    images.put(imageDescriptor, image);
-                }
+            if(imageDescriptor != null) {
+            	if (hasUpdates) {
+            		if (newImages == null)
+            			newImages = new HashMap();
+            		
+	                image = (Image)newImages.get(channel);
+	                if(image == null) {
+	                    ImageDescriptor decoratedImageDescriptor = 
+	                        new NewChannelImageDescriptor(
+	                            imageDescriptor.getImageData(),
+	                            newItemDecoration.getImageData());
+	                            
+	                    image = decoratedImageDescriptor.createImage();
+	                    newImages.put(channel, image);
+	                }
+            	}
+            	else {
+            		if (images == null)
+            			images = new HashMap();
+            		
+	                image = (Image)images.get(channel);
+	                if(image == null) {
+	                    image = imageDescriptor.createImage();
+	                    images.put(channel, image);
+	                }
+            	}
             }
                     
             setTitleImage(image);
