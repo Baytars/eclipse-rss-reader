@@ -1,4 +1,4 @@
-<project name="Installer for Eclipse RSS Reader" default="standard">
+<project name="Installer for Eclipse RSS Reader" default="izpack">
 
 	<target name="_init">
 		<eclipse.convertPath property="feature.dir" resourcePath="/rss.feature"/>
@@ -35,8 +35,8 @@
 				<filter token="FEATURE_URL" value="${feature.url.discovery.url}"/>
 			</filterset>
 		</copy>
-		<eclipse.convertPath property="compiler.jar" resourcePath="/castor.install/IzPack/lib/compiler.jar"/>
-		<eclipse.convertPath property="izpack.dir" resourcePath="/castor.install/IzPack"/>
+		<eclipse.convertPath property="compiler.jar" resourcePath="/rss.install/IzPack/lib/compiler.jar"/>
+		<eclipse.convertPath property="izpack.dir" resourcePath="/rss.install/IzPack"/>
 		<taskdef name="izpack" classpath="${compiler.jar}" classname="com.izforge.izpack.ant.IzPackTask"/>
 		<izpack input="${basedir}/install.xml"
 		        output="${basedir}/dist/install-${feature.id}_${feature.version}.jar"

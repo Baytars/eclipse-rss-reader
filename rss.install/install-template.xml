@@ -22,7 +22,7 @@
     <resources>
         <res id="Installer.image" src="res/rss-about.png"/>
         <res id="HTMLInfoPanel.info" src="res/readme.html" parse="yes"/>
-        <res id="HTMLLicencePanel.licence" src="src/eclipse/features/@FEATURE_ID@_@FEATURE_VERSION@/license.html"/>
+        <res id="HTMLLicencePanel.licence" src="src/base/eclipse/features/@FEATURE_ID@_@FEATURE_VERSION@/license.html"/>
 		<res id="shortcutSpec.xml" src="res/shortcutSpec.xml"/>
         <res id="userInputSpec.xml" src="res/userInputSpec.xml"/>
 		<res id="XInfoPanel.info" src="res/preInstallSummary.txt" parse="yes"/>
@@ -46,7 +46,7 @@
             <description>Eclipse RSS Reader base plug-ins, including user documentation.</description>
             <file src="src/base/eclipse" targetdir="$INSTALL_PATH"/>
             <file src="src/@FEATURE_ID@.link" targetdir="$ECLIPSE_HOME/links"/>
-            <file src="src/readme.html" targetdir="$INSTALL_PATH"/>
+            <file src="res/readme.html" targetdir="$INSTALL_PATH"/>
             <parsable targetfile="$INSTALL_PATH/eclipse/.eclipseextension"/>
             <parsable targetfile="$ECLIPSE_HOME/links/@FEATURE_ID@.link"/>
         </pack>

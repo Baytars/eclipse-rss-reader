@@ -16,9 +16,9 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>compiler.jar</name>
-			<type>1</type>
-			<location>/home/pnehrer/IzPack/lib/compiler.jar</location>
+			<name>IzPack</name>
+			<type>2</type>
+			<location>/home/pnehrer/IzPack</location>
 		</link>
 	</linkedResources>
 </projectDescription>
