@@ -8,7 +8,8 @@
 <SCRIPT language="JavaScript" src="/presence/theme/search.js" type="text/javascript"></SCRIPT>
 <link rel="shortcut icon" href="/presence/theme/icons/favicon.ico" type="image/x-icon">
 <!-- tpl:put name="head" -->
-		<TITLE>Eclipse Scripting</TITLE><!-- /tpl:put -->
+	<TITLE>News</TITLE>
+<!-- /tpl:put -->
 </head>
 <body onload="javascript:return body_onload();"><div
 	class="searchForm"><!-- siteedit:navbar target="topchildren" spec="/presence/theme/topnav.html" -->
@@ -50,28 +51,38 @@
 <TBODY><TR><TD>
 <DIV class="menuBox">
 <DIV class="menu"><A href="/presence/home/about.html"><IMG src="/presence/theme/icons/about.png" alt="Presence" class="icon"> Presence</A></DIV>
-<DIV class="menu"><A href="/presence/projects/castor/index.html"><IMG src="/presence/theme/icons/folder_blue_open.png" alt="Castor Plug-in" class="icon"> Castor Plug-in</A></DIV>
+<DIV class="menuAncestor"><A href="/presence/projects/castor/index.html"><IMG src="/presence/theme/icons/folder_blue_open.png" alt="Castor Plug-in" class="icon"> Castor Plug-in</A></DIV>
 <DIV class="menu"><A href="/presence/projects/rss/index.html"><IMG src="/presence/theme/icons/xml_16.gif" alt="RSS Reader" class="icon"> RSS Reader</A></DIV>
-<DIV class="menuSelf"><IMG src="/presence/theme/icons/folder_blue_open.png" alt="Eclipse Scripting" class="icon"> Eclipse Scripting</DIV>
+<DIV class="menu"><A href="/presence/projects/jelly4eclipse/index.html"><IMG src="/presence/theme/icons/folder_blue_open.png" alt="Eclipse Scripting" class="icon"> Eclipse Scripting</A></DIV>
 </DIV>
 </TD><TD width="8">
-<IMG src="/presence/theme/blackdot.gif" width="8" height="2" alt="aggregates">
 </TD></TR>
 </TBODY></TABLE>
   <IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends"><TABLE width="100%" cellpadding="0" cellspacing="0">
 <TBODY><TR><TD>
 <DIV class="menuBox">
-<DIV class="menu"><A href="#"><IMG src="/presence/theme/icons/down.png" alt="Download" class="icon"> Download</A></DIV>
-<DIV class="menu"><A href="#"><IMG src="/presence/theme/icons/info.png" alt="About" class="icon"> About</A></DIV>
+<DIV class="menuSelf"><IMG src="/presence/theme/icons/news.png" alt="News" class="icon"> News</DIV>
+<DIV class="menu"><A href="/presence/projects/castor/download.html"><IMG src="/presence/theme/icons/down.png" alt="Download" class="icon"> Download</A></DIV>
+<DIV class="menu"><A href="/presence/projects/castor/features.html"><IMG src="/presence/theme/icons/unknown.png" alt="Features" class="icon"> Features</A></DIV>
+<DIV class="menu"><A href="/presence/projects/castor/usage.html"><IMG src="/presence/theme/icons/unknown.png" alt="Usage" class="icon"> Usage</A></DIV>
+<DIV class="menu"><A href="/presence/projects/castor/screenshots.html"><IMG src="/presence/theme/icons/info.png" alt="Screenshots" class="icon"> Screenshots</A></DIV>
 </DIV>
 </TD><TD width="8">
+<IMG src="/presence/theme/blackdot.gif" width="8" height="2" alt="aggregates">
 </TD></TR>
 </TBODY></TABLE>
 <!-- /siteedit:sitemap --></td>
 		<td height="8"></td>
 	</tr>
 	<tr>
-		<td valign="top" class="content"><!-- tpl:put name="body" -->This page is under construction.<!-- /tpl:put --></td>
+		<td valign="top" class="content"><!-- tpl:put name="body" -->
+				<H1>News <A href="http://sourceforge.net/export/rss2_projnews.php?group_id=71245"><IMG src="http://images.sourceforge.net/images/xml.png" border="0" alt="RSS Feed Available" width="36" height="14" align="middle"/></A></H1>
+<!--#if expr="$SERVER_NAME=/pnehrer.freeshell.org/" -->
+	<!--#include virtual="/presence/projects/castor/news.cgi" -->
+<!--#elif expr="$SERVER_NAME=/xdoclipse.sourceforge.net/" -->
+	<!--#include file="news.html" -->
+<!--#endif -->
+			<!-- /tpl:put --></td>
 	</tr>
 </table><div class="footer">Copyright &copy; 2003, 2004 <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>.<br>Version <!-- tpl:put name="version" -->$Id$<!-- /tpl:put -->.</div></body>
 </html>

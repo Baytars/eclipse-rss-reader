@@ -1,0 +1,123 @@
+<!-- tpl:insert page="/theme/home.htpl" --><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="GENERATOR" content="IBM WebSphere Studio">
+<SCRIPT language="JavaScript" src="/presence/theme/updates.js" type="text/javascript"></SCRIPT>
+<link rel="stylesheet" href="/presence/theme/blue.css" type="text/css">
+<SCRIPT language="JavaScript" src="/presence/theme/search.js" type="text/javascript"></SCRIPT>
+<link rel="shortcut icon" href="/presence/theme/icons/favicon.ico" type="image/x-icon">
+<!-- tpl:put name="head" -->
+	<TITLE>Usage</TITLE>
+<!-- /tpl:put -->
+</head>
+<body onload="javascript:return body_onload();"><div
+	class="searchForm"><!-- siteedit:navbar target="topchildren" spec="/presence/theme/topnav.html" -->
+<A class="extLink" href="/presence/home/index.html">Home</A> |
+<A class="extLink" href="/presence/home/resume.html">Resume</A> |
+<A class="extLink" href="/presence/home/blog.html">Blog</A> |
+<A class="extLink" href="/presence/projects/index.html">Projects</A> |
+<!-- /siteedit:navbar -->Search: <input
+	class="searchText" 
+	type="text" 
+	name="q"
+	size="12"
+	onkeypress="search(this, event)"></div><div 
+	class="header"><a 
+	href="/presence/home/index.html"><img 
+	border="0"
+	src="/presence/theme/banner.png" 
+	width="320" 
+	height="32"
+	alt="pnehrer.com"></a></div><table
+	width="100%" 
+	border="0" 
+	cellpadding="0" 
+	cellspacing="0">
+	<tr>
+		<td valign="top" align="center" width="150" rowspan="2"><!-- siteedit:sitemap spec="/presence/theme/leftnav.html" onlychilden="true" targetlevel="1-4" -->
+  <IMG src="/presence/theme/blackdot.gif" width="2" height="8" alt="extends"><TABLE width="100%" cellpadding="0" cellspacing="0">
+<TBODY><TR><TD>
+<DIV class="menuBox">
+<DIV class="menu"><A href="/presence/home/index.html"><IMG src="/presence/theme/icons/home.png" alt="Home" class="icon"> Home</A></DIV>
+<DIV class="menu"><A href="/presence/home/resume.html"><IMG src="/presence/theme/icons/resume.png" alt="Resume" class="icon"> Resume</A></DIV>
+<DIV class="menu"><A href="/presence/home/blog.html"><IMG src="/presence/theme/icons/blog.png" alt="Blog" class="icon"> Blog</A></DIV>
+<DIV class="menuAncestor"><A href="/presence/projects/index.html"><IMG src="/presence/theme/icons/projects.png" alt="Projects" class="icon"> Projects</A></DIV>
+</DIV>
+</TD><TD width="8">
+</TD></TR>
+</TBODY></TABLE>
+  <IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends"><TABLE width="100%" cellpadding="0" cellspacing="0">
+<TBODY><TR><TD>
+<DIV class="menuBox">
+<DIV class="menu"><A href="/presence/home/about.html"><IMG src="/presence/theme/icons/about.png" alt="Presence" class="icon"> Presence</A></DIV>
+<DIV class="menuAncestor"><A href="/presence/projects/castor/index.html"><IMG src="/presence/theme/icons/folder_blue_open.png" alt="Castor Plug-in" class="icon"> Castor Plug-in</A></DIV>
+<DIV class="menu"><A href="/presence/projects/rss/index.html"><IMG src="/presence/theme/icons/xml_16.gif" alt="RSS Reader" class="icon"> RSS Reader</A></DIV>
+<DIV class="menu"><A href="/presence/projects/jelly4eclipse/index.html"><IMG src="/presence/theme/icons/folder_blue_open.png" alt="Eclipse Scripting" class="icon"> Eclipse Scripting</A></DIV>
+</DIV>
+</TD><TD width="8">
+</TD></TR>
+</TBODY></TABLE>
+  <IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends"><TABLE width="100%" cellpadding="0" cellspacing="0">
+<TBODY><TR><TD>
+<DIV class="menuBox">
+<DIV class="menu"><A href="/presence/projects/castor/news.shtml"><IMG src="/presence/theme/icons/news.png" alt="News" class="icon"> News</A></DIV>
+<DIV class="menu"><A href="/presence/projects/castor/download.html"><IMG src="/presence/theme/icons/down.png" alt="Download" class="icon"> Download</A></DIV>
+<DIV class="menu"><A href="/presence/projects/castor/features.html"><IMG src="/presence/theme/icons/unknown.png" alt="Features" class="icon"> Features</A></DIV>
+<DIV class="menuSelf"><IMG src="/presence/theme/icons/unknown.png" alt="Usage" class="icon"> Usage</DIV>
+<DIV class="menu"><A href="/presence/projects/castor/screenshots.html"><IMG src="/presence/theme/icons/info.png" alt="Screenshots" class="icon"> Screenshots</A></DIV>
+</DIV>
+</TD><TD width="8">
+<IMG src="/presence/theme/blackdot.gif" width="8" height="2" alt="aggregates">
+</TD></TR>
+</TBODY></TABLE>
+<!-- /siteedit:sitemap --></td>
+		<td height="8"></td>
+	</tr>
+	<tr>
+		<td valign="top" class="content"><!-- tpl:put name="body" -->
+<H1>Usage</H1>
+
+<P>The following steps illustrate basic use of the Castor Plug-in for
+Eclipse:</P>
+<OL>
+	<LI><P>Create a new Java project for your Castor-generated files.
+	You can use an existing project, if you already have one. Make sure
+	the project has at least one Java Source folder (i.e., it does not
+	use the project root as both source and output folder for your Java
+	files).</P>
+	<LI><P>Create a new Java Source folder in your project; e.g., <I>gen</I>.
+	This is the folder into which Castor Source Generator will place the
+	generated Java files. This separation is not necessary, but makes it
+	easier to distinguish generated files from those created manually.</P>
+	<LI><P>Right-click the project and from the context menu select <I>Castor
+	-&gt; Add Castor to build path...</I> This will allow you to select Castor
+	libraries to add to your project's Java build path. Alternatively, you
+	can choose to import the libraries into your project, if you need to
+	package and redistribute them with your code.</P>
+	<LI><P>In your Project Navigator view, select the XML Schema (*.xsd)
+	file from which you want Castor to generate Java sources. Note that
+	the XML Schema file need not be in the generator's output project;
+	it may come from an entirely different project. From the main menu,
+	select <I>Run -&gt; External Tools -&gt; Run As -&gt; Castor Source
+	Generator</I>. This will bring up a launch dialog populated with
+	default values.</P>
+	<LI><P>Edit the values in the <I>Generator</I> tab to suit your
+	needs. When ready, click <I>Run</I> to launch the Castor Source
+	Generator. Any output messages will be printed into your Console
+	view. When finished, the output folder will contain the generated
+	files.</P>
+
+</OL>
+<P>To edit your newly created launch configuration, select <I>Run -&gt;
+External Tools -&gt; External Tools...</I> in the main menu. To
+display a shortcut to this launch configuration in favorites menu,
+check the box in the <I>Common</I> tab. You may share this launch
+configuration with others (e.g., through a version control system) by
+marking it as <I>Shared</I> in the same tab; this will create a
+<I>*.launch</I> file (whose file name matches the launch
+configuration name) in the folder you specify.</P>			<!-- /tpl:put --></td>
+	</tr>
+</table><div class="footer">Copyright &copy; 2003, 2004 <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>.<br>Version <!-- tpl:put name="version" -->$Id$<!-- /tpl:put -->.</div></body>
+</html>
+<!-- /tpl:insert -->

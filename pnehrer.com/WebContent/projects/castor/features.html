@@ -8,7 +8,8 @@
 <SCRIPT language="JavaScript" src="/presence/theme/search.js" type="text/javascript"></SCRIPT>
 <link rel="shortcut icon" href="/presence/theme/icons/favicon.ico" type="image/x-icon">
 <!-- tpl:put name="head" -->
-		<TITLE>Eclipse Scripting</TITLE><!-- /tpl:put -->
+	<TITLE>Features</TITLE>
+<!-- /tpl:put -->
 </head>
 <body onload="javascript:return body_onload();"><div
 	class="searchForm"><!-- siteedit:navbar target="topchildren" spec="/presence/theme/topnav.html" -->
@@ -50,28 +51,63 @@
 <TBODY><TR><TD>
 <DIV class="menuBox">
 <DIV class="menu"><A href="/presence/home/about.html"><IMG src="/presence/theme/icons/about.png" alt="Presence" class="icon"> Presence</A></DIV>
-<DIV class="menu"><A href="/presence/projects/castor/index.html"><IMG src="/presence/theme/icons/folder_blue_open.png" alt="Castor Plug-in" class="icon"> Castor Plug-in</A></DIV>
+<DIV class="menuAncestor"><A href="/presence/projects/castor/index.html"><IMG src="/presence/theme/icons/folder_blue_open.png" alt="Castor Plug-in" class="icon"> Castor Plug-in</A></DIV>
 <DIV class="menu"><A href="/presence/projects/rss/index.html"><IMG src="/presence/theme/icons/xml_16.gif" alt="RSS Reader" class="icon"> RSS Reader</A></DIV>
-<DIV class="menuSelf"><IMG src="/presence/theme/icons/folder_blue_open.png" alt="Eclipse Scripting" class="icon"> Eclipse Scripting</DIV>
+<DIV class="menu"><A href="/presence/projects/jelly4eclipse/index.html"><IMG src="/presence/theme/icons/folder_blue_open.png" alt="Eclipse Scripting" class="icon"> Eclipse Scripting</A></DIV>
 </DIV>
 </TD><TD width="8">
-<IMG src="/presence/theme/blackdot.gif" width="8" height="2" alt="aggregates">
 </TD></TR>
 </TBODY></TABLE>
   <IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends"><TABLE width="100%" cellpadding="0" cellspacing="0">
 <TBODY><TR><TD>
 <DIV class="menuBox">
-<DIV class="menu"><A href="#"><IMG src="/presence/theme/icons/down.png" alt="Download" class="icon"> Download</A></DIV>
-<DIV class="menu"><A href="#"><IMG src="/presence/theme/icons/info.png" alt="About" class="icon"> About</A></DIV>
+<DIV class="menu"><A href="/presence/projects/castor/news.shtml"><IMG src="/presence/theme/icons/news.png" alt="News" class="icon"> News</A></DIV>
+<DIV class="menu"><A href="/presence/projects/castor/download.html"><IMG src="/presence/theme/icons/down.png" alt="Download" class="icon"> Download</A></DIV>
+<DIV class="menuSelf"><IMG src="/presence/theme/icons/unknown.png" alt="Features" class="icon"> Features</DIV>
+<DIV class="menu"><A href="/presence/projects/castor/usage.html"><IMG src="/presence/theme/icons/unknown.png" alt="Usage" class="icon"> Usage</A></DIV>
+<DIV class="menu"><A href="/presence/projects/castor/screenshots.html"><IMG src="/presence/theme/icons/info.png" alt="Screenshots" class="icon"> Screenshots</A></DIV>
 </DIV>
 </TD><TD width="8">
+<IMG src="/presence/theme/blackdot.gif" width="8" height="2" alt="aggregates">
 </TD></TR>
 </TBODY></TABLE>
 <!-- /siteedit:sitemap --></td>
 		<td height="8"></td>
 	</tr>
 	<tr>
-		<td valign="top" class="content"><!-- tpl:put name="body" -->This page is under construction.<!-- /tpl:put --></td>
+		<td valign="top" class="content"><!-- tpl:put name="body" -->
+<H1>Features</H1>
+<P>The current release of the plug-in integrates the Castor Source
+Generator into Eclipse as an External Tool. In particular, it provides the following set of features:</P>
+<UL>
+	<LI><P><A HREF="http://castor.exolab.org/sourcegen.html">Castor
+	Source Generator</A> integrated into Eclipse as an External Tool,
+	which generates Java source code from an XML Schema file into a
+	configured Java project. It is launched as an external Java process.
+	May be configured to run synchronously, or in the background, and may be set up to track and clean up previously generated files.</P>
+	<LI><P>Launch configuration dialog with a validating GUI to support
+	entry of <A HREF="http://castor.exolab.org/sourcegen.html#Command-Line-Options">command-line
+	options</A>. In addition, it supports customization of the
+	classpath, JRE, and common launch configuration options.</P>
+	<LI><P>Castor runtime libraries packaged in an independent,
+	self-contained plug-in (org.exolab.castor), with a Java classpath
+	variable (CASTOR) pointing to their location</P>
+	<LI><P>Wizard to import Castor libraries into the project and/or add them to its Java build path</P>
+
+</UL>
+<H2>Planned Features</H2>
+<P>In subsequent releases, one or more of the following may be
+implemented:</P>
+<UL>
+	<LI><P>Wizard to support migration of project settings from the
+	previous version of the plug-in</P>
+	<LI><P>Advanced Options editor, which would provide a validating GUI
+	to support the editing of Castor's <A HREF="http://castor.exolab.org/sourcegen.html#Advanced-Options">Advanced
+	Options</A></P>
+	<LI><P>Binding File editor to edit the optional <A HREF="http://castor.exolab.org/sourcegen.html#Binding-File">binding
+	files</A> that provide a way to customize the generation process</P>
+
+</UL>			<!-- /tpl:put --></td>
 	</tr>
 </table><div class="footer">Copyright &copy; 2003, 2004 <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>.<br>Version <!-- tpl:put name="version" -->$Id$<!-- /tpl:put -->.</div></body>
 </html>
