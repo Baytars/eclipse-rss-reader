@@ -72,6 +72,8 @@
     </xsl:template>
     
     <xsl:template match="text()[parent::rss09:channel | parent::rss09:image | parent::rss09:item | parent::rss09:textinput | parent::rss10:channel | parent::rss10:image | parent::rss10:item | parent::rss10:textinput]"/>
+
+    <xsl:template match="rdf:* | rss09:* | rss10:* | @rdf:* | @rss09:* | @rss10:*"/>
     
     <xsl:template match="node() | @*">
     	<xsl:copy>

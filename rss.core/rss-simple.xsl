@@ -43,15 +43,27 @@
     	</xsl:element>
     </xsl:template>
 
-    <xsl:template match="title | link | description | url">
+    <xsl:template match="node()[parent::channel][self::title | self::link | self::description]">
     	<xsl:attribute name="{local-name()}"><xsl:value-of select="."/></xsl:attribute>
     </xsl:template>
 
-    <xsl:template match="pubDate">
+    <xsl:template match="node()[parent::image][self::title | self::link | self::url]">
+    	<xsl:attribute name="{local-name()}"><xsl:value-of select="."/></xsl:attribute>
+    </xsl:template>
+
+    <xsl:template match="node()[parent::item][self::title | self::link | self::description]">
+    	<xsl:attribute name="{local-name()}"><xsl:value-of select="."/></xsl:attribute>
+    </xsl:template>
+
+    <xsl:template match="node()[parent::textinput][self::title | self::link | self::description | self::name]">
+    	<xsl:attribute name="{local-name()}"><xsl:value-of select="."/></xsl:attribute>
+    </xsl:template>
+
+    <xsl:template match="pubDate[parent::channel | parent::item]">
     	<xsl:attribute name="date"><xsl:value-of select="."/></xsl:attribute>
     </xsl:template>
     
-    <xsl:template match="text()[parent::channel | parent::image | parent::item]"/>
+    <xsl:template match="text()[parent::channel | parent::image | parent::item | parent::textinput]"/>
     
     <xsl:template match="node() | @*">
     	<xsl:copy>
