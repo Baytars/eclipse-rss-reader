@@ -4,7 +4,7 @@
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <META name="GENERATOR" content="IBM WebSphere Studio">
 <META http-equiv="Content-Style-Type" content="text/css">
-<LINK href="/help/topic/com.pnehrer.rss.doc.isv/theme/Master.css"
+<LINK href="/help/topic/com.pnehrer.rss.doc.isv/doc/theme/Master.css"
 	rel="stylesheet" type="text/css">
 
 <!-- tpl:insert attribute="head" --><TITLE>master.html</TITLE><!-- /tpl:insert -->
@@ -14,6 +14,6 @@
 <HR size="1" noshade>
 <P align="center" style="font-size: smaller">Copyright &copy; 2003, 2004
 <A href="mailto:pnehrer@users.sourceforge.net">Peter Nehrer</A>. All rights reserved.<BR>
-Version: $Id$</P>
+Version: <!-- tpl:insert attribute="version" -->$Id$<!-- /tpl:insert --></P>
 </BODY>
 </HTML>
