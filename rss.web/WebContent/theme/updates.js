@@ -1,4 +1,6 @@
-// updates.js
+// Support for propagation of arguments to support the update site page.
+// Author: Peter Nehrer <pnehrer@freeshell.org>
+// Version: $Id$
 
 function getArgs() {
    var args = new Object();
@@ -65,4 +67,14 @@ function persistUpdateURL() {
 		updateURL = getCookie("updateURL");
 
 	return updateURL;
+}
+
+function body_onload() {
+	if(window.initUpdates) {
+		initUpdates();
+	}
+	else {
+		persistMirror();
+		persistUpdateURL();
+	}
 }
