@@ -9,6 +9,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.DateFormat;
+import java.util.Date;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -35,6 +37,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.xml.sax.SAXException;
@@ -51,11 +55,16 @@ public class RSSCore extends Plugin implements IResourceChangeListener {
     public static final String PLUGIN_ID = "com.pnehrer.rss.core";
     private static final String PREPROCESSOR = "internalize.xsl";
     private static final String CHANNEL_URL = "channelURL";
+    
+    public static final String PREF_UPDATE_INTERVAL = "updateInterval";
+    public static final QualifiedName PROP_LAST_UPDATED = 
+        new QualifiedName(PLUGIN_ID, "lastUpdated");
 
     private static RSSCore instance;
     
     private final ChannelManager channelManager = new ChannelManager();
     private Templates preprocessor;
+    private boolean prefInit;
 
     /**
      * @param descriptor
@@ -112,11 +121,25 @@ public class RSSCore extends Plugin implements IResourceChangeListener {
         super.shutdown();
     }
 
-    public void download(URL url, IFile file, IProgressMonitor monitor) 
+    /* (non-Javadoc)
+     * @see org.eclipse.core.runtime.Plugin#initializeDefaultPluginPreferences()
+     */
+    protected void initializeDefaultPluginPreferences() {
+        if(!prefInit) {
+            prefInit = true;
+            Preferences prefs = getPluginPreferences();
+            prefs.setDefault(PREF_UPDATE_INTERVAL, 30);
+        }
+    }
+
+    public void download(
+        URL url, 
+        IFile file, 
+        IProgressMonitor monitor) 
         throws CoreException {
         
         if(monitor != null)
-            monitor.beginTask("create", 2);
+            monitor.beginTask("download", 2);
                 
         try {        
             InputStream input = url.openStream();
@@ -124,6 +147,11 @@ public class RSSCore extends Plugin implements IResourceChangeListener {
             
             Transformer transformer = preprocessor.newTransformer();
             transformer.setParameter(CHANNEL_URL, url.toExternalForm());
+            Channel channel = channelManager.get(file);
+            Integer updateInterval = channel == null ?
+                new Integer(getPluginPreferences().getInt(PREF_UPDATE_INTERVAL)) :
+                channel.getUpdateInterval();
+            transformer.setParameter(PREF_UPDATE_INTERVAL, updateInterval);
             transformer.transform(
                 new StreamSource(input),
                 new StreamResult(output));
@@ -138,6 +166,10 @@ public class RSSCore extends Plugin implements IResourceChangeListener {
                 
             if(file.exists()) file.setContents(input,true, true, subMonitor);
             else file.create(input, true, subMonitor);
+
+            file.setPersistentProperty(
+                PROP_LAST_UPDATED, 
+                DateFormat.getInstance().format(new Date()));
         }
         catch(TransformerException ex) {
             throw new CoreException(
@@ -204,13 +236,13 @@ public class RSSCore extends Plugin implements IResourceChangeListener {
     public IChannel create(IFile file) throws CoreException {
         Channel channel = channelManager.get(file);
         if(channel == null) {
-            ChannelBuilder builder = new ChannelBuilder();
+            ChannelBuilder builder = new ChannelBuilder(file);
             parse(file.getContents(), builder);
             return builder.getResult();
         }
         else return channel;
     }
-
+    
     /* (non-Javadoc)
      * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
      */
@@ -218,7 +250,13 @@ public class RSSCore extends Plugin implements IResourceChangeListener {
         IResource resource = event.getResource();
         if(event.getType() == IResourceChangeEvent.POST_CHANGE) {
             try {
-                event.getDelta().accept(new ResourceDeltaVisitor());
+                if(event.getDelta() == null) {
+                    if(resource instanceof IFile)
+                        channelSourceChanged((IFile)resource);
+                }
+                else {
+                    event.getDelta().accept(new ResourceDeltaVisitor());
+                }
             }
             catch(CoreException ex) {
                 getLog().log(
@@ -235,6 +273,14 @@ public class RSSCore extends Plugin implements IResourceChangeListener {
         }
     }
     
+    private void channelSourceChanged(IFile file) throws CoreException {
+        Channel channel = channelManager.get(file);
+        if(channel != null) {
+            parse(file.getContents(), new ChannelBuilder(channel));
+            channel.firePropertyChange();
+        }
+    }
+    
     private class ResourceDeltaVisitor implements IResourceDeltaVisitor {
 
         /* (non-Javadoc)
@@ -248,9 +294,7 @@ public class RSSCore extends Plugin implements IResourceChangeListener {
                     channelManager.remove(file);
                 }
                 else if(delta.getKind() == IResourceDelta.CHANGED) {
-                    Channel channel = channelManager.get(file);
-                    parse(file.getContents(), new ChannelBuilder(channel));
-                    channel.firePropertyChange();
+                    channelSourceChanged(file);
                 }
                 
                 return false;

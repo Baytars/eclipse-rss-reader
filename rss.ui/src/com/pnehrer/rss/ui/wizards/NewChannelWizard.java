@@ -7,14 +7,17 @@ package com.pnehrer.rss.ui.wizards;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.INewWizard;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 
@@ -62,16 +65,31 @@ public class NewChannelWizard extends Wizard implements INewWizard {
         final IFile file = newFilePage.createNewFile();
         setNeedsProgressMonitor(true);
         try {
-            getContainer().run(true, true, new WorkspaceModifyOperation() {
+            getContainer().run(false, true, new WorkspaceModifyOperation() {
                     protected void execute(IProgressMonitor monitor) 
                         throws CoreException, 
                         InvocationTargetException, 
                         InterruptedException {
         
-                        RSSCore.getPlugin().download(url, file, monitor);
+                        RSSCore.getPlugin().download(
+                            url, 
+                            file, 
+                            monitor);
+                            
+                        IEditorRegistry registry = workbench.getEditorRegistry();
+                        IEditorDescriptor editor = registry.getDefaultEditor(file);
+                        if(editor == null) editor = registry.getDefaultEditor();
+
+                        IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
+                        if(windows != null && windows.length > 0) {
+                            windows[0].getActivePage().openEditor(
+                                file, 
+                                editor.getId(), 
+                                true);
+                        }
                     }
                 });
-            
+                
             return true;
         }
         catch(InterruptedException ex) {

@@ -4,12 +4,15 @@
  */
 package com.pnehrer.rss.core.internal;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
+import org.eclipse.core.resources.IFile;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -30,14 +33,18 @@ public class ChannelBuilder extends DefaultHandler {
     private static final String DATE = "date";
     private static final String URL = "url";
     private static final String NAME = "name";
+    private static final String UPDATE_INTERVAL = "updateInterval";
 
+    private final IFile file;
     private Channel channel;
     private final Collection items = new ArrayList();
     
-    public ChannelBuilder() {
+    public ChannelBuilder(IFile file) {
+        this.file = file;
     }
     
     public ChannelBuilder(Channel channel) {
+        file = channel.getFile();
         this.channel = channel;
     }
     
@@ -52,9 +59,20 @@ public class ChannelBuilder extends DefaultHandler {
         throws SAXException {
 
         if("".equals(uri) && CHANNEL.equals(localName)) {
-            if(channel == null) 
-                channel = new Channel(attributes.getValue("", URL));
-                
+            if(channel == null) {
+                try {
+                    channel = new Channel(
+                        new URL(attributes.getValue("", URL)), 
+                        file);
+                }
+                catch(MalformedURLException ex) {
+                    throw new SAXException(ex);
+                }
+            }
+
+            String updateInterval = attributes.getValue("", UPDATE_INTERVAL);
+            channel.setUpdateInterval(
+                updateInterval == null ? null : new Integer(updateInterval));
             channel.setTitle(attributes.getValue("", TITLE));
             channel.setLink(attributes.getValue("", LINK));
             channel.setDescription(attributes.getValue("", DESCRIPTION));

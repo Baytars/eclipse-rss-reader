@@ -18,14 +18,12 @@ import org.eclipse.core.resources.IProject;
  */
 public class ChannelManager {
 
-    private final Map channelFileMap = new HashMap();
     private final Map fileChannelMap =  new HashMap();
     private final Map projectFileMap = new HashMap();
     
-    public synchronized void add(Channel channel, IFile file) {
-        channelFileMap.put(channel, file);
-        fileChannelMap.put(file, channel);
-        
+    public synchronized void add(Channel channel) {
+        IFile file = channel.getFile();
+        fileChannelMap.put(channel.getFile(), channel);        
         IProject project = file.getProject();
         Collection files = (Collection)projectFileMap.get(project);
         if(files == null) {
@@ -37,32 +35,22 @@ public class ChannelManager {
     }
     
     public synchronized void remove(IFile file) {
-        Channel channel = (Channel)fileChannelMap.remove(file);
-        if(channel != null)
-            channelFileMap.remove(channel);
-            
+        fileChannelMap.remove(file);
         IProject project = file.getProject();
         Collection files = (Collection)projectFileMap.get(project);
-        if(files != null)
-            files.remove(file);
-            
-        if(files.isEmpty())
-            projectFileMap.remove(project);
+        if(files != null) {
+            files.remove(file);                
+            if(files.isEmpty())
+                projectFileMap.remove(project);
+        }
     }
     
     public synchronized void remove(IProject project) {
         Collection files = (Collection)projectFileMap.remove(project);
         if(files != null)
             for(Iterator i = files.iterator(); i.hasNext();) {
-                IFile file = (IFile)i.next();
-                Channel channel = (Channel)fileChannelMap.remove(file);
-                if(channel != null)
-                    channelFileMap.remove(channel);
+                fileChannelMap.remove(i.next());
             }
-    }
-    
-    public synchronized IFile get(Channel channel) {
-        return (IFile)channelFileMap.get(channel);
     }
     
     public synchronized Channel get(IFile file) {

@@ -18,6 +18,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import com.pnehrer.rss.core.RSSCore;
+import com.pnehrer.rss.ui.CorePropertyGroup;
+
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
@@ -25,6 +28,7 @@ public class WizardNewChannelPage extends WizardPage {
 
     private URL url;
     private Text urlText;
+    private CorePropertyGroup coreProperties;
 
     /**
      * @param pageName
@@ -75,6 +79,15 @@ public class WizardNewChannelPage extends WizardPage {
                 }
             });
         
+        coreProperties = new CorePropertyGroup(this, topLevel, SWT.SHADOW_NONE);
+        coreProperties.setLayoutData(new GridData(GridData.FILL_BOTH));
+        coreProperties.setUpdateInterval(
+            new Integer(
+                RSSCore
+                    .getPlugin()
+                    .getPluginPreferences()
+                    .getInt(RSSCore.PREF_UPDATE_INTERVAL)));
+        
         setErrorMessage(null);
         setMessage(null);
         setControl(topLevel);
@@ -82,5 +95,9 @@ public class WizardNewChannelPage extends WizardPage {
     
     public URL getURL() {
         return url;
+    }
+    
+    public Integer getUpdateInterval() {
+        return coreProperties.getUpdateInterval();
     }
 }

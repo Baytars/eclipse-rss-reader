@@ -7,6 +7,7 @@
     version="1.0">
     
     <xsl:param name="channelURL"/>
+    <xsl:param name="updateInterval">30</xsl:param>
     
     <xsl:template match="rss">
     	<xsl:apply-templates select="channel"/>
@@ -19,7 +20,9 @@
     <xsl:template match="channel | rss:channel">
     	<xsl:element name="channel">
     		<xsl:attribute name="url"><xsl:value-of select="$channelURL"/></xsl:attribute>
-    		<xsl:apply-templates select="node()"/>
+    		<xsl:attribute name="updateInterval"><xsl:value-of select="$updateInterval"/></xsl:attribute>
+    		<xsl:apply-templates select="title | rss:title | link | rss:link | description | rss:description | pubDate"/>
+    		<xsl:apply-templates select="node()[not(self::title | self::rss:title | self::link | self::rss:link | self::description | self::rss:description | self::pubDate)]"/>
     	</xsl:element>
     </xsl:template>
     
@@ -29,7 +32,8 @@
     
     <xsl:template match="image | rss:image[@rdf:about]">
     	<xsl:element name="image">
-    		<xsl:apply-templates select="node()"/>
+    		<xsl:apply-templates select="title | rss:title | link | rss:link | url | rss:url"/>
+    		<xsl:apply-templates select="node()[not(self::title | self::rss:title | self::link | self::rss:link | self::url | self::rss:url)]"/>
     	</xsl:element>
     </xsl:template>
 
@@ -43,7 +47,8 @@
     
     <xsl:template match="item | rss:item">
     	<xsl:element name="item">
-    		<xsl:apply-templates select="node()"/>
+    		<xsl:apply-templates select="title | rss:title | link | rss:link | description | rss:description | pubDate"/>
+    		<xsl:apply-templates select="node()[not(self::title | self::rss:title | self::link | self::rss:link | self::description | self::rss:description | self::pubDate)]"/>
     	</xsl:element>
     </xsl:template>
 
@@ -53,7 +58,8 @@
     
     <xsl:template match="rss:textinput[@rdf:about]">
     	<xsl:element name="textInput">
-    		<xsl:apply-templates select="node()"/>
+    		<xsl:apply-templates select="rss:title | rss:link | rss:description | rss:name"/>
+    		<xsl:apply-templates select="node()[not(self::rss:title | self::rss:link | self::rss:description | self::rss:name)]"/>
     	</xsl:element>
     </xsl:template>
 

@@ -42,5 +42,45 @@
             id="rss.ui.wizard1">
       </wizard>
    </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            nameFilter="*.rss"
+            id="rss.ui.objectContribution1">
+         <menu
+               label="RSS"
+               id="rss.ui.menu1">
+            <groupMarker
+                  name="additions">
+            </groupMarker>
+         </menu>
+         <action
+               label="&amp;Update"
+               class="com.pnehrer.rss.ui.actions.UpdateAction"
+               menubarPath="rss.ui.menu1/additions"
+               enablesFor="+"
+               id="rss.ui.action1">
+         </action>
+      </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            objectClass="org.eclipse.core.resources.IFile"
+            name="RSS"
+            nameFilter="*.rss"
+            class="com.pnehrer.rss.ui.RSSPropertyPage"
+            id="rss.ui.page1">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="RSS"
+            class="com.pnehrer.rss.ui.RSSPreferencePage"
+            id="com.pnehrer.rss">
+      </page>
+   </extension>
 
 </plugin>

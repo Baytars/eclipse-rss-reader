@@ -1,3 +1,7 @@
+/*
+ * Created on Nov 16, 2003
+ * Version $Id$
+ */
 package com.pnehrer.rss.ui;
 
 import org.eclipse.ui.plugin.*;
@@ -6,6 +10,7 @@ import java.util.*;
 
 /**
  * The main plugin class to be used in the desktop.
+ * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
 public class RSSUI extends AbstractUIPlugin {
     
