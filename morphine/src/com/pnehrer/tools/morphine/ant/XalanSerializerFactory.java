@@ -28,14 +28,51 @@
 
 package com.pnehrer.tools.morphine.ant;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
+
+import javax.xml.transform.OutputKeys;
+
+import org.apache.xalan.serialize.Method;
+import org.apache.xalan.serialize.Serializer;
+import org.apache.xalan.serialize.SerializerFactory;
+import org.apache.xalan.templates.OutputProperties;
+import org.apache.xml.serialize.OutputFormat;
+
 import org.xml.sax.ContentHandler;
 
 /**
- * @author Peter Nehrer
+ * @author pnehrer
  */
-public interface ContentHandlerFactory {
+public class XalanSerializerFactory implements ContentHandlerFactory {
+	
+	/**
+	 * @see com.pnehrer.tools.morphine.ant.ContentHandlerFactory#create(java.util.Map)
+	 */
+	public ContentHandler create(Map properties)
+		throws ContentHandlerFactoryException {
+			
+		String method = (String)properties.remove("method");
+		String output = (String)properties.remove("output");
+        
+		Properties props = OutputProperties.getDefaultMethodProperties(method == null ? Method.XML : method);
+		for(Iterator i = properties.entrySet().iterator(); i.hasNext();) {
+			Map.Entry item = (Map.Entry)i.next();
+		    props.setProperty(String.valueOf(item.getKey()), String.valueOf(item.getValue()));
+		}
 
-	public ContentHandler create(Map properties) 
-		throws ContentHandlerFactoryException;
+        Serializer serializer = SerializerFactory.getSerializer(props);
+		try {
+			if(output == null) serializer.setOutputStream(System.out);
+			else serializer.setWriter(new FileWriter(output));
+
+		    return serializer.asContentHandler();
+		}
+		catch(IOException ex) {
+			throw new ContentHandlerFactoryException(ex);
+		}
+	}
 }

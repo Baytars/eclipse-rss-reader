@@ -30,13 +30,22 @@ package com.pnehrer.tools.morphine;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.stream.StreamSource;
+
 import org.xml.sax.Attributes;
 
 /**
- * @author Peter Nehrer
+ * @author pnehrer
  */
-public interface SourceFactory {
+public class FileSourceFactory implements SourceFactory {
 
+	/**
+	 * @see com.pnehrer.tools.morphine.SourceFactory#createSource(org.xml.sax.Attributes, java.lang.String)
+	 */
 	public Source createSource(Attributes attrs, String content)
-		throws TransformerException;
+		throws TransformerException {
+
+		return new StreamSource(attrs.getValue("", "absolute-path"));
+	}
+
 }

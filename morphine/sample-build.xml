@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="sample morphine build" default="ls" basedir="/home/pnehrer/workspace/morphine">
+	
+	<property name="pwd" location="."/>
+	<property name="morphine.lib" location="bin"/>
+	<property name="jaxp.lib" location="/home/pnehrer/xalan-j_2_4_0/bin/xml-apis.jar"/>
+	<property name="xalan.lib" location="/home/pnehrer/xalan-j_2_4_0/bin/xalan.jar"/>
+	
+	<target name="init" unless="initialized">
+		<typedef name="reader" classname="com.pnehrer.tools.morphine.ant.types.ReaderElement" classpath="${morphine.lib}:${xalan.lib}:${jaxp.lib}"/>
+		<typedef name="processor" classname="com.pnehrer.tools.morphine.ant.types.ProcessorElement" classpath="${morphine.lib}:${xalan.lib}:${jaxp.lib}"/>
+		<typedef name="transformer" classname="com.pnehrer.tools.morphine.ant.types.TransformerElement" classpath="${morphine.lib}:${xalan.lib}:${jaxp.lib}"/>
+		<typedef name="multiplexor" classname="com.pnehrer.tools.morphine.ant.types.MultiplexorElement" classpath="${morphine.lib}:${xalan.lib}:${jaxp.lib}"/>
+		<taskdef name="xsltproc" classname="com.pnehrer.tools.morphine.ant.taskdefs.Transform" classpath="${morphine.lib}:${xalan.lib}:${jaxp.lib}"/>
+		<property name="initialized" value="true"/>
+	</target>
+	
+	<target name="ls" depends="init">
+		<xsltproc src="${pwd}/src">
+			<reader classname="com.pnehrer.tools.morphine.FileSystemReader" classpath="${morphine.lib}:${xalan.lib}:${jaxp.lib}"/>
+			<processor classname="com.pnehrer.tools.morphine.ant.XalanSerializerFactory" classpath="${morphine.lib}:${xalan.lib}:${jaxp.lib}">
+				<property name="method" value="xml"/>
+   				<property name="indent" value="yes"/>
+  				<property name="omit-xml-declaration" value="yes"/>
+  			</processor>
+		</xsltproc>
+	</target>
+	
+	<target name="ls-xml" depends="init">
+		<xsltproc src="${pwd}">
+			<reader classname="com.pnehrer.tools.morphine.FileSystemReader" classpath="${morphine.lib}:${xalan.lib}:${jaxp.lib}"/>
+			<transformer src="${pwd}/xml-files.xsl" classname="org.apache.xalan.processor.TransformerFactoryImpl" classpath="${morphine.lib}:${xalan.lib}:${jaxp.lib}">
+    			<processor classname="com.pnehrer.tools.morphine.ant.XalanSerializerFactory" classpath="${morphine.lib}:${xalan.lib}:${jaxp.lib}">
+    				<property name="method" value="xml"/>
+    				<property name="indent" value="yes"/>
+    				<property name="omit-xml-declaration" value="yes"/>
+    			</processor>
+    		</transformer>
+		</xsltproc>
+	</target>
+
+	<target name="ls-xml-and-build2html" depends="init">
+		<xsltproc src="${pwd}">
+			<reader classname="com.pnehrer.tools.morphine.FileSystemReader" classpath="${morphine.lib}:${xalan.lib}:${jaxp.lib}"/>
+			<transformer src="${pwd}/xml-files.xsl" classname="org.apache.xalan.processor.TransformerFactoryImpl" classpath="${morphine.lib}:${xalan.lib}:${jaxp.lib}">
+				<multiplexor>
+					<processor classname="com.pnehrer.tools.morphine.ant.XalanSerializerFactory" classpath="${morphine.lib}:${xalan.lib}:${jaxp.lib}">
+						<property name="method" value="xml"/>
+						<property name="indent" value="yes"/>
+						<property name="omit-xml-declaration" value="yes"/>
+					</processor>
+					<processor classname="com.pnehrer.tools.morphine.ant.FileTransformerFactory" classpath="${morphine.lib}:${xalan.lib}:${jaxp.lib}">
+						<property name="source-factory" value="com.pnehrer.tools.morphine.FileSourceFactory"/>
+						<property name="xsl" value="${pwd}/build2html.xsl"/>
+					</processor>
+				</multiplexor>
+    		</transformer>
+		</xsltproc>
+	</target>
+</project>

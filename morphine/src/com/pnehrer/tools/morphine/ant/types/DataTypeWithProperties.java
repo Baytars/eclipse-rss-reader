@@ -1,3 +1,31 @@
+/**
+ * Copyright (c) 2002 Peter Nehrer
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ *
+ * $Id$
+ */
+
 package com.pnehrer.tools.morphine.ant.types;
 
 import java.util.ArrayList;
@@ -20,10 +48,8 @@ public class DataTypeWithProperties extends DataType {
 	    }
 	
 	    public void setName(String name) {
-	    	if(name != null) throw new IllegalStateException("name has already been set");
-	    	
 	        this.name = name;
-	        updatePropertyName(this);
+	    	updateProperty();
 	    }
 	
 	    public String getValue() {
@@ -32,24 +58,14 @@ public class DataTypeWithProperties extends DataType {
 	
 	    public void setValue(String value) {
 	        this.value = value;
+	        updateProperty();
 	    }
-	
-	    public boolean equals(Object other) {
-	        if(other == this) return true;
-	        else if(other instanceof NameValuePair) {
-	            NameValuePair obj = (NameValuePair)other;
-	            return (name == null ? obj.getName() == null : name.equals(obj.getName()))
-	                && (value == null ? obj.getValue() == null : value.equals(obj.getValue()));
-	        }
-	        else return false;
-	    }
-	
-	    public int hashCode() {
-	        int code = 17;
-	        code = 37 * code + (name == null ? 0 : name.hashCode());
-	        code = 37 * code + (value == null ? 0 : value.hashCode());
-	        return code;
-	    }
+
+		private void updateProperty() {
+			if(name != null && value != null) {
+				properties.put(name, value);
+			}
+		}
 	}
 
     private List newProps;
@@ -69,10 +85,5 @@ public class DataTypeWithProperties extends DataType {
     public String getProperty(String name) {
         if(name == null) return null;
         else return (String)properties.get(name);
-    }
-    
-    private void updatePropertyName(NameValuePair obj) {
-    	properties.put(obj.getName(), obj);
-    	newProps.remove(obj);
     }
 }
