@@ -31,7 +31,7 @@ google_alternate_color = "ff6600";
 google_ad_width = 160;
 google_ad_height = 600;
 google_ad_format = "160x600_as";
-google_ad_channel ="";
+google_ad_channel ="3235756291";
 google_color_border = "FF6600";
 google_color_bg = "FFFFFF";
 google_color_link = "FF6600";
@@ -43,7 +43,13 @@ google_color_text = "000000";
 </script></DIV>
 <DIV class="content"><!-- tpl:put name="body" -->
 		<H1>Download</H1>
-		<P>Two target environments are supported:</P>
+		<P>The Eclipse RSS Reader is currently available in two major versions. The earlier version, 1.x, is compatible with products based on Eclipse 2.1.x; it is not compatible with Eclipse 3.0. Version 2.x is the forward development version and has been  written specifically for Eclipse 3.0. At the moment, the two versions provide the same feature set, but this will likely change in the future.</P>
+		<H2>Eclipse 3.0</H2>
+		<P>To obtain the Eclipse RSS Reader for your Eclipse 3.0 environment, download <A
+			href="http://prdownloads.sourceforge.net/morphine/com.pnehrer.rss_2.0.0.bin.dist.zip?download">com.pnehrer.rss_2.0.0.bin.dist.zip</A> and unzip it into your <EM>eclipse</EM> directory. To obain the plug-in sources, download <A
+			href="http://prdownloads.sourceforge.net/morphine/com.pnehrer.rss.source_2.0.0.bin.dist.zip?download">com.pnehrer.rss.source_2.0.0.bin.dist.zip</A>. An installer will be provided in the future to simplify the installation.</P>
+		<H2>Eclipse 2.1 and compatible</H2>
+		<P>Version 1.x of the Eclipse RSS Reader supports two target environment options:</P>
 		<OL>
 			<LI>Eclipse 2.1.x. This option is suitable for all applications
 		based on Eclipse 2.1.x.</LI>
@@ -51,7 +57,7 @@ google_color_text = "000000";
 		v5.1 for MS Windows. This option is suitable specifically for the
 		Windows version of WSAD.</LI>
 		</OL>
-		<P>There are three ways to install the Eclipse RSS Reader:</P>
+		<P>There are three ways to install this version of the Eclipse RSS Reader:</P>
 		<OL>
 			<LI>Download and execute the appropriate installer. This is the recommended
 installation method for new users. Eclipse 2.1.x users should download
@@ -80,9 +86,8 @@ to extend the Eclipse RSS Reader may download
 <A
 				href="http://prdownloads.sourceforge.net/morphine/com.pnehrer.rss.source_1.3.0.bin.dist.zip?download">com.pnehrer.rss.source_1.3.0.bin.dist.zip</A>, which contains developer
 documentation and source code.</LI>
-		</OL><P>This software has been developed and tested on Slackware Linux 9.1 with
-GTK, as well as MS Windows 2000. Note that this version has NOT been
-developed for, or tested with, Eclipse 3.0.</P>
+		</OL><P>This software has been developed and tested on Slackware Linux 10 with
+GTK, as well as MS Windows 2000.</P>
 
 	<!-- /tpl:put --></DIV>
 <DIV class="footer"><A href="http://sourceforge.net"><IMG
@@ -102,7 +107,7 @@ developed for, or tested with, Eclipse 3.0.</P>
 	width="125" height="50" border="0" alt="Get Firefox"></A><BR>
 	Copyright &copy; 2003, 2004 <A
 	href="mailto:pnehrer@users.sourceforge.net">Peter Nehrer</A>.<BR>
-Version $Id$.</DIV>
+Version <!-- tpl:put name="version" -->$Id$<!-- /tpl:put -->.</DIV>
 </BODY>
 </HTML>
 <!-- /tpl:insert -->
