@@ -4,10 +4,12 @@
  */
 package com.pnehrer.rss.core;
 
+import org.eclipse.core.runtime.IAdaptable;
+
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
-public interface IRSSElement {
+public interface IRSSElement extends IAdaptable {
 
     public IChannel getChannel();
 
