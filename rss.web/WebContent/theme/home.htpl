@@ -6,12 +6,13 @@
 <META name="GENERATOR" content="IBM WebSphere Studio">
 <META http-equiv="Content-Style-Type" content="text/css">
 <LINK href="/presence/theme/blue.css" rel="stylesheet" type="text/css">
+<LINK rel="shortcut icon" href="/presence/theme/icons/favicon.ico" type="image/x-icon">
 <!-- tpl:insert attribute="head" --><TITLE>RSS</TITLE><!-- /tpl:insert -->
 </HEAD>
 <BODY>
-<DIV class="extLinkDiv"><SPAN style="vertical-align: bottom"><A class="extLink" href="http://pnehrer.freeshell.org/presence/projects/rss">pnehrer.com</A> | <A class="extLink" href="http://sourceforge.net/projects/morphine">SourceForge.net</A></SPAN></DIV>
-<DIV class="header"><IMG border="0"
-	src="/presence/theme/icons/rss-banner.png" width="500" height="64" alt="Eclipse RSS Reader"></DIV>
+<DIV class="extLinkDiv"><SPAN style="vertical-align: bottom"><A class="extLink" href="http://pnehrer.freeshell.org/presence/projects/rss/index.html">pnehrer.com</A> | <A class="extLink" href="http://sourceforge.net/projects/morphine">SourceForge.net</A></SPAN></DIV>
+<DIV class="header"><A href="/presence/projects/rss/index.html"><IMG border="0"
+	src="/presence/theme/icons/rss-banner.png" width="500" height="64" alt="Eclipse RSS Reader"></A></DIV>
 <!-- siteedit:navbar target="sibling,self" spec="/presence/theme/leftnav.html" -->
 <DIV class="leftnav">
 <DIV class="taba0"><img src="/presence/theme/icons/navigator_16.png" alt="Home" border="0" class="icon">&nbsp;Home</DIV>
