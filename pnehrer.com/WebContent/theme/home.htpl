@@ -8,24 +8,28 @@
 <!-- tpl:insert attribute="head" --><title>pnehrer.com</title><!-- /tpl:insert -->
 <script language="javascript">
 <!--
-function search(what) {
-	if((window.event && (window.event.keyCode == 13 || window.event.keyCode == 10)) || (event && (event.keyCode == 13 || event.keyCode == 10)))
+function search(what, event) {
+	if(!event)
+		event = window.event;
+		
+	if(event && (event.keyCode == 13 || event.keyCode == 10))
 		window.location.replace("http://www.google.com/search?q=" + escape(what.value + " site:pnehrer.freeshell.org"));
 }
 //-->
 </script>
 </head>
 <body><div
-	class="searchForm">Search: <input 
+	class="searchForm"><!-- siteedit:navbar target="topchildren" spec="/presence/theme/topnav.html" --><!-- /siteedit:navbar -->Search: <input
+	class="searchText" 
 	type="text" 
 	name="q"
 	size="12"
-	onkeypress="search(this)"></div><div 
+	onkeypress="search(this, event)"></div><div 
 	class="header"><a 
 	href="/presence/home/index.html"><img 
 	border="0"
 	src="/presence/theme/banner.png" 
-	width="224" 
+	width="320" 
 	height="32"
 	alt="pnehrer.com"></a></div><table 
 	width="100%" 

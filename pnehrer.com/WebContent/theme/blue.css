@@ -1,7 +1,6 @@
 .menuBox {
 	border: 2px solid;
 	margin-left: 4px;
-	font-family: sans-serif;
 	font-size: smaller;
 }
 
@@ -25,8 +24,15 @@
 	float: right;
 	padding: 8px;
 	color: white;
-	font-family: sans-serif;
 	font-size: smaller;
+}
+
+.searchText {
+	border-style: none;
+}
+
+.searchText:focus {
+	outline: 1px solid white;
 }
 
 .header {
@@ -68,13 +74,27 @@ a:visited {
 	text-decoration: none;
 }
 
-body {
-	margin: 0px;
+.extLink {
+	color: white;
 }
 
-h1, h2, h3 {
-	color: navy;
+a.extLink:link, a.extLink:visited {
+	color: white;
+	text-decoration: none;
+}
+
+a.extLink:hover {
+	color: white;
+	text-decoration: underline;
+}
+
+body {
+	margin: 0px;
 	font-family: sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	color: navy;
 }
 
 h1 {
@@ -83,10 +103,9 @@ h1 {
 
 dt {
 	color: navy;
-	font-family: sans-serif;
 	font-weight: bolder;
 }
 
-dd {
+dl, dd {
 	margin-bottom: 6px;
 }
