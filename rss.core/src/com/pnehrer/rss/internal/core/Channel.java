@@ -739,7 +739,15 @@ public class Channel
                         
                             case IResourceDelta.REMOVED:
                                 if((delta.getFlags() & IResourceDelta.MOVED_TO) == 0)
-                                    passivate();
+                                	passivate();
+                                else if (!"rss".equals(delta.getMovedToPath().getFileExtension())) {
+                                    file = 
+                                        ResourcesPlugin
+                                            .getWorkspace()
+                                            .getRoot()
+                                            .getFile(delta.getMovedToPath());
+                                	passivate();
+                                }
                                 else {
                                     File oldCache = getCache();
                                     file = 
@@ -747,6 +755,9 @@ public class Channel
                                             .getWorkspace()
                                             .getRoot()
                                             .getFile(delta.getMovedToPath());
+                                    file.setSessionProperty(
+                                    	ChannelManager.CHANNEL_KEY, 
+										this);
                                     if(oldCache.isFile()) {
                                         File cache = getCache();
                                         File parent = cache.getParentFile();

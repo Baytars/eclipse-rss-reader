@@ -24,7 +24,7 @@ import com.pnehrer.rss.core.RSSCore;
  */
 public class ChannelManager {
     
-    private static final QualifiedName CHANNEL_KEY = 
+    static final QualifiedName CHANNEL_KEY = 
         new QualifiedName(RSSCore.PLUGIN_ID, "channel");
     
     private static ChannelManager instance;

@@ -442,9 +442,7 @@ public class ChannelDetailView
                 // when this method returns.
                 ctrl.getDisplay().syncExec(new Runnable() {
                     public void run() {
-                        if(delta.getKind() == IResourceDelta.REMOVED
-                            && (delta.getFlags() & IResourceDelta.MOVED_TO) == 0) {
-
+                        if(delta.getKind() == IResourceDelta.REMOVED) {
                             channel = null;
                             processChannelChange();
                             IStructuredSelection selection = 

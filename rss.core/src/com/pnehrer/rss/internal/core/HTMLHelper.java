@@ -300,22 +300,45 @@ class HTMLHelper {
             }
 
             if(ch == '&') {
+            	reader.mark(0);
                 StringBuffer buf = new StringBuffer();
+                int i = 0;
                 while((ch = reader.read()) != -1) {
-                    if(ch == ';')
-                        break;
+                    if(!Character.isLetterOrDigit((char)ch) && ch != '#' && i > 0)
+                    	break;
                 
                     buf.append((char)ch);
+                    ++i;
                 }
-        
-                String entity = buf.toString();
-                Integer value = (Integer)table.get(entity);
-                if(value == null) {
-                    if(entity.startsWith("#"))
-                        ch = Integer.parseInt(entity.substring(1));
+                
+                if (ch != ';') {
+                	reader.reset();
+                	ch = '&';
                 }
-                else
-                    ch = value.intValue();
+                else {
+	                String entity = buf.toString();
+	                Integer value = (Integer)table.get(entity);
+	                if(value == null) {
+	                    if(entity.startsWith("#")) {
+	                    	try {
+		                    	if (entity.length() > 1 && entity.charAt(1) == 'x')
+		                    		ch = Integer.parseInt(entity.substring(2), 16);
+		                    	else
+		                    		ch = Integer.parseInt(entity.substring(1));
+	                    	}
+	                    	catch (NumberFormatException ex) {
+	                    		reader.reset();
+	                    		ch = '&';
+	                    	}
+	                    }
+	                    else {
+	                    	reader.reset();
+	                    	ch = '&';
+	                    }
+	                }
+	                else
+	                    ch = value.intValue();
+                }
             }
 
             if(Character.isWhitespace((char)ch)) {
