@@ -1,0 +1,5 @@
+#Eclipse RSS Reader v1.2.0
+#Wed Mar 09 09:17:44 EST 2005
+translatorId=com.pnehrer.rss.core.default
+url=http\://www.vonage-forum.com/backend.php
+updateInterval=30

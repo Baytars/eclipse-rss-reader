@@ -1,0 +1,5 @@
+#Eclipse RSS Reader v1.2.0
+#Wed Mar 09 09:18:16 EST 2005
+translatorId=com.pnehrer.rss.core.default
+url=http\://www.bloggersblog.com/rss.xml
+updateInterval=30
