@@ -1,4 +1,7 @@
 #!/bin/sh
+# Creates mirror update sites.
+# Author: Peter Nehrer <pnehrer@freeshell.org>
+# Version $Id$
 
 if [ $# -lt 3 ] ; then \
 	echo usage: `basename $0` SITE_XML FEATURE_MAP MIRRORS
