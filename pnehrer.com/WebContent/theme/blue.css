@@ -21,6 +21,20 @@
 	font-weight: bolder;
 }
 
+.searchForm {
+	float: right;
+	padding: 8px;
+	color: white;
+	font-family: sans-serif;
+	font-size: smaller;
+}
+
+.header {
+	padding: 2px;
+	background-color: black;
+	margin: 4px 4px 0px 4px;
+}
+
 .content {
 	border: 2px solid;
 	margin: 4px 4px 0px 0px;
@@ -40,17 +54,17 @@
 }
 
 a:link {
-	color: #0000cc;	
+	color: navy;	
 	text-decoration: none;
 }
 
-a:hover {
-	color: #0099cc;	
+a:link:hover, a:visited:hover {
+	color: navy;	
 	text-decoration: underline;
 }
 
 a:visited {
-	color: #000099;	
+	color: #000060;	
 	text-decoration: none;
 }
 
@@ -61,6 +75,10 @@ body {
 h1, h2, h3 {
 	color: navy;
 	font-family: sans-serif;
+}
+
+h1 {
+	margin-top: 0px;
 }
 
 dt {

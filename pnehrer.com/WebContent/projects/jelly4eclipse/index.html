@@ -6,19 +6,35 @@
 <meta name="GENERATOR" content="IBM WebSphere Studio">
 <link rel="stylesheet" href="/presence/theme/blue.css" type="text/css">
 <!-- tpl:put name="head" --><!-- /tpl:put -->
+<script language="javascript">
+<!--
+function search(what) {
+	if((window.event && (window.event.keyCode == 13 || window.event.keyCode == 10)) || (event && (event.keyCode == 13 || event.keyCode == 10)))
+		window.location.replace("http://www.google.com/search?q=" + escape(what.value + " site:pnehrer.freeshell.org"));
+}
+//-->
+</script>
 </head>
-<body>
-<div style="border-bottom: 2px solid; background-color: black">
-<a href="/presence/home/index.html"><img border="0"
-	src="/presence/theme/banner.png" width="224" height="32"
-	alt="pnehrer.com"></a>
-</div>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<body><div
+	class="searchForm">Search: <input 
+	type="text" 
+	name="q"
+	size="12"
+	onkeypress="search(this)"></div><div 
+	class="header"><a 
+	href="/presence/home/index.html"><img 
+	border="0"
+	src="/presence/theme/banner.png" 
+	width="224" 
+	height="32"
+	alt="pnehrer.com"></a></div><table 
+	width="100%" 
+	border="0" 
+	cellpadding="0" 
+	cellspacing="0">
 	<tr>
-		<td valign="top" align="center" width="150">
-<!-- siteedit:navbar spec="/presence/theme/leftnav2.html" target="ancestor" -->
-<IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends" border="0">
-<TABLE width="100%" cellpadding="0" cellspacing="0">
+		<td valign="top" align="center" width="148"><!-- siteedit:navbar spec="/presence/theme/leftnav2.html" target="ancestor" -->
+<IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends"><TABLE width="100%" cellpadding="0" cellspacing="0">
 <TBODY><TR><TD>
 <DIV class="menuBox">
 <DIV class="menuAncestor"><A href="/presence/projects/index.html"><IMG src="/presence/theme/icons/exec.png" alt="Projects" class="icon"> Projects</A></DIV>
@@ -26,10 +42,8 @@
 </TD><TD width="8">
 </TD></TR>
 </TBODY></TABLE>
-<!-- /siteedit:navbar -->
-<!-- siteedit:navbar spec="/presence/theme/leftnav.html" target="self,sibling" -->
-<IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends" border="0">
-<TABLE width="100%" cellpadding="0" cellspacing="0">
+<!-- /siteedit:navbar --><!-- siteedit:navbar spec="/presence/theme/leftnav.html" target="self,sibling" -->
+<IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends"><TABLE width="100%" cellpadding="0" cellspacing="0">
 <TBODY><TR><TD>
 <DIV class="menuBox">
 <DIV class="menu"><A href="/presence/projects/cep/index.html"><IMG src="/presence/theme/icons/folder_blue_open.png" alt="Castor Plug-in" class="icon"> Castor Plug-in</A></DIV>
@@ -40,10 +54,8 @@
 <IMG src="/presence/theme/blackdot.gif" width="8" height="2" alt="aggregates">
 </TD></TR>
 </TBODY></TABLE>
-<!-- /siteedit:navbar -->
-<!-- siteedit:navbar target="children" spec="/presence/theme/leftnav.html" -->
-<IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends" border="0">
-<TABLE width="100%" cellpadding="0" cellspacing="0">
+<!-- /siteedit:navbar --><!-- siteedit:navbar target="children" spec="/presence/theme/leftnav.html" -->
+<IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends"><TABLE width="100%" cellpadding="0" cellspacing="0">
 <TBODY><TR><TD>
 <DIV class="menuBox">
 <DIV class="menu"><A href="#"><IMG src="/presence/theme/icons/down.png" alt="Download" class="icon"> Download</A></DIV>
@@ -52,12 +64,10 @@
 </TD><TD width="8">
 </TD></TR>
 </TBODY></TABLE>
-<!-- /siteedit:navbar -->
-		</td>
+<!-- /siteedit:navbar --></td>
 		<td valign="top"><div class="content"><!-- tpl:put name="body" -->This page is under construction.<!-- /tpl:put --></div></td>
 	</tr>
-</table>
-<div class="footer"><!-- tpl:insert page="/footer.html" -->Copyright &copy; 2003 <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>.<br>Version $Id$.<!-- /tpl:insert --></div>
-</body>
+</table><div 
+	class="footer">Copyright &copy; 2003 <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>.<br>Version $Id$.</div></body>
 </html>
 <!-- /tpl:insert -->
