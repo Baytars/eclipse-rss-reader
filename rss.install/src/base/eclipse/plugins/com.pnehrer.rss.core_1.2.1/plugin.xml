@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="com.pnehrer.rss.core"
+   name="%pluginName"
+   version="1.2.1"
+   provider-name="%providerName"
+   class="com.pnehrer.rss.core.RSSCore">
+
+   <runtime>
+      <library name="core.jar">
+         <export name="*"/>
+         <packages prefixes="com.pnehrer.rss.core,com.pnehrer.rss.internal.core"/>
+      </library>
+      <library name="xalan.jar">
+         <packages prefixes="org.apache.xalan,org.apache.xml,org.apache.xpath"/>
+      </library>
+      <library name="xercesImpl.jar">
+         <packages prefixes="org.apache.html,org.apache.wml,org.apache.xerces,org.apache.xml.serialize,org.w3c.dom.html"/>
+      </library>
+      <library name="xml-apis.jar">
+         <export name="*"/>
+         <packages prefixes="javax.xml.parsers,javax.xml.transform,org.apache.xmlcommons,org.w3c.dom,org.xml.sax"/>
+      </library>
+   </runtime>
+   <requires>
+      <import plugin="org.eclipse.core.resources"/>
+   </requires>
+
+
+   <extension-point id="translator" name="Source Translator" schema="schema/translator.exsd"/>
+
+   <extension
+         point="com.pnehrer.rss.core.translator">
+      <translator
+            description="Default translator for RSS versions 0.90, 0.91, 0.92, 1.0, and 2.0."
+            class="com.pnehrer.rss.internal.core.DefaultTranslator"
+            id="default">
+      </translator>
+   </extension>
+   <extension
+         id="update"
+         name="RSS Element Update"
+         point="org.eclipse.core.resources.markers">
+      <persistent
+            value="true">
+      </persistent>
+      <attribute
+            name="link">
+      </attribute>
+   </extension>
+
+</plugin>

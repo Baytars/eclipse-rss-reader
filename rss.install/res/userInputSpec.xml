@@ -1,0 +1,11 @@
+<userInput>
+	<panel order="0">
+		<field type="label" txt="Eclipse installation"/>
+		<field type="search" variable="ECLIPSE_HOME">
+			<description txt="Specify path to your Eclipse installation directory."/>
+			<spec txt="Path to Eclipse:" checkfilename=".eclipseproduct" type="directory" result="directory">
+				<choice value="eclipse"/>
+			</spec>
+		</field>
+	</panel>
+</userInput>

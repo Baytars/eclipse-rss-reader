@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="com.pnehrer.rss"
+   name="%pluginName"
+   version="1.2.1"
+   provider-name="%providerName">
+
+   <runtime>
+   </runtime>
+
+</plugin>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>rss.install</name>
+	<comment></comment>
+	<projects>
+		<project>rss</project>
+		<project>rss.core</project>
+		<project>rss.feature</project>
+		<project>rss.feature.wsad</project>
+		<project>rss.ui</project>
+		<project>rss.ui.wsad</project>
+	</projects>
+	<buildSpec>
+	</buildSpec>
+	<natures>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>compiler.jar</name>
+			<type>1</type>
+			<location>/home/pnehrer/IzPack/lib/compiler.jar</location>
+		</link>
+	</linkedResources>
+</projectDescription>

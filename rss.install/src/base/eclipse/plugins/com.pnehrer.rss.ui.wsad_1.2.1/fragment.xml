@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fragment
+   id="com.pnehrer.rss.ui.wsad"
+   name="RSS UI extensions for WSAD"
+   version="1.2.1"
+   provider-name="Peter Nehrer"
+   plugin-id="com.pnehrer.rss.ui"
+   plugin-version="1.2.1">
+
+   <runtime>
+      <library name="wsad.jar"/>
+   </runtime>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="com.ibm.etools.webbrowser"/>
+   </requires>
+
+
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="com.ibm.etools.j2ee.J2EEPerspective">
+         <view
+               relative="com.ibm.etools.j2ee.ui.view.J2EENavigator"
+               visible="false"
+               relationship="stack"
+               id="com.pnehrer.rss.ui.views.ChannelNavigator">
+         </view>
+         <viewShortcut
+               id="com.pnehrer.rss.ui.views.ChannelNavigator">
+         </viewShortcut>
+         <newWizardShortcut
+               id="com.pnehrer.rss.ui.wizards.NewChannelWizard">
+         </newWizardShortcut>
+         <showInPart
+               id="com.pnehrer.rss.ui.views.ChannelDetail">
+         </showInPart>
+         <showInPart
+               id="com.pnehrer.rss.ui.views.ChannelNavigator">
+         </showInPart>
+         <perspectiveShortcut
+               id="com.pnehrer.rss.ui.RSSPerspective">
+         </perspectiveShortcut>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="com.ibm.etools.server.ui.perspective">
+         <view
+               relative="org.eclipse.ui.views.ResourceNavigator"
+               visible="false"
+               relationship="stack"
+               id="com.pnehrer.rss.ui.views.ChannelNavigator">
+         </view>
+         <viewShortcut
+               id="com.pnehrer.rss.ui.views.ChannelNavigator">
+         </viewShortcut>
+         <newWizardShortcut
+               id="com.pnehrer.rss.ui.wizards.NewChannelWizard">
+         </newWizardShortcut>
+         <showInPart
+               id="com.pnehrer.rss.ui.views.ChannelDetail">
+         </showInPart>
+         <showInPart
+               id="com.pnehrer.rss.ui.views.ChannelNavigator">
+         </showInPart>
+         <perspectiveShortcut
+               id="com.pnehrer.rss.ui.RSSPerspective">
+         </perspectiveShortcut>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="com.ibm.etools.webtools.webperspective.WebToolsPerspective">
+         <view
+               relative="com.ibm.etools.webtools.WebView"
+               visible="false"
+               relationship="stack"
+               id="com.pnehrer.rss.ui.views.ChannelNavigator">
+         </view>
+         <viewShortcut
+               id="com.pnehrer.rss.ui.views.ChannelNavigator">
+         </viewShortcut>
+         <newWizardShortcut
+               id="com.pnehrer.rss.ui.wizards.NewChannelWizard">
+         </newWizardShortcut>
+         <showInPart
+               id="com.pnehrer.rss.ui.views.ChannelDetail">
+         </showInPart>
+         <showInPart
+               id="com.pnehrer.rss.ui.views.ChannelNavigator">
+         </showInPart>
+         <perspectiveShortcut
+               id="com.pnehrer.rss.ui.RSSPerspective">
+         </perspectiveShortcut>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="com.ibm.etools.xml.tools.XMLPerspective">
+         <view
+               relative="org.eclipse.ui.views.ResourceNavigator"
+               visible="false"
+               relationship="stack"
+               id="com.pnehrer.rss.ui.views.ChannelNavigator">
+         </view>
+         <viewShortcut
+               id="com.pnehrer.rss.ui.views.ChannelNavigator">
+         </viewShortcut>
+         <newWizardShortcut
+               id="com.pnehrer.rss.ui.wizards.NewChannelWizard">
+         </newWizardShortcut>
+         <showInPart
+               id="com.pnehrer.rss.ui.views.ChannelDetail">
+         </showInPart>
+         <showInPart
+               id="com.pnehrer.rss.ui.views.ChannelNavigator">
+         </showInPart>
+         <perspectiveShortcut
+               id="com.pnehrer.rss.ui.RSSPerspective">
+         </perspectiveShortcut>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="com.pnehrer.rss.ui.linkbrowser">
+      <linkbrowser
+            label="WSAD&apos;s Embedded Web Browser"
+            class="com.pnehrer.rss.internal.ui.linkbrowser.WebBrowserEditor"
+            id="webbrowsereditor">
+      </linkbrowser>
+   </extension>
+</fragment>

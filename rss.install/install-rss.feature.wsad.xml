@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<installation version="1.0">
+    <info>
+        <appname>@APP_NAME@</appname>
+        <appversion>@APP_VER@</appversion>
+        <authors>
+            <author name="Peter Nehrer" email="pnehrer@users.sourceforge.net"/>
+        </authors>
+        <url>http://morphine.sourceforge.net</url>
+    </info>
+    
+    <guiprefs width="640" height="440" resizable="yes"/>
+    
+    <locale>
+        <langpack iso3="eng"/>
+    </locale>
+    
+    <resources>
+        <res id="Installer.image" src="res/rss-about.png"/>
+        <res id="HTMLInfoPanel.info" src="res/readme-rss.feature.wsad.html" parse="yes"/>
+        <res id="HTMLLicencePanel.licence" src="res/license.html"/>
+        <res id="userInputSpec.xml" src="res/userInputSpec.wsad.xml"/>
+    </resources>
+    
+    <panels>
+        <panel classname="HelloPanel"/>
+        <panel classname="HTMLInfoPanel"/>
+        <panel classname="HTMLLicencePanel"/>
+        <panel classname="PacksPanel"/>
+        <panel classname="TargetPanel"/> 
+        <panel classname="UserInputPanel"/>
+        <panel classname="InstallPanel"/>
+        <panel classname="FinishPanel"/>
+    </panels>
+    
+    <packs>
+        <pack name="Base" required="yes">
+            <description>Eclipse RSS Reader base plug-ins, including user documentation.</description>
+            <file src="src/base/eclipse" targetdir="$INSTALL_PATH"/>
+            <file src="src/com.pnehrer.rss.link" targetdir="$ECLIPSE_HOME/links"/>
+            <parsable targetfile="$INSTALL_PATH/eclipse/.eclipseextension"/>
+            <parsable targetfile="$WSAD_HOME/eclipse/links/com.pnehrer.rss.link"/>
+        </pack>
+        <pack name="Sources" required="no" preselected="no">
+            <description>Source code and documentation for the Eclipse RSS Reader. Useful for developers who wish to extend the application.</description>
+            <file src="src/source/eclipse" targetdir="$INSTALL_PATH"/>
+        </pack>
+    </packs>
+    
+</installation>

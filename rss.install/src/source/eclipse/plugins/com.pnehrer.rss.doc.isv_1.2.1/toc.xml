@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toc label="Eclipse RSS Reader Developer Documentation" link_to="../com.pnehrer.rss.doc.user/toc-book.xml#additional">
+<topic label="Developer Documentation" href="index.html">
+<topic label="API Reference" href="reference/api/overview-summary.html">
+<topic label="com.pnehrer.rss.core" href="reference/api/com/pnehrer/rss/core/package-summary.html"/>
+<topic label="com.pnehrer.rss.ui" href="reference/api/com/pnehrer/rss/ui/package-summary.html"/>
+<topic label="com.pnehrer.rss.ui.actions" href="reference/api/com/pnehrer/rss/ui/actions/package-summary.html"/>
+<topic label="com.pnehrer.rss.ui.views" href="reference/api/com/pnehrer/rss/ui/views/package-summary.html"/>
+<topic label="com.pnehrer.rss.ui.wizards" href="reference/api/com/pnehrer/rss/ui/wizards/package-summary.html"/>
+</topic>
+<topic label="Extension Points"/>
+</topic>
+</toc>

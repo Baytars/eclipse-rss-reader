@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="com.pnehrer.rss.wsad"
+      label="Eclipse RSS Reader for WSAD"
+      version="1.2.2"
+      provider-name="Peter Nehrer"
+      plugin="com.pnehrer.rss"
+      os="win32"
+      ws="win32"
+      image="xml_120.png">
+
+   <description>
+      Eclipse RSS Reader for WSAD.
+   </description>
+
+   <copyright>
+      Copyright (c) 2003, 2004 Peter Nehrer. All rights reserved.
+   </copyright>
+
+   <license>
+      This program and the accompanying materials are made available
+under the terms of the Common Public License v1.0, which is available
+at http://www.eclipse.org/legal/cpl-v10.html.
+   </license>
+
+   <url>
+      <update label="Eclipse RSS Reader Updates" url="http://morphine.sourceforge.net/updates" type="web"/>
+      <discovery label="Eclipse RSS Reader Home" url="http://morphine.sourceforge.net" type="web"/>
+   </url>
+
+   <requires>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.eclipse.help.ui"/>
+      <import plugin="org.eclipse.search"/>
+      <import plugin="com.ibm.etools.webbrowser"/>
+   </requires>
+
+   <plugin
+         id="com.pnehrer.rss.ui.wsad"
+         download-size="0"
+         install-size="0"
+         version="1.2.2"
+         fragment="true"/>
+
+   <plugin
+         id="com.pnehrer.rss"
+         download-size="0"
+         install-size="0"
+         version="1.2.2"/>
+
+   <plugin
+         id="com.pnehrer.rss.core"
+         download-size="0"
+         install-size="0"
+         version="1.2.2"/>
+
+   <plugin
+         id="com.pnehrer.rss.ui"
+         download-size="0"
+         install-size="0"
+         version="1.2.2"/>
+
+   <plugin
+         id="com.pnehrer.rss.doc.user"
+         download-size="0"
+         install-size="0"
+         version="1.2.2"/>
+
+   <plugin
+         id="com.pnehrer.rss.doc.user.wsad"
+         download-size="0"
+         install-size="0"
+         version="1.2.2"/>
+
+</feature>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toc label="Eclipse RSS Reader User Documentation">
+<topic label="New Channel Wizard" href="new-channel-wizard.html"/>
+<topic label="Channel Navigator View" href="channel-navigator.html"/>
+<topic label="Channel Detail View" href="channel-detail.html"/>
+<topic label="Channel Properties" href="channel-properties.html"/>
+<topic label="RSS Preferences" href="preferences.html"/>
+<topic label="RSS Search" href="search-dialog.html"/>
+</toc>
