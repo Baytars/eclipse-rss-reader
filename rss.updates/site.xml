@@ -4,4 +4,6 @@
    <description url="http://morphine.sourceforge.net/updates">
       Eclipse RSS Reader for Eclipse 3.0.
    </description>
+   <feature url="features/com.pnehrer.rss_2.0.1.jar" id="com.pnehrer.rss" version="2.0.1"/>
+   <feature url="features/com.pnehrer.rss.source_2.0.1.jar" id="com.pnehrer.rss.source" version="2.0.1"/>
 </site>
