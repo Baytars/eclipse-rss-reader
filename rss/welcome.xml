@@ -3,17 +3,18 @@
     title="Eclipse RSS Reader"
     format="wrap">
 
-<intro><p>Publishing web-based news of all kinds via a summary format (RSS)
-is becoming increasingly popular. The applications include regular headline 
-news (Yahoo! News), web logs (Slashdot.org), professional bulletins 
+<intro><p>RSS is a lightweight XML format designed for sharing headlines 
+and other Web content. The applications include on-line news
+articles (Yahoo! News), web logs (Slashdot.org), professional bulletins 
 (IBM developerWorks), and project updates (SourceForge.net). A variety of RSS 
 formats currently exist, which increases application complexity. Often, a reader
 capable of understanding one format cannot handle another. The Eclipse RSS 
-Reader takes advantage of Eclipse platform in the following ways:</p>
+Reader takes advantage of the Eclipse platform in the following ways:</p>
 <p>1. Extension points and plug-in based architecture support addition of new 
 channel formats.</p>
 <p>2. Workbench provides user interface consistency for users of existing 
-Eclipse-based tools (I for one like to keep up-to-date while working in JDT).</p>
+Eclipse-based tools (I, for one, like to keep up-to-date while working on my 
+projects).</p>
 <p>3. Resource and UI model provides opportunities for integration with other 
 Eclipse-based tools.</p>
 </intro>
@@ -82,9 +83,8 @@ its Web Browser Editor. This option is specifiable on a per-channel basis.
 point.</p>
 </item>
 
-<item><b>Learn more </b>
-To learn more please visit the 
-<action pluginId="com.pnehrer.rss.ui" class="com.pnehrer.rss.ui.actions.OpenHomePageAction">Eclipse RSS Reader Home</action>.
+<item><b>Learn more</b>
+<p>To learn more please visit the <action pluginId="com.pnehrer.rss.ui" class="com.pnehrer.rss.ui.actions.OpenHomePageAction">Eclipse RSS Reader Home</action>.</p>
 </item>
 
 </welcomePage>

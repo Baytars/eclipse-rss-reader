@@ -4,7 +4,8 @@
       label="Eclipse RSS Reader"
       version="1.0.0"
       provider-name="Peter Nehrer"
-      image="xml_120.png">
+      image="xml_120.png"
+      primary="true">
 
    <description>
       Rich Site Summary feed browsing and subscription management.
@@ -35,14 +36,20 @@ at http://www.eclipse.org/legal/cpl-v10.html.
 
    <plugin
          id="com.pnehrer.rss.core"
+         download-size="0"
+         install-size="0"
          version="1.0.0"/>
 
    <plugin
          id="com.pnehrer.rss.ui"
+         download-size="0"
+         install-size="0"
          version="1.0.0"/>
 
    <plugin
          id="com.pnehrer.rss"
+         download-size="0"
+         install-size="0"
          version="1.0.0"/>
 
 </feature>
