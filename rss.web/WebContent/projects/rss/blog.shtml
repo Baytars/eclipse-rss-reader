@@ -45,7 +45,7 @@ google_color_text = "000000";
 <!--#elif expr="$SERVER_NAME=/morphine.sourceforge.net/" -->
 	<!--#include file="blog.html" -->
 <!--#endif -->
-<P><SMALL>This page is powered by <A href="http://blogger.com/" title="BLOGGER">Blogger. <IMG src="http://buttons.blogger.com/bloggerbutton1.gif" border="0"/></A></SMALL></P>
+<P><SMALL>This page is powered by <A href="http://blogger.com/" title="BLOGGER">Blogger. <IMG src="http://buttons.blogger.com/bloggerbutton1.gif" border="0" align="middle"/></A></SMALL></P>
 <!-- /tpl:put --></DIV>
 <DIV class="footer"><A href="http://sourceforge.net"><IMG
 	src="http://sourceforge.net/sflogo.php?group_id=63674&amp;type=2"
