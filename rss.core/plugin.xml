@@ -15,13 +15,11 @@
          <packages prefixes="org.apache.xalan,org.apache.xml,org.apache.xpath"/>
       </library>
       <library name="xercesImpl.jar">
-         <packages prefixes="org.apache.html,org.apache.wml,org.apache.xerces"/>
-         <packages prefixes="org.apache.xml.serialize,org.w3c.dom.html"/>
+         <packages prefixes="org.apache.html,org.apache.wml,org.apache.xerces,org.apache.xml.serialize,org.w3c.dom.html"/>
       </library>
       <library name="xml-apis.jar">
          <export name="*"/>
-         <packages prefixes="javax.xml.parsers,javax.xml.transform,org.apache.xmlcommons"/>
-         <packages prefixes="org.w3c.dom,org.xml.sax"/>
+         <packages prefixes="javax.xml.parsers,javax.xml.transform,org.apache.xmlcommons,org.w3c.dom,org.xml.sax"/>
       </library>
    </runtime>
    <requires>
