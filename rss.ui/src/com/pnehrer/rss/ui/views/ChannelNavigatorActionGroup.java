@@ -42,6 +42,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.views.navigator.ResourceNavigatorMessages;
 
 import com.pnehrer.rss.ui.RSSUI;
+import com.pnehrer.rss.ui.actions.MarkReadAction;
 import com.pnehrer.rss.ui.actions.OpenLinkAction;
 import com.pnehrer.rss.ui.actions.TextInputAction;
 import com.pnehrer.rss.ui.actions.ToggleShowNewOnlyAction;
@@ -66,6 +67,7 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
     private final OpenLinkAction openLinkAction;
     private final TextInputAction textInputAction;
     private final UpdateAction updateAction;
+    private final MarkReadAction markReadAction;
     
     private final ChannelNavigator navigator;
 
@@ -112,6 +114,10 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
         updateAction = new UpdateAction();
         updateAction.setToolTipText("Update selected channel(s) from their sources.");
         updateAction.setImageDescriptor(reg.getDescriptor(RSSUI.UPDATE_ICON));
+
+        markReadAction = new MarkReadAction(navigator.getViewSite().getWorkbenchWindow());
+        markReadAction.setToolTipText("Mark selection as read.");
+        markReadAction.setImageDescriptor(reg.getDescriptor(RSSUI.ITEM_ICON));
 
         toggleShowNewOnlyAction = new ToggleShowNewOnlyAction(
             new ToggleShowNewOnlyAction.INewItemFilteringPart() {
@@ -244,6 +250,10 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
             menu.add(new Separator());
             menu.add(updateAction);
             updateAction.selectionChanged(selection);
+
+            menu.add(new Separator());
+            menu.add(markReadAction);
+            markReadAction.selectionChanged(selection);
         }
                 
         menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -315,6 +325,7 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
         openLinkAction.selectionChanged(selection);
         textInputAction.selectionChanged(selection);
         updateAction.selectionChanged(selection);
+        markReadAction.selectionChanged(selection);
     } 
     
     public void dispose() {

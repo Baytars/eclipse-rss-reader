@@ -17,6 +17,7 @@ import org.eclipse.ui.actions.ActionGroup;
 
 import com.pnehrer.rss.core.IRSSElement;
 import com.pnehrer.rss.ui.RSSUI;
+import com.pnehrer.rss.ui.actions.MarkReadAction;
 import com.pnehrer.rss.ui.actions.OpenLinkAction;
 import com.pnehrer.rss.ui.actions.TextInputAction;
 import com.pnehrer.rss.ui.actions.ToggleShowNewOnlyAction;
@@ -32,6 +33,8 @@ public class ChannelActionGroup extends ActionGroup {
     private final OpenLinkAction openItemLinkAction;
     private final TextInputAction textInputAction;
     private final UpdateAction updateAction;
+    private final MarkReadAction markChannelReadAction;
+    private final MarkReadAction markItemReadAction;
     
     private final ChannelDetailView channelDetailView;
     
@@ -67,6 +70,14 @@ public class ChannelActionGroup extends ActionGroup {
         updateAction = new UpdateAction();
         updateAction.setToolTipText("Update channel from its source.");
         updateAction.setImageDescriptor(reg.getDescriptor(RSSUI.UPDATE_ICON));
+
+        markChannelReadAction = new MarkReadAction(channelDetailView.getViewSite().getWorkbenchWindow());
+        markChannelReadAction.setToolTipText("Mark all items in channel as read.");
+        markChannelReadAction.setImageDescriptor(reg.getDescriptor(RSSUI.ITEM_ICON));
+
+        markItemReadAction = new MarkReadAction(channelDetailView.getViewSite().getWorkbenchWindow());
+        markItemReadAction.setToolTipText("Mark selected item(s) as read.");
+        markItemReadAction.setImageDescriptor(reg.getDescriptor(RSSUI.ITEM_ICON));
     }
 
     /* (non-Javadoc)
@@ -80,6 +91,8 @@ public class ChannelActionGroup extends ActionGroup {
         menu.add(textInputAction);
         menu.add(new Separator());
         menu.add(updateAction);
+        menu.add(new Separator());
+        menu.add(markChannelReadAction);
         
         IToolBarManager toolBar = actionBars.getToolBarManager();
         toolBar.add(new Separator());
@@ -100,6 +113,8 @@ public class ChannelActionGroup extends ActionGroup {
     
         menu.add(openItemLinkAction);
         openItemLinkAction.selectionChanged(selection);
+        menu.add(markItemReadAction);
+        markItemReadAction.selectionChanged(selection);
         menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
     }
     
@@ -111,13 +126,14 @@ public class ChannelActionGroup extends ActionGroup {
             (IStructuredSelection) getContext().getSelection();
         textInputAction.selectionChanged(selection);
         updateAction.selectionChanged(selection);
+        markChannelReadAction.selectionChanged(selection);
         Object o = selection.getFirstElement();
         if(o instanceof IAdaptable) {
             IRSSElement rssElement = (IRSSElement)
                 ((IAdaptable)o).getAdapter(IRSSElement.class);
             if(rssElement != null)
                 openChannelLinkAction.selectionChanged(
-                    new StructuredSelection(rssElement));
+                    new StructuredSelection(rssElement.getChannel()));
         }
     }
 
