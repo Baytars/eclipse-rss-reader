@@ -5,10 +5,6 @@
 package com.pnehrer.rss.internal.core;
 
 import java.net.URL;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -28,9 +24,6 @@ public class ChannelManager {
         new QualifiedName(RSSCore.PLUGIN_ID, "channel");
     
     private static ChannelManager instance;
-    private Timer timer = new Timer();
-    private final Object timerLock = new Object();
-    private volatile boolean timerCancelled;
     
     public ChannelManager() {
         instance = this;
@@ -38,33 +31,6 @@ public class ChannelManager {
     
     static ChannelManager getInstance() {
         return instance;
-    }
-
-    void scheduleTask(TimerTask task, Date lastUpdated, int updateInterval) {
-    	synchronized(timerLock) {
-	        if(timerCancelled)
-	            return;
-	            
-	        Calendar cal = Calendar.getInstance();
-	        if(lastUpdated != null)
-	            cal.setTime(lastUpdated);
-	
-	        cal.add(Calendar.MINUTE, updateInterval);
-	        try {
-	        	timer.schedule(task, cal.getTime());
-	        }
-	        catch (IllegalStateException ex) {
-	        	timer = new Timer();
-	        	timer.schedule(task, cal.getTime());
-	        }
-    	}
-    }
-    
-    public void cancelPendingTasks() {
-    	synchronized(timerLock) {
-	        timer.cancel();
-	        timerCancelled = true;
-    	}
     }
     
     public synchronized Channel getChannel(IFile file) throws CoreException {

@@ -15,7 +15,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
 public interface IChannel extends IRSSElement {
-
+	
+	public static final String UPDATE_JOB_FAMILY = "com.pnehrer.rss.channel.update";
+	
     public IFile getFile();
     
     public IRegisteredTranslator getTranslator();

@@ -87,7 +87,7 @@ public class RSSCore extends Plugin {
      * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
      */
     public void stop(BundleContext context) throws Exception {
-        channelManager.cancelPendingTasks();
+        Platform.getJobManager().cancel(IChannel.UPDATE_JOB_FAMILY);
         IAdapterManager mgr = Platform.getAdapterManager();
         mgr.unregisterAdapters(resourceAdapterFactory);
         mgr.unregisterAdapters(channelAdapterFactory);

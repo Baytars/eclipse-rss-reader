@@ -63,7 +63,7 @@ public class UpdateAction extends SelectionListenerAction {
                 channels.add(rssElement.getChannel());
         }
         
-        Job job = new Job("Updating selected channels") {
+        Job job = new Job("Updating selected channels...") {
 			protected IStatus run(IProgressMonitor monitor) {
             	MultiStatus status = 
             		new MultiStatus(
@@ -92,6 +92,19 @@ public class UpdateAction extends SelectionListenerAction {
 	        		if (monitor != null)
 	        			monitor.done();
 	        	}
+			}
+			
+			public boolean belongsTo(Object family) {
+				if (IChannel.UPDATE_JOB_FAMILY.equals(family))
+					return true;
+
+				for (Iterator i = channels.iterator(); i.hasNext();) {
+            		IChannel channel = (IChannel) i.next();
+					if (channel.equals(family))
+						return true;
+            	}
+				
+				return false;
 			}
         };
         

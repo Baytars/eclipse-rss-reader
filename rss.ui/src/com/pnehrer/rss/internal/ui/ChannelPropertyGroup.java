@@ -148,6 +148,13 @@ public class ChannelPropertyGroup {
             public void widgetSelected(SelectionEvent e) {
                 loadDocument();
                 translatorList.setFocus();
+				translatorList.select(0);
+                boolean selected = translatorList.getSelectionCount() == 1; 
+                setComplete(TRANSLATOR_COMPLETE, selected);
+                pageContainer.setErrorMessage(
+                    selected ? 
+                        null : 
+                        "Select channel translator.");
             }
         });
 
@@ -227,7 +234,10 @@ public class ChannelPropertyGroup {
         }
     }
 
-    private void loadDocument() {
+    public void loadDocument() {
+		if (url == null)
+			return;
+		
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
         try {

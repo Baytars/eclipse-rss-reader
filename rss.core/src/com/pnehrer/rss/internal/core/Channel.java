@@ -26,7 +26,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.TimerTask;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -52,6 +51,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.jobs.Job;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -92,7 +92,22 @@ public class Channel
 		new SimpleDateFormat("EEE, d MMM yy HH:mm:ss zzz"),
 		new W3CDateFormat()}; 
 
-    private UpdateTask updateTask;
+    private final Job updateTask = new Job("channel update") {
+		protected IStatus run(IProgressMonitor monitor) {
+			try {
+				doUpdate(monitor);
+			} catch (CoreException ex) {
+				return ex.getStatus();
+			}
+
+			return Status.OK_STATUS;
+		}
+		
+		public boolean belongsTo(Object family) {
+			return IChannel.UPDATE_JOB_FAMILY.equals(family)
+				|| Channel.this.equals(family);
+		}
+	};
 
     private IFile file;
     private IRegisteredTranslator translator;
@@ -110,25 +125,25 @@ public class Channel
     
     private Channel(IFile file) {
         this.file = file;
+		setJobName();
     }
     
     private Channel(IFile file, IRegisteredTranslator translator) {
         this.file = file;
         this.translator = translator;
+		setJobName();
     }
+	
+	private void setJobName() {
+		updateTask.setName("Updating " + file.getName() + "...");
+	}
     
     private void activate() {
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
     }
     
     private void passivate() {
-        synchronized(this) {
-            if(updateTask != null) {
-                updateTask.cancel();
-                updateTask = null;
-            }
-        }
-            
+        updateTask.cancel();
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
         ChannelManager.getInstance().removeChannel(this);
     }
@@ -271,6 +286,10 @@ public class Channel
     }
     
     public void update(IProgressMonitor monitor) throws CoreException {
+		doUpdate(monitor);
+    }
+	
+	private void doUpdate(IProgressMonitor monitor) throws CoreException {
         if(url != null) {
             DocumentBuilderFactory factory = 
                 DocumentBuilderFactory.newInstance();
@@ -716,17 +735,14 @@ public class Channel
     }
     
     private synchronized void updateSchedule() {
-        if(updateTask != null) {
-            updateTask.cancel();
-            updateTask = null;
-        }
-
-        if(updateInterval != null) {
-            updateTask = new UpdateTask();
-            ChannelManager.getInstance().scheduleTask(
-                updateTask,
-                getLastUpdated(), 
-                updateInterval.intValue());
+		updateTask.cancel();
+        if(updateInterval != null && updateInterval.intValue() > 0) {
+			long delay = 60000 * updateInterval.longValue();
+			Date lastUpdated = getLastUpdated();
+			if (lastUpdated != null)
+				delay -= System.currentTimeMillis() - lastUpdated.getTime();
+				
+			updateTask.schedule(Math.max(0, delay));
         }
     }
 
@@ -769,6 +785,7 @@ public class Channel
                                             .getWorkspace()
                                             .getRoot()
                                             .getFile(delta.getMovedToPath());
+									setJobName();
                                 	passivate();
                                 	File cache = getCache();
                                 	if (cache.exists())
@@ -781,6 +798,7 @@ public class Channel
                                             .getWorkspace()
                                             .getRoot()
                                             .getFile(delta.getMovedToPath());
+									setJobName();
                                     file.setSessionProperty(
                                     	ChannelManager.CHANNEL_KEY, 
 										this);
@@ -902,20 +920,5 @@ public class Channel
 
         channel.activate();
         return channel;
-    }
-    
-    private class UpdateTask extends TimerTask {
-
-        /* (non-Javadoc)
-         * @see java.util.TimerTask#run()
-         */
-        public void run() {
-            try {
-                update((IProgressMonitor)null);
-            }
-            catch(CoreException ex) {
-                RSSCore.getPlugin().getLog().log(ex.getStatus());
-            }
-        }
     }
 }

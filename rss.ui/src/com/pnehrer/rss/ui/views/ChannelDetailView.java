@@ -17,6 +17,10 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -40,6 +44,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -50,6 +55,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 
 import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IItem;
@@ -61,473 +67,541 @@ import com.pnehrer.rss.ui.RSSUI;
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  * @see ViewPart
  */
-public class ChannelDetailView 
-    extends ViewPart 
-    implements ISelectionListener,
-        IResourceChangeListener {
+public class ChannelDetailView extends ViewPart implements ISelectionListener,
+		IResourceChangeListener {
 
-    private static final String[] COLUMNS = {
-        "#", 
-        "Title", 
-        "Description", 
-        "Link", 
-        "Date"};
+	private static final String[] COLUMNS = { "#", "Title", "Description",
+			"Link", "Date" };
 
-    private static final String TAG_WIDTH = "width";
-    private static final String TAG_SORTER = "sorter";    
-    private static final String TAG_SELECTION = "selection";
-    private static final String TAG_ELEMENT = "element";
-    private static final String TAG_PATH = "path";
-    private static final String TAG_LINK = "link";
-    private static final String TAG_SHOW_NEW_ONLY = "showNewOnly";
+	private static final String TAG_WIDTH = "width";
 
-    private IChannel channel;
-    private IMemento memento;
-    private TableViewer viewer;
-    private ChannelActionGroup actionGroup;
-    private boolean showNewOnly;
+	private static final String TAG_SORTER = "sorter";
 
-    private final ImageDescriptor newItemDecoration;
-    private final Image detailIcon;
-    private Map images;
-    private Map newImages;
-    
-    public ChannelDetailView() {
-        ImageRegistry reg = RSSUI.getDefault().getImageRegistry();
-        newItemDecoration = reg.getDescriptor(RSSUI.NEW_DECORATOR_ICON);
-        detailIcon = reg.get(RSSUI.DETAIL_ICON);
-                
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(
-            this,
-            IResourceChangeEvent.POST_CHANGE);
-    }
+	private static final String TAG_SELECTION = "selection";
 
-    private void initContextMenu() {
-        MenuManager menuMgr = new MenuManager("#PopupMenu");
-        menuMgr.setRemoveAllWhenShown(true);
-        menuMgr.addMenuListener(new IMenuListener() {
-            public void menuAboutToShow(IMenuManager manager) {
-                ChannelDetailView.this.fillContextMenu(manager);
-            }
-        });
+	private static final String TAG_ELEMENT = "element";
 
-        Menu menu = menuMgr.createContextMenu(viewer.getControl());
-        viewer.getControl().setMenu(menu);
-    }
+	private static final String TAG_PATH = "path";
 
-    private void fillContextMenu(IMenuManager menu) {
-        IStructuredSelection selection = 
-            (IStructuredSelection) viewer.getSelection();
-        actionGroup.setContext(new ActionContext(selection));
-        actionGroup.fillContextMenu(menu);
-    }
+	private static final String TAG_LINK = "link";
 
-    private void updateActionBars(IStructuredSelection selection) {
-        actionGroup.setContext(new ActionContext(selection));
-        actionGroup.updateActionBars();
-    }
+	private static final String TAG_SHOW_NEW_ONLY = "showNewOnly";
 
-    private void updateStatusLine(IStructuredSelection selection) {
-        String msg;
-        switch(selection.size()) {
-            case 0:
-                msg = "No selection.";
-                break;
-                
-            case 1:
-                Object object = selection.getFirstElement();
-                if(object instanceof IItem)
-                    msg = ((IItem)object).getLink();
-                else
-                    msg = null;
-                                    
-                break;
-                
-            default:
-                msg = "Multiple selection.";
-        }
+	private IChannel channel;
 
-        getViewSite().getActionBars().getStatusLineManager().setMessage(msg);
-    }
+	private IMemento memento;
 
-    private void handleSelectionChanged(SelectionChangedEvent event) {
-        IStructuredSelection sel = (IStructuredSelection)event.getSelection();
-        updateStatusLine(sel);
-    }
+	private TableViewer viewer;
 
-    private void handleOpen(OpenEvent event) {
-        IStructuredSelection selection = (IStructuredSelection)event.getSelection();
-        actionGroup.runDefaultAction(selection);
-    }
+	private ChannelActionGroup actionGroup;
 
-    private TableColumn createColumn(
-        Table table, 
-        int index, 
-        int width, 
-        final int sort) {
+	private boolean showNewOnly;
 
-        TableColumn column = new TableColumn(table, SWT.LEFT);
-        column.setText(COLUMNS[index]);
-        column.setWidth(width);
-        column.setResizable(true);
-        column.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                ViewerSorter oldSorter = viewer.getSorter();
-                if(oldSorter instanceof ItemSorter) {
-                    ItemSorter itemSorter = (ItemSorter)oldSorter;
-                    if(itemSorter.getColumn() == sort) {
-                        ((ItemSorter)oldSorter).flipOrder();
-                        viewer.refresh();
-                    }
-                    else {
-                        viewer.setSorter(
-                            new ItemSorter(sort, false, oldSorter));
-                    }
-                }
-                else {
-                    viewer.setSorter(new ItemSorter(sort, true, oldSorter));
-                }
-            }
-        });
-        
-        return column;
-    }
+	private final ImageDescriptor newItemDecoration;
+
+	private final Image detailIcon;
+
+	private Map images;
+
+	private Map newImages;
+
+	private IWorkbenchSiteProgressService workbenchSiteProgressService;
+
+	private IJobChangeListener jobChangeListener;
+
+	public ChannelDetailView() {
+		ImageRegistry reg = RSSUI.getDefault().getImageRegistry();
+		newItemDecoration = reg.getDescriptor(RSSUI.NEW_DECORATOR_ICON);
+		detailIcon = reg.get(RSSUI.DETAIL_ICON);
+
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(this,
+				IResourceChangeEvent.POST_CHANGE);
+	}
+
+	private void initContextMenu() {
+		MenuManager menuMgr = new MenuManager("#PopupMenu");
+		menuMgr.setRemoveAllWhenShown(true);
+		menuMgr.addMenuListener(new IMenuListener() {
+			public void menuAboutToShow(IMenuManager manager) {
+				ChannelDetailView.this.fillContextMenu(manager);
+			}
+		});
+
+		Menu menu = menuMgr.createContextMenu(viewer.getControl());
+		viewer.getControl().setMenu(menu);
+	}
+
+	private void fillContextMenu(IMenuManager menu) {
+		IStructuredSelection selection = (IStructuredSelection) viewer
+				.getSelection();
+		actionGroup.setContext(new ActionContext(selection));
+		actionGroup.fillContextMenu(menu);
+	}
+
+	private void updateActionBars(IStructuredSelection selection) {
+		actionGroup.setContext(new ActionContext(selection));
+		actionGroup.updateActionBars();
+	}
+
+	private void updateStatusLine(IStructuredSelection selection) {
+		String msg;
+		switch (selection.size()) {
+		case 0:
+			msg = "No selection.";
+			break;
+
+		case 1:
+			Object object = selection.getFirstElement();
+			if (object instanceof IItem)
+				msg = ((IItem) object).getLink();
+			else
+				msg = null;
+
+			break;
+
+		default:
+			msg = "Multiple selection.";
+		}
+
+		getViewSite().getActionBars().getStatusLineManager().setMessage(msg);
+	}
+
+	private void handleSelectionChanged(SelectionChangedEvent event) {
+		IStructuredSelection sel = (IStructuredSelection) event.getSelection();
+		updateStatusLine(sel);
+	}
+
+	private void handleOpen(OpenEvent event) {
+		IStructuredSelection selection = (IStructuredSelection) event
+				.getSelection();
+		actionGroup.runDefaultAction(selection);
+	}
+
+	private TableColumn createColumn(Table table, int index, int width,
+			final int sort) {
+
+		TableColumn column = new TableColumn(table, SWT.LEFT);
+		column.setText(COLUMNS[index]);
+		column.setWidth(width);
+		column.setResizable(true);
+		column.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				ViewerSorter oldSorter = viewer.getSorter();
+				if (oldSorter instanceof ItemSorter) {
+					ItemSorter itemSorter = (ItemSorter) oldSorter;
+					if (itemSorter.getColumn() == sort) {
+						((ItemSorter) oldSorter).flipOrder();
+						viewer.refresh();
+					} else {
+						viewer
+								.setSorter(new ItemSorter(sort, false,
+										oldSorter));
+					}
+				} else {
+					viewer.setSorter(new ItemSorter(sort, true, oldSorter));
+				}
+			}
+		});
+
+		return column;
+	}
 
 	/**
 	 * @see ViewPart#createPartControl
 	 */
 	public void createPartControl(Composite parent) {
-        Table table = new Table(parent, SWT.MULTI | SWT.FULL_SELECTION);
-        table.setLayoutData(new GridData(GridData.FILL_BOTH));
-        table.setHeaderVisible(true);
-        table.setLinesVisible(true);
+		Table table = new Table(parent, SWT.MULTI | SWT.FULL_SELECTION);
+		table.setLayoutData(new GridData(GridData.FILL_BOTH));
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
 
-        createColumn(table, 0, 20, ItemSorter.NONE);
-        createColumn(table, 1, 200, ItemSorter.TITLE);
-        createColumn(table, 2, 300, ItemSorter.DESCRIPTION);
-//        createColumn(table, 3, 300, ItemSorter.LINK);
-//        createColumn(table, 4, 100, ItemSorter.DATE);
+		createColumn(table, 0, 20, ItemSorter.NONE);
+		createColumn(table, 1, 200, ItemSorter.TITLE);
+		createColumn(table, 2, 300, ItemSorter.DESCRIPTION);
+		// createColumn(table, 3, 300, ItemSorter.LINK);
+		// createColumn(table, 4, 100, ItemSorter.DATE);
 
-        viewer = new TableViewer(table);
-        viewer.setUseHashlookup(true);
-        
-        viewer.setContentProvider(new ChannelDetailContentProvider());
-        viewer.setLabelProvider(new ChannelDetailLabelProvider());
+		viewer = new TableViewer(table);
+		viewer.setUseHashlookup(true);
 
-        viewer.addFilter(new ViewerFilter() {
-            public boolean select(
-                Viewer viewer, 
-                Object parentElement, 
-                Object element) {
+		viewer.setContentProvider(new ChannelDetailContentProvider());
+		viewer.setLabelProvider(new ChannelDetailLabelProvider());
 
-                return (((IItem)element).isUpdated() || !isShowNewOnly());
-            }
-        });
-        
-        viewer.addOpenListener(new IOpenListener() {
-            public void open(OpenEvent event) {
-                handleOpen(event);
-            }
-        });
-        
-        viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            public void selectionChanged(SelectionChangedEvent event) {
-                handleSelectionChanged(event);
-            }
-        });
-        
-        initContextMenu();
-        actionGroup = new ChannelActionGroup(this);
-        actionGroup.fillActionBars(getViewSite().getActionBars());
+		viewer.addFilter(new ViewerFilter() {
+			public boolean select(Viewer viewer, Object parentElement,
+					Object element) {
 
-        getSite().setSelectionProvider(viewer);
-        selectionChanged(null, getSite().getPage().getSelection());
-        getSite().getPage().addSelectionListener(this);
-        
-        if(memento != null) {
-            restoreState(memento);
-            memento = null;
-        }
+				return (((IItem) element).isUpdated() || !isShowNewOnly());
+			}
+		});
+
+		viewer.addOpenListener(new IOpenListener() {
+			public void open(OpenEvent event) {
+				handleOpen(event);
+			}
+		});
+
+		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(SelectionChangedEvent event) {
+				handleSelectionChanged(event);
+			}
+		});
+
+		initContextMenu();
+		actionGroup = new ChannelActionGroup(this);
+		actionGroup.fillActionBars(getViewSite().getActionBars());
+
+		getSite().setSelectionProvider(viewer);
+		selectionChanged(null, getSite().getPage().getSelection());
+		getSite().getPage().addSelectionListener(this);
+
+		if (memento != null) {
+			restoreState(memento);
+			memento = null;
+		}
+
+		workbenchSiteProgressService = (IWorkbenchSiteProgressService) getViewSite()
+				.getAdapter(IWorkbenchSiteProgressService.class);
+
+		jobChangeListener = new JobChangeAdapter() {
+
+			private String getPartName() {
+				StringBuffer buf = new StringBuffer(channel.getTitle());
+				if (channel.hasUpdates())
+					buf.append('*');
+
+				return buf.toString();
+			}
+
+			public void running(IJobChangeEvent event) {
+				if (channel == null)
+					return;
+
+				if (!event.getJob().belongsTo(channel))
+					return;
+
+				final String partName = getPartName();
+
+				Display display = getViewSite().getShell().getDisplay();
+				if (display == null || display.isDisposed())
+					return;
+
+				display.asyncExec(new Runnable() {
+					public void run() {
+						setPartName(partName + " [updating]");
+					}
+				});
+			}
+
+			public void done(IJobChangeEvent event) {
+				if (channel == null)
+					return;
+
+				if (!event.getJob().belongsTo(channel))
+					return;
+
+				final String partName = getPartName();
+
+				Display display = getViewSite().getShell().getDisplay();
+				if (display == null || display.isDisposed())
+					return;
+
+				display.asyncExec(new Runnable() {
+					public void run() {
+						setPartName(getPartName());
+					}
+				});
+			}
+		};
+
+		Platform.getJobManager().addJobChangeListener(jobChangeListener);
 	}
 
 	/**
 	 * @see ViewPart#setFocus
 	 */
 	public void setFocus() {
-        viewer.getTable().setFocus();
+		viewer.getTable().setFocus();
 	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
-     */
-    public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-        if(equals(part)) return;
-        
-        IRSSElement rssElement;
-        if(!(selection instanceof IStructuredSelection) || selection.isEmpty())
-            rssElement = null;
-        else {
-            Object obj = ((IStructuredSelection)selection).getFirstElement();
-            if(obj instanceof IAdaptable) {
-                rssElement = (IRSSElement)
-                    ((IAdaptable)obj).getAdapter(IRSSElement.class);
-            }
-            else 
-                rssElement = null;
-        }
-        
-        if(rssElement != null) {
-            IChannel newChannel = rssElement.getChannel(); 
-            if(!newChannel.equals(channel)) {
-                channel = newChannel;
-                processChannelChange();
-            }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.IWorkbenchPart,
+	 *      org.eclipse.jface.viewers.ISelection)
+	 */
+	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+		if (equals(part))
+			return;
 
-            viewer.setSelection(selection, true);
-            updateStatusLine((IStructuredSelection)selection);
-            updateActionBars((IStructuredSelection)selection);
-        }
-    }
-    
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.IViewPart#init(org.eclipse.ui.IViewSite, org.eclipse.ui.IMemento)
-     */
-    public void init(IViewSite site, IMemento memento)
-        throws PartInitException {
+		IRSSElement rssElement;
+		if (!(selection instanceof IStructuredSelection) || selection.isEmpty())
+			rssElement = null;
+		else {
+			Object obj = ((IStructuredSelection) selection).getFirstElement();
+			if (obj instanceof IAdaptable) {
+				rssElement = (IRSSElement) ((IAdaptable) obj)
+						.getAdapter(IRSSElement.class);
+			} else
+				rssElement = null;
+		}
 
-        super.init(site, memento);
-        this.memento = memento;
-    }
-    
-    private void restoreState(IMemento memento) {
-        Table table = viewer.getTable();
-        TableColumn[] columns = table.getColumns();
-        for(int i = 0; i < columns.length; ++i) {
-            Integer width = memento.getInteger(TAG_WIDTH + i);
-            if(width != null)
-                columns[i].setWidth(width.intValue());                
-        }
-            
-        IMemento sorterMem = memento.getChild(TAG_SORTER);
-        if(sorterMem != null) {
-            viewer.setSorter(ItemSorter.restoreState(sorterMem));
-        }
+		if (rssElement != null) {
+			IChannel newChannel = rssElement.getChannel();
+			if (!newChannel.equals(channel))
+				processChannelChange(newChannel);
 
-        setShowNewOnly(Boolean.TRUE.equals(
-            new Boolean(memento.getString(TAG_SHOW_NEW_ONLY))));
-        actionGroup.setShowNewOnly(showNewOnly);
+			viewer.setSelection(selection, true);
+			updateStatusLine((IStructuredSelection) selection);
+			updateActionBars((IStructuredSelection) selection);
+		}
+	}
 
-        String path = memento.getString(TAG_PATH);
-        if(path == null) return;
-        
-        IContainer container = ResourcesPlugin.getWorkspace().getRoot();
-        IResource res = container.findMember(path);
-        if(res != null) {
-            IRSSElement rssElement = 
-                (IRSSElement)res.getAdapter(IRSSElement.class);
-            if(rssElement != null) {
-                IChannel channel = rssElement.getChannel();
-                boolean found = false;                
-                IMemento childMem = memento.getChild(TAG_SELECTION);
-                if(childMem != null) {
-                    HashSet links = new HashSet(); 
-                    IMemento[] elementMem = childMem.getChildren(TAG_ELEMENT);
-                    for(int i = 0; i < elementMem.length; ++i) {
-                        links.add(elementMem[i].getString(TAG_LINK));
-                    }                    
-                    ArrayList elements = new ArrayList();
-                    IItem[] items = channel.getItems();
-                    for(int i = 0; i < items.length; ++i) {
-                        if(links.contains(items[i].getLink()))
-                            elements.add(items[i]);
-                    }
-                    
-                    if(!elements.isEmpty()) {
-                        selectionChanged(null, new StructuredSelection(elements));
-                        found = true;
-                    }
-                }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.IViewPart#init(org.eclipse.ui.IViewSite,
+	 *      org.eclipse.ui.IMemento)
+	 */
+	public void init(IViewSite site, IMemento memento) throws PartInitException {
 
-                if(!found)
-                    selectionChanged(null, new StructuredSelection(channel));
-            }
-        }        
-    }
+		super.init(site, memento);
+		this.memento = memento;
+	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.IViewPart#saveState(org.eclipse.ui.IMemento)
-     */
-    public void saveState(IMemento memento) {
-        if(viewer == null) {
-            if(this.memento != null) 
-                memento.putMemento(this.memento);
-        }
-        else {
-            Table table = viewer.getTable();
-            TableColumn[] columns = table.getColumns();
-            for(int i = 0; i < columns.length; ++i) {
-                memento.putInteger(TAG_WIDTH + i, columns[i].getWidth());                
-            }
-            
-            ViewerSorter sorter = viewer.getSorter();
-            if(sorter instanceof ItemSorter) {
-                IMemento childMem = memento.createChild(TAG_SORTER);
-                ((ItemSorter)sorter).saveState(childMem, columns.length);
-            }
-            
-            memento.putString(TAG_SHOW_NEW_ONLY, String.valueOf(showNewOnly));
-            
-            Object input = viewer.getInput();
-            if(input instanceof IChannel) {
-                IChannel channel = (IChannel)input;
-                memento.putString(
-                    TAG_PATH, 
-                    channel.getFile().getFullPath().toString());
+	private void restoreState(IMemento memento) {
+		Table table = viewer.getTable();
+		TableColumn[] columns = table.getColumns();
+		for (int i = 0; i < columns.length; ++i) {
+			Integer width = memento.getInteger(TAG_WIDTH + i);
+			if (width != null)
+				columns[i].setWidth(width.intValue());
+		}
 
-                IStructuredSelection sel = 
-                    (IStructuredSelection)viewer.getSelection(); 
-                if(!sel.isEmpty()) {
-                    IMemento selectionMem = memento.createChild(TAG_SELECTION);
-                    for(Iterator i = sel.iterator(); i.hasNext();) {
-                        IItem item = (IItem)i.next();
-                        IMemento elementMem = 
-                            selectionMem.createChild(TAG_ELEMENT);
-                        elementMem.putString(
-                            TAG_LINK,
-                            item.getLink());
-                    }
-                }
-            }
-        }
-    }
-    
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.IWorkbenchPart#dispose()
-     */
-    public void dispose() {
-        getSite().getPage().removeSelectionListener(this);
-        ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
-        
-        if (images != null) {
-	        for(Iterator i = images.values().iterator(); i.hasNext();)
-	            ((Image)i.next()).dispose();
-	        
-	        images = null;
-        }
+		IMemento sorterMem = memento.getChild(TAG_SORTER);
+		if (sorterMem != null) {
+			viewer.setSorter(ItemSorter.restoreState(sorterMem));
+		}
 
-        if (newImages != null) {
-	        for(Iterator i = newImages.values().iterator(); i.hasNext();)
-	            ((Image)i.next()).dispose();
-	        
-	        newImages = null;
-        }
-        
-        super.dispose();
-    }
+		setShowNewOnly(Boolean.TRUE.equals(new Boolean(memento
+				.getString(TAG_SHOW_NEW_ONLY))));
+		actionGroup.setShowNewOnly(showNewOnly);
 
-    /* (non-Javadoc)
-     * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
-     */
-    public void resourceChanged(IResourceChangeEvent event) {
-        if(channel == null)
-            return;
-            
-        final IResourceDelta delta = 
-            event.getDelta().findMember(channel.getFile().getFullPath());
-        if(delta != null) {
-            Control ctrl = viewer.getControl();
-            if(ctrl != null && !ctrl.isDisposed()) {
-                // Do a sync exec, not an async exec, since the resource delta
-                // must be traversed in this method.  It is destroyed
-                // when this method returns.
-                ctrl.getDisplay().syncExec(new Runnable() {
-                    public void run() {
-                        if(delta.getKind() == IResourceDelta.REMOVED) {
-                            channel = null;
-                            processChannelChange();
-                            IStructuredSelection selection = 
-                                StructuredSelection.EMPTY;
-                            viewer.setSelection(selection);
-                            updateStatusLine((IStructuredSelection)selection);
-                            updateActionBars((IStructuredSelection)selection);
-                        }
-                        else if(delta.getKind() == IResourceDelta.CHANGED
-                            && (delta.getFlags() & IResourceDelta.MARKERS) != 0) {
+		String path = memento.getString(TAG_PATH);
+		if (path == null)
+			return;
 
-                            viewer.refresh();
-                            updateViewDecorations();
-                        }
-                    }
-                });
-            }
+		IContainer container = ResourcesPlugin.getWorkspace().getRoot();
+		IResource res = container.findMember(path);
+		if (res != null) {
+			IRSSElement rssElement = (IRSSElement) res
+					.getAdapter(IRSSElement.class);
+			if (rssElement != null) {
+				IChannel channel = rssElement.getChannel();
+				boolean found = false;
+				IMemento childMem = memento.getChild(TAG_SELECTION);
+				if (childMem != null) {
+					HashSet links = new HashSet();
+					IMemento[] elementMem = childMem.getChildren(TAG_ELEMENT);
+					for (int i = 0; i < elementMem.length; ++i) {
+						links.add(elementMem[i].getString(TAG_LINK));
+					}
+					ArrayList elements = new ArrayList();
+					IItem[] items = channel.getItems();
+					for (int i = 0; i < items.length; ++i) {
+						if (links.contains(items[i].getLink()))
+							elements.add(items[i]);
+					}
 
-        }
-    }
-    
-    private void processChannelChange() {
-        viewer.setInput(channel);
-        updateViewDecorations();
-    }
-    
-    private void updateViewDecorations() {
-        if(channel == null) {
-            setPartName("Channel Detail");
-            setTitleImage(detailIcon);
-            setTitleToolTip("Select RSS channel to view.");
-        }
-        else {
-            boolean hasUpdates = channel.hasUpdates();
-    
-            String title = channel.getTitle();
-            if(hasUpdates)
-                title += "*";
-                     
-            setPartName(title);
-    
-            ImageDescriptor imageDescriptor =
-                RSSUI.getDefault().getImageDescriptor16(channel);
-            Image image = null;
-            if(imageDescriptor != null) {
-            	if (hasUpdates) {
-            		if (newImages == null)
-            			newImages = new HashMap();
-            		
-	                image = (Image)newImages.get(channel);
-	                if(image == null) {
-	                    ImageDescriptor decoratedImageDescriptor = 
-	                        new NewChannelImageDescriptor(
-	                            imageDescriptor.getImageData(),
-	                            newItemDecoration.getImageData());
-	                            
-	                    image = decoratedImageDescriptor.createImage();
-	                    newImages.put(channel, image);
-	                }
-            	}
-            	else {
-            		if (images == null)
-            			images = new HashMap();
-            		
-	                image = (Image)images.get(channel);
-	                if(image == null) {
-	                    image = imageDescriptor.createImage();
-	                    images.put(channel, image);
-	                }
-            	}
-            }
-                    
-            setTitleImage(image);
-            setTitleToolTip(channel.getLink());
-        }
-    }
-    
-    void setShowNewOnly(boolean showNewOnly) {
-        boolean oldValue = this.showNewOnly;
-        this.showNewOnly = showNewOnly;
-        if(oldValue != showNewOnly)
-            viewer.refresh();
-    }
-    
-    private boolean isShowNewOnly() {
-        return showNewOnly;
-    }
+					if (!elements.isEmpty()) {
+						selectionChanged(null,
+								new StructuredSelection(elements));
+						found = true;
+					}
+				}
+
+				if (!found)
+					selectionChanged(null, new StructuredSelection(channel));
+			}
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.IViewPart#saveState(org.eclipse.ui.IMemento)
+	 */
+	public void saveState(IMemento memento) {
+		if (viewer == null) {
+			if (this.memento != null)
+				memento.putMemento(this.memento);
+		} else {
+			Table table = viewer.getTable();
+			TableColumn[] columns = table.getColumns();
+			for (int i = 0; i < columns.length; ++i) {
+				memento.putInteger(TAG_WIDTH + i, columns[i].getWidth());
+			}
+
+			ViewerSorter sorter = viewer.getSorter();
+			if (sorter instanceof ItemSorter) {
+				IMemento childMem = memento.createChild(TAG_SORTER);
+				((ItemSorter) sorter).saveState(childMem, columns.length);
+			}
+
+			memento.putString(TAG_SHOW_NEW_ONLY, String.valueOf(showNewOnly));
+
+			Object input = viewer.getInput();
+			if (input instanceof IChannel) {
+				IChannel channel = (IChannel) input;
+				memento.putString(TAG_PATH, channel.getFile().getFullPath()
+						.toString());
+
+				IStructuredSelection sel = (IStructuredSelection) viewer
+						.getSelection();
+				if (!sel.isEmpty()) {
+					IMemento selectionMem = memento.createChild(TAG_SELECTION);
+					for (Iterator i = sel.iterator(); i.hasNext();) {
+						IItem item = (IItem) i.next();
+						IMemento elementMem = selectionMem
+								.createChild(TAG_ELEMENT);
+						elementMem.putString(TAG_LINK, item.getLink());
+					}
+				}
+			}
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.IWorkbenchPart#dispose()
+	 */
+	public void dispose() {
+		getSite().getPage().removeSelectionListener(this);
+		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+		if (jobChangeListener != null)
+			Platform.getJobManager().removeJobChangeListener(jobChangeListener);
+
+		if (images != null) {
+			for (Iterator i = images.values().iterator(); i.hasNext();)
+				((Image) i.next()).dispose();
+
+			images = null;
+		}
+
+		if (newImages != null) {
+			for (Iterator i = newImages.values().iterator(); i.hasNext();)
+				((Image) i.next()).dispose();
+
+			newImages = null;
+		}
+
+		super.dispose();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
+	 */
+	public void resourceChanged(IResourceChangeEvent event) {
+		if (channel == null)
+			return;
+
+		final IResourceDelta delta = event.getDelta().findMember(
+				channel.getFile().getFullPath());
+		if (delta != null) {
+			Control ctrl = viewer.getControl();
+			if (ctrl != null && !ctrl.isDisposed()) {
+				// Do a sync exec, not an async exec, since the resource delta
+				// must be traversed in this method. It is destroyed
+				// when this method returns.
+				ctrl.getDisplay().syncExec(new Runnable() {
+					public void run() {
+						if (delta.getKind() == IResourceDelta.REMOVED) {
+							processChannelChange(null);
+							IStructuredSelection selection = StructuredSelection.EMPTY;
+							viewer.setSelection(selection);
+							updateStatusLine((IStructuredSelection) selection);
+							updateActionBars((IStructuredSelection) selection);
+						} else if (delta.getKind() == IResourceDelta.CHANGED
+								&& (delta.getFlags() & IResourceDelta.MARKERS) != 0) {
+
+							viewer.refresh();
+							updateViewDecorations();
+						}
+					}
+				});
+			}
+
+		}
+	}
+
+	private void processChannelChange(IChannel channel) {
+		this.channel = channel;
+		viewer.setInput(channel);
+		updateViewDecorations();
+	}
+
+	private void updateViewDecorations() {
+		if (channel == null) {
+			setPartName("Channel Detail");
+			setTitleImage(detailIcon);
+			setTitleToolTip("Select RSS channel to view.");
+		} else {
+			boolean hasUpdates = channel.hasUpdates();
+
+			String title = channel.getTitle();
+			if (hasUpdates)
+				title += "*";
+
+			setPartName(title);
+
+			ImageDescriptor imageDescriptor = RSSUI.getDefault()
+					.getImageDescriptor16(channel);
+			Image image = null;
+			if (imageDescriptor != null) {
+				if (hasUpdates) {
+					if (newImages == null)
+						newImages = new HashMap();
+
+					image = (Image) newImages.get(channel);
+					if (image == null) {
+						ImageDescriptor decoratedImageDescriptor = new NewChannelImageDescriptor(
+								imageDescriptor.getImageData(),
+								newItemDecoration.getImageData());
+
+						image = decoratedImageDescriptor.createImage();
+						newImages.put(channel, image);
+					}
+				} else {
+					if (images == null)
+						images = new HashMap();
+
+					image = (Image) images.get(channel);
+					if (image == null) {
+						image = imageDescriptor.createImage();
+						images.put(channel, image);
+					}
+				}
+			}
+
+			setTitleImage(image);
+			setTitleToolTip(channel.getLink());
+		}
+
+		if (workbenchSiteProgressService != null)
+			workbenchSiteProgressService.warnOfContentChange();
+	}
+
+	void setShowNewOnly(boolean showNewOnly) {
+		boolean oldValue = this.showNewOnly;
+		this.showNewOnly = showNewOnly;
+		if (oldValue != showNewOnly)
+			viewer.refresh();
+	}
+
+	private boolean isShowNewOnly() {
+		return showNewOnly;
+	}
 }

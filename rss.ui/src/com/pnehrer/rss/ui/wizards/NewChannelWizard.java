@@ -59,6 +59,7 @@ public class NewChannelWizard extends Wizard implements INewWizard {
         newFileCreationPage = new WizardNewFileCreationPage("file", selection);
         newFileCreationPage.setDescription("Specify channel file (*.rss).");
         newFileCreationPage.setTitle("Channel File");
+		newFileCreationPage.setFileName("*.rss");
         addPage(newFileCreationPage);
     }
 
@@ -110,8 +111,13 @@ public class NewChannelWizard extends Wizard implements INewWizard {
                                 null :
                                 new SubProgressMonitor(monitor, 1));
     
-                        IFile file = container.getFile(
-                            new Path(newFileCreationPage.getFileName()));
+						IPath fileName = new Path(newFileCreationPage.getFileName()).removeFileExtension();
+                        IFile file = container.getFile(fileName.addFileExtension("rss"));
+						for (int i = 2; file.exists(); ++i) {
+	                        file = container.getFile(
+									new Path(fileName.lastSegment() + i).addFileExtension("rss"));
+						}
+						
                         IChannel channel = RSSCore.getPlugin().createChannel(
                             file, 
                             channelOptionsPage.getTranslator(), 

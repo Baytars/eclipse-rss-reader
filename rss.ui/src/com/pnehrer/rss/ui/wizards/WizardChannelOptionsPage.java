@@ -117,6 +117,8 @@ public class WizardChannelOptionsPage extends WizardPage {
 
         channelProperties.setURL(url);
         channelProperties.createContents(topLevel);
+		channelProperties.loadDocument();
+		
         updateIntervalGroup.createContents(topLevel);
         Integer updateInterval;
         Preferences prefs = RSSCore.getPlugin().getPluginPreferences(); 
@@ -143,8 +145,10 @@ public class WizardChannelOptionsPage extends WizardPage {
     
     public void setURL(URL url) {
     	this.url = url;
-    	if (channelProperties != null)
+    	if (channelProperties != null) {
     		channelProperties.setURL(url);
+			channelProperties.loadDocument();
+    	}
     }
     
     public Document getDocument() {
