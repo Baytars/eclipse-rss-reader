@@ -14,11 +14,11 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IAdapterManager;
-import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Preferences;
+import org.osgi.framework.BundleContext;
 import org.w3c.dom.Document;
 
 import com.pnehrer.rss.internal.core.ChannelAdapterFactory;
@@ -45,11 +45,7 @@ public class RSSCore extends Plugin {
     private ResourceAdapterFactory resourceAdapterFactory;
     private ChannelAdapterFactory channelAdapterFactory;
 
-    /**
-     * @param descriptor
-     */
-    public RSSCore(IPluginDescriptor descriptor) {
-        super(descriptor);
+    public RSSCore() {
         instance = this;
     }
 
@@ -67,10 +63,10 @@ public class RSSCore extends Plugin {
     }
 
     /* (non-Javadoc)
-     * @see org.eclipse.core.runtime.Plugin#startup()
+     * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
      */
-    public void startup() throws CoreException {
-        super.startup();
+    public void start(BundleContext context) throws Exception {
+        super.start(context);
         translatorManager = new TranslatorManager();
         channelManager = new ChannelManager();
         IAdapterManager mgr = Platform.getAdapterManager();
@@ -81,14 +77,14 @@ public class RSSCore extends Plugin {
     }
     
     /* (non-Javadoc)
-     * @see org.eclipse.core.runtime.Plugin#shutdown()
+     * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
      */
-    public void shutdown() throws CoreException {
+    public void stop(BundleContext context) throws Exception {
         channelManager.cancelPendingTasks();
         IAdapterManager mgr = Platform.getAdapterManager();
         mgr.unregisterAdapters(resourceAdapterFactory);
         mgr.unregisterAdapters(channelAdapterFactory);
-        super.shutdown();
+        super.stop(context);
     }
     
     public IRegisteredTranslator[] getTranslators(Document document)

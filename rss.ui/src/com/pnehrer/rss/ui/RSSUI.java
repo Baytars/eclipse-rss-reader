@@ -15,15 +15,15 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterManager;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.help.internal.HelpPlugin;
+import org.eclipse.help.internal.browser.BrowserManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.BundleContext;
 
 import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IRSSElement;
@@ -73,8 +73,7 @@ public class RSSUI extends AbstractUIPlugin {
 	/**
 	 * The constructor.
 	 */
-	public RSSUI(IPluginDescriptor descriptor) {
-		super(descriptor);
+	public RSSUI() {
 		plugin = this;
 		try {
 			resourceBundle = 
@@ -114,17 +113,17 @@ public class RSSUI extends AbstractUIPlugin {
 	}
 
     /* (non-Javadoc)
-     * @see org.eclipse.core.runtime.Plugin#startup()
+     * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
      */
-    public void startup() throws CoreException {
-        super.startup();
+    public void start(BundleContext context) throws Exception {
+        super.start(context);
         imageManager = new ImageManager();
         workbenchAdapterFactory = new WorkbenchAdapterFactory();
         IAdapterManager mgr = Platform.getAdapterManager();        
         mgr.registerAdapters(workbenchAdapterFactory, IRSSElement.class);
 
         IConfigurationElement configElements[] =
-            Platform.getPluginRegistry().getConfigurationElementsFor(
+            Platform.getExtensionRegistry().getConfigurationElementsFor(
                 PLUGIN_ID,
                 "linkbrowser");
 
@@ -133,8 +132,7 @@ public class RSSUI extends AbstractUIPlugin {
             if(configElements[i].getName().equals("linkbrowser")) {
                 String id = configElements[i]
                     .getDeclaringExtension()
-                    .getDeclaringPluginDescriptor()
-                    .getUniqueIdentifier()
+                    .getNamespace()
                         + "." 
                         + configElements[i].getAttribute("id");
                         
@@ -151,12 +149,12 @@ public class RSSUI extends AbstractUIPlugin {
     }
 
     /* (non-Javadoc)
-     * @see org.eclipse.core.runtime.Plugin#shutdown()
+     * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
      */
-    public void shutdown() throws CoreException {
+    public void stop(BundleContext context) throws Exception {
         IAdapterManager mgr = Platform.getAdapterManager();
         mgr.unregisterAdapters(workbenchAdapterFactory);        
-        super.shutdown();
+        super.stop(context);
     }
     
     public ImageDescriptor getImageDescriptor(IChannel channel) {
@@ -216,17 +214,16 @@ public class RSSUI extends AbstractUIPlugin {
      * @see org.eclipse.ui.plugin.AbstractUIPlugin#initializeImageRegistry(org.eclipse.jface.resource.ImageRegistry)
      */
     protected void initializeImageRegistry(ImageRegistry reg) {
-        IPluginDescriptor pd = getDescriptor();
-        reg.put(XML_ICON, ImageDescriptor.createFromURL(pd.find(new Path(XML_ICON))));
-        reg.put(NEW_DECORATOR_ICON, ImageDescriptor.createFromURL(pd.find(new Path(NEW_DECORATOR_ICON))));
-        reg.put(BROWSE_ICON, ImageDescriptor.createFromURL(pd.find(new Path(BROWSE_ICON))));
-        reg.put(DETAIL_ICON, ImageDescriptor.createFromURL(pd.find(new Path(DETAIL_ICON))));
-        reg.put(NAVIGATOR_ICON, ImageDescriptor.createFromURL(pd.find(new Path(NAVIGATOR_ICON))));
-        reg.put(NEW_ICON, ImageDescriptor.createFromURL(pd.find(new Path(NEW_ICON))));
-        reg.put(UPDATE_ICON, ImageDescriptor.createFromURL(pd.find(new Path(UPDATE_ICON))));
-        reg.put(ITEM_ICON, ImageDescriptor.createFromURL(pd.find(new Path(ITEM_ICON))));
-        reg.put(ITEM_NEW_ICON, ImageDescriptor.createFromURL(pd.find(new Path(ITEM_NEW_ICON))));
-        reg.put(TEXT_INPUT_ICON, ImageDescriptor.createFromURL(pd.find(new Path(TEXT_INPUT_ICON))));
+        reg.put(XML_ICON, ImageDescriptor.createFromURL(Platform.find(getBundle(), new Path(XML_ICON))));
+        reg.put(NEW_DECORATOR_ICON, ImageDescriptor.createFromURL(Platform.find(getBundle(), new Path(NEW_DECORATOR_ICON))));
+        reg.put(BROWSE_ICON, ImageDescriptor.createFromURL(Platform.find(getBundle(), new Path(BROWSE_ICON))));
+        reg.put(DETAIL_ICON, ImageDescriptor.createFromURL(Platform.find(getBundle(), new Path(DETAIL_ICON))));
+        reg.put(NAVIGATOR_ICON, ImageDescriptor.createFromURL(Platform.find(getBundle(), new Path(NAVIGATOR_ICON))));
+        reg.put(NEW_ICON, ImageDescriptor.createFromURL(Platform.find(getBundle(), new Path(NEW_ICON))));
+        reg.put(UPDATE_ICON, ImageDescriptor.createFromURL(Platform.find(getBundle(), new Path(UPDATE_ICON))));
+        reg.put(ITEM_ICON, ImageDescriptor.createFromURL(Platform.find(getBundle(), new Path(ITEM_ICON))));
+        reg.put(ITEM_NEW_ICON, ImageDescriptor.createFromURL(Platform.find(getBundle(), new Path(ITEM_NEW_ICON))));
+        reg.put(TEXT_INPUT_ICON, ImageDescriptor.createFromURL(Platform.find(getBundle(), new Path(TEXT_INPUT_ICON))));
     }
 
     /* (non-Javadoc)
@@ -236,43 +233,13 @@ public class RSSUI extends AbstractUIPlugin {
         Preferences prefs = getPluginPreferences();
         prefs.setDefault(
             PREF_LINK_BROWSER, 
-            PLUGIN_ID + ".helpbrowser");
+            PLUGIN_ID + ".browsereditor");
+    	// TODO Don't use internal API!
         prefs.setDefault(
             HelpBrowser.PREF_HELP_BROWSER,
-            getDefaultBrowserId());
+            BrowserManager.getInstance().getDefaultBrowserID());
         prefs.setDefault(
             BrowserEditor.PREF_BROWSER_EDITOR,
-            getWorkbench().getEditorRegistry().getDefaultEditor().getId());
-    }
-    
-    private String getDefaultBrowserId() {
-        // Ugly, but we don't have a choice...
-        // get default browser from preferences
-        String defBrowserID =
-            HelpPlugin.getDefault().getPluginPreferences().getString(
-                "default_browser");
-        if (defBrowserID != null && (!"".equals(defBrowserID)))
-            return defBrowserID;
-        // Set default browser to prefered implementation
-        if (System.getProperty("os.name").startsWith("Win")) {
-            if (Platform
-                .getPluginRegistry()
-                .getPluginDescriptor("org.eclipse.help.ui")
-                != null)
-                return "org.eclipse.help.ui.iexplorer";
-            else
-                return "org.eclipse.help.custombrowser";
-        } else if (System.getProperty("os.name").startsWith("Linux")) {
-            return "org.eclipse.help.mozillaLinux";
-        } else if (System.getProperty("os.name").startsWith("SunOS")) {
-            return "org.eclipse.help.netscapeSolaris";
-        } else if (System.getProperty("os.name").startsWith("AIX")) {
-            return "org.eclipse.help.netscapeAIX";
-        } else if (
-            System.getProperty("os.name").toLowerCase().startsWith("hp")) {
-            return "org.eclipse.help.netscapeHPUX";
-        } else {
-            return "org.eclipse.help.mozillaLinux";
-        }
+            PLUGIN_ID + ".browser");
     }
 }

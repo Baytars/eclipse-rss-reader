@@ -4,7 +4,6 @@
  */
 package com.pnehrer.rss.ui.views;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 
@@ -16,6 +15,7 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
@@ -39,7 +39,6 @@ import org.eclipse.ui.actions.OpenResourceAction;
 import org.eclipse.ui.actions.OpenWithMenu;
 import org.eclipse.ui.actions.RefreshAction;
 import org.eclipse.ui.dialogs.PropertyDialogAction;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.views.navigator.OpenActionGroup;
 import org.eclipse.ui.views.navigator.ResourceNavigatorMessages;
 
@@ -355,16 +354,12 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
 
     protected ImageDescriptor getImageDescriptor(String relativePath) {
         String iconPath = "icons/full/";
-        try {
-            AbstractUIPlugin plugin = (AbstractUIPlugin)
-                Platform.getPlugin(PlatformUI.PLUGIN_ID);
-            URL installURL = plugin.getDescriptor().getInstallURL();
-            URL url = new URL(installURL, iconPath + relativePath);
-            return ImageDescriptor.createFromURL(url);
-        } 
-        catch(MalformedURLException ex) {
-            return ImageDescriptor.getMissingImageDescriptor();
-        }
+        URL url = 
+        	Platform.find(
+        			Platform.getBundle(PlatformUI.PLUGIN_ID), 
+					new Path(iconPath + relativePath));
+
+        return ImageDescriptor.createFromURL(url);
     }
 
     public void setShowNewOnly(boolean value) {

@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IPluginDescriptor;
+import org.eclipse.core.runtime.Platform;
 import org.w3c.dom.Document;
 
 import com.pnehrer.rss.core.ITranslator;
@@ -45,15 +45,14 @@ public class TranslatorManager {
 
     private synchronized void loadTranslators() throws CoreException {
         if(!initialized) {
-            IPluginDescriptor pd = RSSCore.getPlugin().getDescriptor();
-            IExtensionPoint ep = pd.getExtensionPoint(TRANSLATOR_EXTENSION);
+            IExtensionPoint ep = 
+            	Platform.getExtensionRegistry().getExtensionPoint(
+            			RSSCore.PLUGIN_ID, 
+						TRANSLATOR_EXTENSION);
             if(ep != null) {
                 IExtension[] extensions = ep.getExtensions();
                 for(int i = 0, n = extensions.length; i < n; ++i) {
-                    String prefix = extensions[i]
-                        .getDeclaringPluginDescriptor()
-                        .getUniqueIdentifier() + ".";
-
+                    String prefix = extensions[i].getNamespace() + ".";
                     IConfigurationElement[] elements =
                         extensions[i].getConfigurationElements();
                     for(int j = 0, m = elements.length; j < m; ++j) {

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
 <plugin
    id="com.pnehrer.rss.ui"
    name="%pluginName"
@@ -8,17 +9,23 @@
 
    <runtime>
       <library name="ui.jar">
-         <export name="*"/>
          <packages prefixes="com.pnehrer.rss.ui,com.pnehrer.rss.internal.ui"/>
+         <export name="com.pnehrer.rss.ui.*"/>
+         <export name="com.pnehrer.rss.ui.actions.*"/>
+         <export name="com.pnehrer.rss.ui.views.*"/>
+         <export name="com.pnehrer.rss.ui.wizards.*"/>
       </library>
    </runtime>
    <requires>
+      <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.help"/>
-      <import plugin="org.eclipse.help.ui"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.eclipse.search"/>
-      <import plugin="org.eclipse.update.ui.forms"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.eclipse.help.base"/>
       <import plugin="com.pnehrer.rss.core"/>
    </requires>
 
@@ -334,6 +341,13 @@
             class="com.pnehrer.rss.internal.ui.editor.ChannelEditor"
             id="com.pnehrer.rss.ui.editor">
       </editor>
+      <editor
+            class="com.pnehrer.rss.internal.ui.browser.WebBrowserEditor"
+            icon="detail_16.png"
+            contributorClass="com.pnehrer.rss.internal.ui.browser.WebBrowserEditorContributor"
+            name="Web Browser"
+            id="com.pnehrer.rss.ui.browser"
+            extensions="url,html"/>
    </extension>
 
 </plugin>

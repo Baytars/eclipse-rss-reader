@@ -96,7 +96,7 @@ public class BrowserEditor implements ILinkBrowser {
     
     public static IConfigurationElement[] getEditors() {
         IConfigurationElement configElements[] =
-            Platform.getPluginRegistry().getConfigurationElementsFor(
+            Platform.getExtensionRegistry().getConfigurationElementsFor(
                 "org.eclipse.ui.editors");
 
         Collection list = new ArrayList(configElements.length / 2 + 1);

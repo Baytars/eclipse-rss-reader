@@ -460,7 +460,7 @@ public class ChannelDetailView
     
     private void updateViewDecorations() {
         if(channel == null) {
-            setTitle("Channel Detail");
+            setPartName("Channel Detail");
             setTitleImage(detailIcon);
             setTitleToolTip("Select RSS channel to view.");
         }
@@ -471,7 +471,7 @@ public class ChannelDetailView
             if(hasUpdates)
                 title += "*";
                      
-            setTitle(title);
+            setPartName(title);
     
             ImageDescriptor imageDescriptor =
                 RSSUI.getDefault().getImageDescriptor16(channel);

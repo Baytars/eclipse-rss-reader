@@ -82,8 +82,8 @@ public class HelpBrowser implements ILinkBrowser {
     
     public static BrowserFactoryDescriptor[] getBrowserFactoryDescriptors() {
         IConfigurationElement configElements[] =
-            Platform.getPluginRegistry().getConfigurationElementsFor(
-                "org.eclipse.help.browser");
+            Platform.getExtensionRegistry().getConfigurationElementsFor(
+                "org.eclipse.help.base.browser");
 
         Collection list = new ArrayList(configElements.length / 2 + 1);
         for(int i = 0; i < configElements.length; i++) {

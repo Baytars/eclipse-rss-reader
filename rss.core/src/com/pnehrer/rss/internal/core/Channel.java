@@ -9,7 +9,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -30,11 +29,12 @@ import java.util.TimerTask;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
-import org.apache.xml.serialize.Method;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.Serializer;
-import org.apache.xml.serialize.SerializerFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -128,7 +128,7 @@ public class Channel
     private File getCache() {
         return file
             .getProject()
-            .getPluginWorkingLocation(RSSCore.getPlugin().getDescriptor())
+			.getWorkingLocation(RSSCore.PLUGIN_ID)
             .append(file.getProjectRelativePath())
             .toFile();
     }
@@ -318,27 +318,23 @@ public class Channel
         if(!parent.exists())
             parent.mkdirs();
             
-        SerializerFactory factory = 
-            SerializerFactory.getSerializerFactory(Method.XML);
+        // This sucks, but it works. How else can one serialize in a standard way?
         try {
-            FileWriter writer = new FileWriter(getCache()); 
-            Serializer serializer = 
-                factory.makeSerializer(
-                    writer,
-                    new OutputFormat(document));
-
-            serializer.asDOMSerializer().serialize(document);
-            writer.close();
-        }
-        catch(IOException ex) {
+	        TransformerFactory factory = TransformerFactory.newInstance();
+	        Transformer serializer = factory.newTransformer();
+	        serializer.transform(
+	        		new DOMSource(document),
+	        		new StreamResult(getCache()));
+		} 
+        catch(TransformerException ex) {
             throw new CoreException(
-                new Status(
-                    IStatus.ERROR,
-                    RSSCore.PLUGIN_ID,
-                    0,
-                    "Could not cache channel contents. File: " + file,
-                    ex));   
-        }
+                    new Status(
+                        IStatus.ERROR,
+                        RSSCore.PLUGIN_ID,
+                        0,
+                        "Could not cache channel contents. File: " + file,
+                        ex));   
+		}
     }
     
     private synchronized void update(

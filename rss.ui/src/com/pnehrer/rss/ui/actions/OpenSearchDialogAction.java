@@ -6,7 +6,7 @@ package com.pnehrer.rss.ui.actions;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.search.ui.SearchUI;
+import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
@@ -37,7 +37,7 @@ public class OpenSearchDialogAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
 	public void run(IAction action) {
-        SearchUI.openSearchDialog(window, RSSSearchPage.PAGE_ID);
+        NewSearchUI.openSearchDialog(window, RSSSearchPage.PAGE_ID);
 	}
 
 	/**

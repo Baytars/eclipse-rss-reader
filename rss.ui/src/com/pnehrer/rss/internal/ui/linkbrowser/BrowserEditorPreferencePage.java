@@ -12,8 +12,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -110,11 +110,10 @@ public class BrowserEditorPreferencePage
                 if(icon == null)
                     return null;
                 else {
-                    IPluginDescriptor pd = 
-                        configElement
-                            .getDeclaringExtension()
-                            .getDeclaringPluginDescriptor();
-                    URL iconURL = pd.find(new Path(icon));
+                    URL iconURL = 
+                    	Platform.find(
+                    			Platform.getBundle(configElement.getDeclaringExtension().getNamespace()), 
+								new Path(icon));
                     if(iconURL == null)
                         return null;
                         

@@ -14,6 +14,7 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.StructuredViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 
@@ -29,6 +30,15 @@ public class ChannelNavigatorContentProvider
     extends WorkbenchContentProvider {
 
     private static final Object[] NO_CHILDREN = {};
+    private Viewer viewer;
+    
+    /* (non-Javadoc)
+	 * @see org.eclipse.ui.model.WorkbenchContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+	 */
+	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		this.viewer = viewer;
+		super.inputChanged(viewer, oldInput, newInput);
+	}
 
     /* (non-Javadoc)
      * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)

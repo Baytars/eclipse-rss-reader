@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
 <plugin
    id="com.pnehrer.rss.core"
    name="%pluginName"
@@ -8,19 +9,13 @@
 
    <runtime>
       <library name="core.jar">
-         <export name="*"/>
          <packages prefixes="com.pnehrer.rss.core,com.pnehrer.rss.internal.core"/>
-      </library>
-      <library name="xalan.jar">
-         <packages prefixes="org.apache.xalan,org.apache.xml,org.apache.xpath"/>
-      </library>
-      <library name="xml-apis.jar">
-         <packages prefixes="javax.xml.transform"/>
+         <export name="com.pnehrer.rss.core.*"/>
       </library>
    </runtime>
    <requires>
+      <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.apache.xerces" export="true"/>
    </requires>
 
 
