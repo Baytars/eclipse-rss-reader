@@ -34,6 +34,7 @@ public class RSSCore extends Plugin {
     public static final String PLUGIN_ID = "com.pnehrer.rss.core";
     public static final String PREF_UPDATE_PERIODICALLY = "updatePeriodically";
     public static final String PREF_UPDATE_INTERVAL = "updateInterval";
+    public static final String PREF_LOG_UPDATES = "logUpdates";
     public static final String MARKER_UPDATE = PLUGIN_ID + ".update";
     public static final String ATTR_LINK = "link";
     public static final int SEARCH_TITLE = 1;
@@ -60,6 +61,7 @@ public class RSSCore extends Plugin {
         Preferences prefs = getPluginPreferences();
         prefs.setDefault(PREF_UPDATE_PERIODICALLY, true);
         prefs.setDefault(PREF_UPDATE_INTERVAL, 30);
+        prefs.setDefault(PREF_LOG_UPDATES, true);
     }
 
     /* (non-Javadoc)

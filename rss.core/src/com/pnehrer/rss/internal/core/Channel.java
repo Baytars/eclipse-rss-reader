@@ -327,13 +327,15 @@ public class Channel
 	        serializer.transform(
 	        		new DOMSource(document),
 	        		new StreamResult(cache));
-	        RSSCore.getPlugin().getLog().log(
-	        	new Status(
-	        		IStatus.INFO,
-					RSSCore.PLUGIN_ID, 
-					0,
-					"Cached feed " + url + " at " + cache,
-					null));
+	        RSSCore rssCore = RSSCore.getPlugin();
+	        if (rssCore.getPluginPreferences().getBoolean(RSSCore.PREF_LOG_UPDATES))
+		        rssCore.getLog().log(
+		        	new Status(
+		        		IStatus.INFO,
+						RSSCore.PLUGIN_ID, 
+						0,
+						"Cached " + url + " for " + file + " at " + cache + ".",
+						null));
 	        
 	        updateSchedule();
 		} 

@@ -10,6 +10,7 @@ import java.util.Iterator;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -20,6 +21,7 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 
 import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IRSSElement;
+import com.pnehrer.rss.ui.RSSUI;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
@@ -79,10 +81,17 @@ public class UpdateAction extends SelectionListenerAction {
                 // ignore
             }
             catch(InvocationTargetException ex) {
+                RSSUI.getDefault().getLog().log(
+                	new Status(
+                		Status.ERROR,
+						RSSUI.PLUGIN_ID,
+						0,
+						"Could not updates RSS feed.",
+						ex));
                 MessageDialog.openError(
-                    shell, 
-                    "RSS Feed Update Error",
-                    "Could not update RSS feed. Exception: " + ex);
+                        shell, 
+                        "RSS Feed Update Error",
+                        "Could not update RSS feed. Exception: " + ex);
             }
         }
     }

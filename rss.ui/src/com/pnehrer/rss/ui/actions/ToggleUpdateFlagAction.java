@@ -10,6 +10,7 @@ import java.util.Iterator;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -24,6 +25,7 @@ import org.eclipse.ui.actions.SelectionListenerAction;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 
 import com.pnehrer.rss.core.IRSSElement;
+import com.pnehrer.rss.ui.RSSUI;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
@@ -78,10 +80,17 @@ public abstract class ToggleUpdateFlagAction
             window.run(true, true, op);
         }
         catch(InvocationTargetException e) {
+            RSSUI.getDefault().getLog().log(
+            	new Status(
+            		Status.ERROR,
+					RSSUI.PLUGIN_ID,
+					0,
+					"Could not toggle element's update status.",
+					e));
             MessageDialog.openError(
-                window.getShell(), 
-                "RSS Error",
-                "Could not toggle element's update status. Exception: " + e);    
+                    window.getShell(), 
+                    "RSS Error",
+                    "Could not toggle element's update status. Exception: " + e);
         }
         catch(InterruptedException e) {
             // ignore

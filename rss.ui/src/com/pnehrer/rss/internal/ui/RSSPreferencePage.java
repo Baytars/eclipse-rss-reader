@@ -9,6 +9,7 @@ import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
@@ -34,6 +35,7 @@ public class RSSPreferencePage
     private IWorkbench workbench;
     private final UpdateIntervalGroup updateIntervalGroup;
     private final BrowserGroup browserGroup;
+    private Button logUpdatesButton;
     private short pageComplete;
 
     public RSSPreferencePage() {
@@ -98,9 +100,16 @@ public class RSSPreferencePage
             
         updateIntervalGroup.setUpdateInterval(updateInterval);
         
+        boolean logUpdates = prefs.getBoolean(RSSCore.PREF_LOG_UPDATES);
+        
         browserGroup.createContents(topLevel);
         prefs = RSSUI.getDefault().getPluginPreferences();
         browserGroup.setSelectedBrowser(prefs.getString(RSSUI.PREF_LINK_BROWSER));
+        
+        logUpdatesButton = new Button(topLevel, SWT.CHECK);
+        logUpdatesButton.setFont(topLevel.getFont());
+        logUpdatesButton.setText("log channel updates");
+        logUpdatesButton.setSelection(logUpdates);
         
         setErrorMessage(null);
         setMessage(null);
@@ -116,6 +125,7 @@ public class RSSPreferencePage
         Preferences prefs = RSSCore.getPlugin().getPluginPreferences(); 
         prefs.setToDefault(RSSCore.PREF_UPDATE_PERIODICALLY);
         prefs.setToDefault(RSSCore.PREF_UPDATE_INTERVAL);
+        prefs.setToDefault(RSSCore.PREF_LOG_UPDATES);
         Integer updateInterval;
         if(prefs.getBoolean(RSSCore.PREF_UPDATE_PERIODICALLY))
             updateInterval = new Integer(prefs.getInt(RSSCore.PREF_UPDATE_INTERVAL));
@@ -123,6 +133,7 @@ public class RSSPreferencePage
             updateInterval = null;
             
         updateIntervalGroup.setUpdateInterval(updateInterval);
+        logUpdatesButton.setSelection(prefs.getBoolean(RSSCore.PREF_LOG_UPDATES));        
         
         prefs = RSSUI.getDefault().getPluginPreferences();
         prefs.setToDefault(RSSUI.PREF_LINK_BROWSER);
@@ -146,7 +157,8 @@ public class RSSPreferencePage
                 RSSCore.PREF_UPDATE_INTERVAL, 
                 updateInterval.intValue());
         }
-                
+        
+        prefs.setValue(RSSCore.PREF_LOG_UPDATES, logUpdatesButton.getSelection());
         RSSCore.getPlugin().savePluginPreferences();
 
         prefs = RSSUI.getDefault().getPluginPreferences();

@@ -9,6 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.SWT;
@@ -178,10 +179,17 @@ public class RSSPropertyPage
                 });
             }
             catch(InvocationTargetException ex) {
+                RSSUI.getDefault().getLog().log(
+                	new Status(
+                		Status.ERROR,
+						RSSUI.PLUGIN_ID,
+						0,
+						"Could not save channel.",
+						ex));
                 MessageDialog.openError(
-                    getShell(), 
-                    "Channel Error", 
-                    "Could not save channel. Exception: " + ex);
+                        getShell(), 
+                        "Channel Error", 
+                        "Could not save channel. Exception: " + ex);
 
                 return false;
             }

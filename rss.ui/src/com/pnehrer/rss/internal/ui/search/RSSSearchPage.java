@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -30,6 +31,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkingSet;
 
 import com.pnehrer.rss.core.RSSCore;
+import com.pnehrer.rss.ui.RSSUI;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
@@ -182,10 +184,17 @@ public class RSSSearchPage extends DialogPage implements ISearchPage {
             return true;
         }
         catch(InvocationTargetException ex) {
+            RSSUI.getDefault().getLog().log(
+            	new Status(
+            		Status.ERROR,
+					RSSUI.PLUGIN_ID,
+					0,
+					"Could not perform search.",
+					ex));
             MessageDialog.openError(
-                getShell(), 
-                "RSS Search Error",
-                "Could not perform search. Exception: " + ex.getTargetException());
+                    getShell(), 
+                    "RSS Search Error",
+                    "Could not perform search. Exception: " + ex.getTargetException());
         }
         catch(InterruptedException ex) {
             // ignore
