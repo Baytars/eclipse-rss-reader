@@ -57,7 +57,7 @@ public class DefaultTranslator implements ITranslator {
 	private static final String FEED_ELEMENT = "feed";
 
 	private static final Collection RSS_VERSIONS = Arrays.asList(new String[] {
-			"0.91", "0.92", "2.0" });
+			"0.91", "0.92", "2.0", "2" });
 
 	private static final String ATOM_VERSION = "0.3";
 
