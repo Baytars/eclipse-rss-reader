@@ -1,0 +1,5 @@
+#Eclipse RSS Reader v1.2.0
+#Mon Apr 26 16:12:44 EDT 2004
+translatorId=com.pnehrer.rss.core.default
+url=http\://hnonline.sk/?p\=k00001_rss
+updateInterval=30
