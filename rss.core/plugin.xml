@@ -14,9 +14,7 @@
    </runtime>
    <requires>
       <import plugin="org.eclipse.core.resources"/>
-      <!--
       <import plugin="com.ibm.etools.xalanrt" export="true" optional="true"/>
-      -->
    </requires>
 
 
