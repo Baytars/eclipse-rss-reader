@@ -28,7 +28,8 @@ public class ChannelManager {
         new QualifiedName(RSSCore.PLUGIN_ID, "channel");
     
     private static ChannelManager instance;
-    private final Timer timer = new Timer();
+    private Timer timer = new Timer();
+    private final Object timerLock = new Object();
     private volatile boolean timerCancelled;
     
     public ChannelManager() {
@@ -40,7 +41,7 @@ public class ChannelManager {
     }
 
     void scheduleTask(TimerTask task, Date lastUpdated, int updateInterval) {
-    	synchronized(timer) {
+    	synchronized(timerLock) {
 	        if(timerCancelled)
 	            return;
 	            
@@ -49,12 +50,18 @@ public class ChannelManager {
 	            cal.setTime(lastUpdated);
 	
 	        cal.add(Calendar.MINUTE, updateInterval);
-	        timer.schedule(task, cal.getTime());
+	        try {
+	        	timer.schedule(task, cal.getTime());
+	        }
+	        catch (IllegalStateException ex) {
+	        	timer = new Timer();
+	        	timer.schedule(task, cal.getTime());
+	        }
     	}
     }
     
     public void cancelPendingTasks() {
-    	synchronized(timer) {
+    	synchronized(timerLock) {
 	        timer.cancel();
 	        timerCancelled = true;
     	}

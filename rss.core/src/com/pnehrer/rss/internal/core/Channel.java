@@ -327,6 +327,14 @@ public class Channel
 	        serializer.transform(
 	        		new DOMSource(document),
 	        		new StreamResult(cache));
+	        RSSCore.getPlugin().getLog().log(
+	        	new Status(
+	        		IStatus.INFO,
+					RSSCore.PLUGIN_ID, 
+					0,
+					"Cached feed " + url + " at " + cache,
+					null));
+	        
 	        updateSchedule();
 		} 
         catch(TransformerException ex) {
