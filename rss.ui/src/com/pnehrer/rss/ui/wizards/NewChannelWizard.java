@@ -11,7 +11,9 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -161,10 +163,19 @@ public class NewChannelWizard extends Wizard implements INewWizard {
             return false;
         } 
         catch(InvocationTargetException ex) {
+            RSSUI.getDefault().getLog().log(
+                new Status(
+                    IStatus.ERROR,
+                    RSSUI.PLUGIN_ID,
+                    0,
+                    "RSS Channel Creation Error",
+                    ex));
+
             MessageDialog.openError(
                 getShell(), 
                 "RSS Channel Creation Error",
-                "Could not create RSS channel. Exception: " + ex);
+                "Could not create RSS channel. Exception: " + ex.getTargetException());
+
             return false;
         }
 	}

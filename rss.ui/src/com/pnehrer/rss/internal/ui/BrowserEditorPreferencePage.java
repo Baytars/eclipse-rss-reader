@@ -202,10 +202,15 @@ public class BrowserEditorPreferencePage
     }
     
     private void setSelection() {
-        String id = RSSUI.getDefault().getPluginPreferences().getString(
-            BrowserEditor.PREF_BROWSER_EDITOR);
-        StructuredSelection sel = new StructuredSelection(
-            editorMap.get(id));
+        String id = 
+            RSSUI.getDefault().getPluginPreferences().getString(
+                BrowserEditor.PREF_BROWSER_EDITOR);
+        Object config = editorMap.get(id);
+        StructuredSelection sel =
+            config == null ?
+                StructuredSelection.EMPTY : 
+                new StructuredSelection(config);
+                
         editorTable.setSelection(sel, true);
         setValid(!sel.isEmpty());
     }
