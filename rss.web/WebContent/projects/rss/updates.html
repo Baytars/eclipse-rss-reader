@@ -55,7 +55,7 @@ function setMirror(mirror) {
 	setCookie("mirror", mirror);
 	var downloadDiv = document.getElementById("downloadDiv");
 	if(downloadDiv)
-		downloadDiv.disabled = mirror == null;
+		downloadDiv.style.display = mirror ? "block" : "none";
 	
 	var passiveURL = document.getElementById("passiveURL");
 	if(passiveURL)
@@ -240,7 +240,7 @@ function body_onload() {
 		<TD colspan="4" align="right"><HR noshade size="1"><INPUT type="submit" value="Select"></TD>
 	</TR>
 </TABLE><!-- /tpl:insert --></FORM>
-<DIV id="downloadDiv">
+<DIV id="downloadDiv" style="display: none">
 <DIV id="activeUpdateDiv" style="display: none">
 <H2>2. Choose Feature to Install</H2>
 <TABLE border="0" cellpadding="2" cellspacing="2" width="90%" align="center" style="border: 1px solid black">
@@ -253,7 +253,12 @@ function body_onload() {
 	<TR>
 		<TD style="background-color: #e0e0e0">Eclipse RSS Reader</TD>
 		<TD style="background-color: white"><A href="javascript:download('com.pnehrer.rss_1.0.0')">1.0.0</A></TD>
-		<TD style="background-color: #e0e0e0">203K</TD>
+		<TD style="background-color: #e0e0e0">40K</TD>
+	</TR>
+	<TR>
+		<TD style="background-color: #e0e0e0">IBM WebSphere Studio Extension for the RSS Reader</TD>
+		<TD style="background-color: white"><A href="javascript:download('com.pnehrer.rss.wsad_1.0.0')">1.0.0</A></TD>
+		<TD style="background-color: #e0e0e0">8K</TD>
 	</TR>
 </TABLE>
 </DIV>
