@@ -1,0 +1,5 @@
+#Eclipse RSS Reader v1.2.0
+#Wed Mar 16 09:47:57 EST 2005
+translatorId=com.pnehrer.rss.core.default
+url=http\://morphine.sourceforge.net/presence/projects/rss/blog-atom.xml
+updateInterval=30

@@ -1,0 +1,5 @@
+#Eclipse RSS Reader v1.2.0
+#Wed Mar 16 09:37:56 EST 2005
+translatorId=com.pnehrer.rss.core.default
+url=http\://pnehrer.freeshell.org/presence/home/blog-atom.xml
+updateInterval=30
