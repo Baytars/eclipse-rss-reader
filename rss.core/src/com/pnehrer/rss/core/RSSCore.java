@@ -238,9 +238,11 @@ public class RSSCore extends Plugin implements IResourceChangeListener {
         if(channel == null) {
             ChannelBuilder builder = new ChannelBuilder(file);
             parse(file.getContents(), builder);
-            return builder.getResult();
+            channel = builder.getResult();
+            channelManager.add(channel);
         }
-        else return channel;
+        
+        return channel;
     }
     
     /* (non-Javadoc)

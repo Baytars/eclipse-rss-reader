@@ -28,6 +28,12 @@
             class="com.pnehrer.rss.ui.views.SimpleViewPart"
             id="com.pnehrer.rss.ui.simple">
       </view>
+      <view
+            name="Navigator"
+            category="rss.ui.category1"
+            class="com.pnehrer.rss.ui.views.ChannelNavigator"
+            id="com.pnehrer.rss.ui.navigator">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.newWizards">

@@ -6,6 +6,11 @@ package com.pnehrer.rss.ui;
 
 import org.eclipse.ui.plugin.*;
 import org.eclipse.core.runtime.*;
+
+import com.pnehrer.rss.core.IChannel;
+import com.pnehrer.rss.core.IItem;
+import com.pnehrer.rss.ui.internal.WorkbenchAdapterFactory;
+
 import java.util.*;
 
 /**
@@ -59,4 +64,15 @@ public class RSSUI extends AbstractUIPlugin {
 	public ResourceBundle getResourceBundle() {
 		return resourceBundle;
 	}
+
+    /* (non-Javadoc)
+     * @see org.eclipse.core.runtime.Plugin#startup()
+     */
+    public void startup() throws CoreException {
+        super.startup();
+        WorkbenchAdapterFactory factory = new WorkbenchAdapterFactory();
+        IAdapterManager mgr = Platform.getAdapterManager();        
+        mgr.registerAdapters(factory, IChannel.class);
+        mgr.registerAdapters(factory, IItem.class);
+    }
 }

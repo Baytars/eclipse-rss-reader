@@ -78,6 +78,7 @@ public class RSSPreferencePage
                 RSSCore.PREF_UPDATE_INTERVAL, 
                 updateInterval.intValue());
                 
+        RSSCore.getPlugin().savePluginPreferences();
         return true;
     }
 }
