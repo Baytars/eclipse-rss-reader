@@ -3,7 +3,7 @@
 <plugin
    id="com.pnehrer.rss.core"
    name="%pluginName"
-   version="2.0.0"
+   version="2.0.1"
    provider-name="%providerName"
    class="com.pnehrer.rss.core.RSSCore">
 
@@ -24,7 +24,7 @@
    <extension
          point="com.pnehrer.rss.core.translator">
       <translator
-            description="Default translator for RSS versions 0.90, 0.91, 0.92, 1.0, and 2.0."
+            description="Default translator for RSS versions 0.90, 0.91, 0.92, 1.0, and 2.0, and Atom version 0.3."
             class="com.pnehrer.rss.internal.core.DefaultTranslator"
             id="default">
       </translator>

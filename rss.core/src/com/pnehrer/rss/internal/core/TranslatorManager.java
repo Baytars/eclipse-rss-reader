@@ -63,7 +63,7 @@ public class TranslatorManager {
                             elements[j].createExecutableExtension(CLASS_ATTR);
                         if(translator instanceof ITranslator) {
                             String id = prefix
-                                + elements[i].getAttribute(ID_ATTR);
+                                + elements[j].getAttribute(ID_ATTR);
                             String description = 
                                 elements[j].getAttribute(DESCRIPTION_ATTR);
                             RegisteredTranslator delegate =
