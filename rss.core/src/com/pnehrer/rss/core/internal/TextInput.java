@@ -4,6 +4,7 @@
  */
 package com.pnehrer.rss.core.internal;
 
+import org.eclipse.core.runtime.PlatformObject;
 import org.w3c.dom.Element;
 
 import com.pnehrer.rss.core.IChannel;
@@ -12,7 +13,7 @@ import com.pnehrer.rss.core.ITextInput;
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
-public class TextInput implements ITextInput {
+public class TextInput extends PlatformObject implements ITextInput {
 
     private static final String TITLE = "title";
     private static final String DESCRIPTION = "description";

@@ -172,6 +172,13 @@ public class Channel
     }
     
     /* (non-Javadoc)
+     * @see com.pnehrer.rss.core.IRSSElement#getChannel()
+     */
+    public IChannel getChannel() {
+        return this;
+    }
+    
+    /* (non-Javadoc)
      * @see com.pnehrer.rss.core.IChannel#getTitle()
      */
     public String getTitle() {
@@ -671,7 +678,7 @@ public class Channel
         }
     }
     
-    public static Channel create(
+    static Channel create(
         IFile file, 
         IRegisteredTranslator translator,
         Document document,
@@ -687,7 +694,7 @@ public class Channel
         return channel;
     }
     
-    public static Channel load(IFile file) throws CoreException {
+    static Channel load(IFile file) throws CoreException {
         Channel channel = new Channel(file);
         channel.load();
         return channel;

@@ -13,7 +13,7 @@ import com.pnehrer.rss.core.IItem;
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
-public class ChannelTableLabelProvider
+public class ChannelDetailLabelProvider
     extends LabelProvider
     implements ITableLabelProvider {
         

@@ -25,16 +25,16 @@
             id="rss.ui.category1">
       </category>
       <view
-            name="Channel"
+            name="Channel Detail"
             category="rss.ui.category1"
-            class="com.pnehrer.rss.ui.views.ItemTableView"
-            id="com.pnehrer.rss.ui.itemTable">
+            class="com.pnehrer.rss.ui.views.ChannelDetailView"
+            id="com.pnehrer.rss.ui.views.ChannelDetail">
       </view>
       <view
-            name="Channel Explorer"
+            name="Channel Navigator"
             category="rss.ui.category1"
             class="com.pnehrer.rss.ui.views.ChannelNavigator"
-            id="com.pnehrer.rss.ui.navigator">
+            id="com.pnehrer.rss.ui.views.ChannelNavigator">
       </view>
    </extension>
    <extension
@@ -65,7 +65,7 @@
          </menu>
          <action
                label="&amp;Update from Source"
-               class="com.pnehrer.rss.ui.actions.UpdateAction"
+               class="com.pnehrer.rss.ui.actions.UpdateActionDelegate"
                menubarPath="rss.ui.menu1/additions"
                enablesFor="+"
                id="rss.ui.action1">
@@ -89,6 +89,18 @@
             class="com.pnehrer.rss.ui.RSSPreferencePage"
             id="com.pnehrer.rss">
       </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.ui.resourcePerspective">
+         <view
+               ratio="0.5"
+               relative="org.eclipse.ui.views.ResourceNavigator"
+               relationship="right"
+               id="com.pnehrer.rss.ui.views.ChannelNavigator">
+         </view>
+      </perspectiveExtension>
    </extension>
 
 </plugin>

@@ -61,8 +61,10 @@ public class ChannelManager {
     public synchronized Channel getChannel(IFile file) throws CoreException {
         Channel channel = (Channel)fileChannelMap.get(file);
         if(channel == null) {
-            channel = Channel.load(file);
-            fileChannelMap.put(file, channel);
+            if("rss".equals(file.getFileExtension())) {
+                channel = Channel.load(file);
+                fileChannelMap.put(file, channel);
+            }
         }
         
         return channel;

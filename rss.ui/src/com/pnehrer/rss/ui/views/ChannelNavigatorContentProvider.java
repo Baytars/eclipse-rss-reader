@@ -7,9 +7,7 @@ package com.pnehrer.rss.ui.views;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.StructuredViewer;
@@ -19,6 +17,7 @@ import org.eclipse.ui.model.WorkbenchContentProvider;
 import com.pnehrer.rss.core.ChannelChangeEvent;
 import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IChannelChangeListener;
+import com.pnehrer.rss.core.IRSSElement;
 import com.pnehrer.rss.core.RSSCore;
 
 /**
@@ -46,45 +45,35 @@ public class ChannelNavigatorContentProvider
      * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
      */
     public Object[] getChildren(Object element) {
-        if(!(element instanceof IAdaptable)) 
-            return NO_CHILDREN;
-        
-        IResource resource = element instanceof IResource ?
-            (IResource)element :
-            (IResource)((IAdaptable)element).getAdapter(IResource.class);
-            
-        if(resource instanceof IContainer) {
-            RSSCore core = RSSCore.getPlugin();
-            Collection list = new ArrayList();
-            IContainer container = (IContainer)resource;
-            IResource[] members;
-            try {
-                members = container.members();
-            }
-            catch(CoreException ex) {
-                // TODO Log me!
-                return NO_CHILDREN;
-            }
-            
-            for(int i = 0, n = members.length; i < n; ++i) {
-                if(members[i].getType() == IResource.FILE) {
-                    if("rss".equals(members[i].getFileExtension())) {                
+        Object[] children = super.getChildren(element);
+        if(element instanceof IRSSElement) {
+            return children;
+        }
+        else {
+            Collection newChildren = new ArrayList(children.length / 2 + 1);
+            for(int i = 0, n = children.length; i < n; ++i) {
+                if(children[i] instanceof IAdaptable) {
+                    IFile file = (IFile)
+                        ((IAdaptable)children[i]).getAdapter(IFile.class);
+                    if(file == null) {
+                        newChildren.add(children[i]);
+                    }
+                    else {
                         try {
-                            list.add(core.getChannel((IFile)members[i]));
+                            IChannel channel = 
+                                RSSCore.getPlugin().getChannel(file);
+                            if(channel != null)
+                                newChildren.add(channel);
                         }
                         catch(CoreException ex) {
                             // TODO Log me!
                         }
                     }
                 }
-                else
-                    list.add(members[i]);
             }
-            
-            return list.toArray();
+
+            return newChildren.toArray();
         }
-        else
-            return super.getChildren(element);
     }
 
     /* (non-Javadoc)

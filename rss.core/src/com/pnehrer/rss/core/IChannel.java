@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
-public interface IChannel {
+public interface IChannel extends IRSSElement {
 
     public IFile getFile();
     
@@ -31,13 +31,9 @@ public interface IChannel {
     public void setUpdateInterval(Integer updateInterval);
     
     public Date getLastUpdated();
+    
+    public String getDescription();    
 
-    public String getTitle();
-    
-    public String getLink();
-    
-    public String getDescription();
-    
     public Date getDate();
     
     public IImage getImage();

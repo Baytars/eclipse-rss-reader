@@ -6,43 +6,44 @@ package com.pnehrer.rss.core.internal;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IAdapterFactory;
 
-import com.pnehrer.rss.core.IChannel;
-import com.pnehrer.rss.core.IItem;
+import com.pnehrer.rss.core.IRSSElement;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
 public class ResourceAdapterFactory implements IAdapterFactory {
 
-    private static final Class[] ADAPTER_LIST = { IFile.class, IChannel.class };
+    private static final Class[] ADAPTER_LIST = {
+        IFile.class, 
+        IRSSElement.class};
 
     /* (non-Javadoc)
      * @see org.eclipse.core.runtime.IAdapterFactory#getAdapter(java.lang.Object, java.lang.Class)
      */
     public Object getAdapter(Object adaptableObject, Class adapterType) {
         if(adapterType.isAssignableFrom(IFile.class)) { 
-            if(adaptableObject instanceof IChannel)
-                return ((IChannel)adaptableObject).getFile();
-            else if(adaptableObject instanceof IItem)
-                return ((IItem)adaptableObject).getChannel().getFile();
-            else
-                return null;
+            if(adaptableObject instanceof IRSSElement)
+                return ((IRSSElement)adaptableObject).getChannel().getFile();
         }
-        else if(IChannel.class.equals(adapterType)
-            && adaptableObject instanceof IFile) {
+        else if(IRSSElement.class.isAssignableFrom(adapterType)) {
+            IFile file = adaptableObject instanceof IAdaptable ? 
+                (IFile)((IAdaptable)adaptableObject).getAdapter(IFile.class) :
+                null;
+                
+            if(file != null) {
+                try {
+                    return ChannelManager.getInstance().getChannel(file);
+                }
+                catch(CoreException ex) {
+                    return null;
+                }
+            }
+        }
 
-            try {
-                return ChannelManager.getInstance().getChannel(
-                    (IFile)adaptableObject);
-            }
-            catch(CoreException ex) {
-                return null;
-            }
-        }
-        else
-            return null;
+        return null;
     }
 
     /* (non-Javadoc)

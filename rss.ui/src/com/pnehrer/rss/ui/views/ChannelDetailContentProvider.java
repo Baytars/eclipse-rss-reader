@@ -4,6 +4,7 @@
  */
 package com.pnehrer.rss.ui.views;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Control;
@@ -16,9 +17,11 @@ import com.pnehrer.rss.core.RSSCore;
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
-public class ChannelContentProvider
+public class ChannelDetailContentProvider
     implements IStructuredContentProvider, 
     IChannelChangeListener {
+
+    private static final Object[] NO_CHILDREN = {};
 
     private Viewer viewer;
     private Object input;
@@ -27,8 +30,10 @@ public class ChannelContentProvider
      * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
      */
     public Object[] getElements(Object inputElement) {
-        IChannel channel = (IChannel)inputElement;
-        return channel.getItems();
+        IChannel channel = inputElement instanceof IAdaptable ? 
+            (IChannel)((IAdaptable)inputElement).getAdapter(IChannel.class) :
+            (IChannel)inputElement;
+        return channel == null ? NO_CHILDREN : channel.getItems();
     }
 
     /* (non-Javadoc)
@@ -61,10 +66,10 @@ public class ChannelContentProvider
             Control control = viewer.getControl();
             if(control != null && !control.isDisposed())
                 control.getDisplay().asyncExec(new Runnable() {
-                        public void run() {
-                            viewer.refresh();
-                        }
-                    });
+                    public void run() {
+                        viewer.refresh();
+                    }
+                });
         }
     }
 }

@@ -26,7 +26,6 @@ import com.pnehrer.rss.core.internal.TranslatorManager;
 public class RSSCore extends Plugin {
 
     public static final String PLUGIN_ID = "com.pnehrer.rss.core";
-    
     public static final String PREF_UPDATE_INTERVAL = "updateInterval";
 
     private static RSSCore instance;
@@ -69,8 +68,7 @@ public class RSSCore extends Plugin {
         resourceAdapterFactory = new ResourceAdapterFactory();
         IAdapterManager mgr = Platform.getAdapterManager();
         mgr.registerAdapters(resourceAdapterFactory, IFile.class);
-        mgr.registerAdapters(resourceAdapterFactory, IChannel.class);
-        mgr.registerAdapters(resourceAdapterFactory, IItem.class);
+        mgr.registerAdapters(resourceAdapterFactory, IRSSElement.class);
     }
     
     /* (non-Javadoc)

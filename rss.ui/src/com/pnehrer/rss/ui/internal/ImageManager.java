@@ -106,9 +106,11 @@ public class ImageManager {
         ImageDescriptor imageDescriptor = 
             ImageDescriptor.createFromURL(image.getURL());
 
-        imageMap.put(image.getChannel(), imageDescriptor);
-
         ImageData imageData = imageDescriptor.getImageData();
+        if(imageData == null)
+            return;
+            
+        imageMap.put(image.getChannel(), imageDescriptor);
         ImageLoader loader = new ImageLoader();
         loader.data = new ImageData[] { imageData };
         IFile file = image.getChannel().getFile();

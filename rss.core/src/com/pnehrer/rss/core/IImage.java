@@ -9,13 +9,7 @@ import java.net.URL;
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
-public interface IImage {
-    
-    public IChannel getChannel();
-
-    public String getTitle();
+public interface IImage extends IRSSElement {
     
     public URL getURL();
-    
-    public String getLink();
 }

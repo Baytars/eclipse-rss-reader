@@ -9,15 +9,9 @@ import java.util.Date;
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
-public interface IItem {
+public interface IItem extends IRSSElement {
     
-    public IChannel getChannel();
-
-    public String getTitle();
-    
-    public String getDescription();
-
-    public String getLink();
+    public String getDescription();    
 
     public Date getDate();    
 }

@@ -7,15 +7,9 @@ package com.pnehrer.rss.core;
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
-public interface ITextInput {
+public interface ITextInput extends IRSSElement {
 
-    public IChannel getChannel();
-
-    public String getTitle();
-    
     public String getDescription();
     
     public String getName();
-    
-    public String getLink();
 }

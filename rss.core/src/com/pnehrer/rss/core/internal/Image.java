@@ -9,6 +9,7 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.Status;
 import org.w3c.dom.Element;
 
@@ -19,7 +20,7 @@ import com.pnehrer.rss.core.RSSCore;
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
-public class Image implements IImage {
+public class Image extends PlatformObject implements IImage {
     
     private static final String TITLE = "title";
     private static final String URL = "url";
