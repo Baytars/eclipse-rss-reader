@@ -159,3 +159,6 @@ th.tableList {
 table.tableList {
 	border: 1px solid #ff6600;
 }
+
+td.spacer {padding-bottom: 10px; padding-top: 10px;}
+#indent {word-wrap : break-word;width :300px;text-indent:10px;}
