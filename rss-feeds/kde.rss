@@ -1,0 +1,5 @@
+#Eclipse RSS Reader v1.2.0
+#Mon Mar 22 20:40:47 EST 2004
+translatorId=com.pnehrer.rss.core.default
+url=http\://www.kde.org/dotkdeorg.rdf
+updateInterval=30
