@@ -46,7 +46,7 @@
 			<TD height="8"></TD>
 		</TR>
 		<TR>
-			<TD valign="top" class="content"><!-- tpl:put name="body" --><H1>Blog</H1>
+			<TD valign="top" class="content"><!-- tpl:put name="body" -->
 <!--#include virtual="/presence/home/blog.html" -->
 		<HR size="1" noshade>
 <P><SMALL>This page is powered by <A href="http://blogger.com/" title="BLOGGER">Blogger. <IMG src="http://buttons.blogger.com/bloggerbutton1.gif" border="0" align="middle"/></A></SMALL></P>
