@@ -11,12 +11,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TimerTask;
 
@@ -63,7 +64,7 @@ public class Channel
     extends PlatformObject 
     implements IChannel,
         IResourceChangeListener {
-    
+
     private static final String CHANNEL = "channel";
     private static final String TRANSLATOR_ID = "translatorId";
     private static final String URL = "url";
@@ -90,7 +91,7 @@ public class Channel
     private Date date;
     private Date lastUpdated;
     private Image image;
-    private final Map items = Collections.synchronizedMap(new HashMap());
+    private final List items = new ArrayList();
     private TextInput textInput;
     
     private boolean ignoreResourceChange;
@@ -233,7 +234,7 @@ public class Channel
      * @see com.pnehrer.rss.core.IChannel#getItems()
      */
     public IItem[] getItems() {
-        return (IItem[])items.values().toArray(new IItem[items.size()]);
+        return (IItem[])items.toArray(new IItem[items.size()]);
     }
     
     /* (non-Javadoc)
@@ -328,6 +329,7 @@ public class Channel
                     monitor.worked(1);
                 
                 setLastUpdated(new Date());
+                updateUpdateSchedule();
                 save(monitor == null ?
                     null :
                     new SubProgressMonitor(monitor, 1));
@@ -426,11 +428,29 @@ public class Channel
                                 ex));
                     }
         
-                    str = channel.getAttribute(UPDATE_INTERVAL);
-                    setUpdateInterval(str == null ? null : new Integer(str));
-
+                    str = channel.getAttribute(LAST_UPDATED);
+                    if(str == null)
+                        setLastUpdated(null);
+                    else {
+                        try {
+                            setLastUpdated(DateFormat.getInstance().parse(str));
+                        }
+                        catch(ParseException ex) {
+                            throw new CoreException(
+                                new Status(
+                                    IStatus.ERROR,
+                                    RSSCore.PLUGIN_ID,
+                                    0,
+                                    "invalid 'last updated' value " + str,
+                                    ex));
+                        }
+                    }
+                    
                     update(channel);
 
+                    str = channel.getAttribute(UPDATE_INTERVAL);
+                    setUpdateInterval(str == null ? null : new Integer(str));
+                    
                     return;
                 }
                 finally {
@@ -459,10 +479,15 @@ public class Channel
 
         boolean hasImage = false;
         boolean hasTextInput = false;
-        Collection liveItemLinks = new HashSet();
-        Map oldItems = new HashMap(items);
+        Collection liveItems = new HashSet();
+        Map itemMap = new HashMap(items.size());
+        for(Iterator iter = items.iterator(); iter.hasNext();) {
+            Item item = (Item)iter.next();
+            itemMap.put(item.getLink(), item);
+        }
 
         NodeList children = channel.getChildNodes();
+        int itemIndex = 0;
         for(int i = 0, n = children.getLength(); i < n; ++i) {
             Node node = children.item(i);
             if(node.getNodeType() == Node.ELEMENT_NODE) {
@@ -475,16 +500,16 @@ public class Channel
                     hasImage = true;
                 }
                 else if(ITEM.equals(node.getLocalName())) {
-                    String itemLink = 
-                        ((Element)node).getAttribute(Item.LINK);
-                    Item item = (Item)items.get(itemLink);
+                    String itemLink = ((Element)node).getAttribute(Item.LINK);
+                    Item item = (Item)itemMap.get(itemLink);
                     if(item == null) {
                         item = new Item(this);
-                        items.put(itemLink, item);
+                        items.add(itemIndex, item);
                     }
                     
-                    liveItemLinks.add(itemLink);
                     item.update((Element)node);
+                    liveItems.add(item);
+                    ++itemIndex;
                 }
                 else if(TEXT_INPUT.equals(node.getLocalName())) {
                     Object oldTextInput = textInput;
@@ -497,7 +522,7 @@ public class Channel
             }
         }
 
-        items.keySet().retainAll(liveItemLinks);
+        items.retainAll(liveItems);
     }
     
     public synchronized void save(IProgressMonitor monitor) 
@@ -540,7 +565,7 @@ public class Channel
                 image.save(imageElement);
             }
                 
-            for(Iterator i = items.values().iterator(); i.hasNext();) {
+            for(Iterator i = items.iterator(); i.hasNext();) {
                 Item item = (Item)i.next();
                 Element itemElement = document.createElement(ITEM);
                 channel.appendChild(itemElement);
@@ -607,7 +632,8 @@ public class Channel
             if(updateInterval != null) {
                 updateTask = new UpdateTask();
                 ChannelManager.getInstance().scheduleTask(
-                    updateTask, 
+                    updateTask,
+                    lastUpdated, 
                     updateInterval.intValue());
             }
         }
@@ -643,15 +669,6 @@ public class Channel
                 // TODO Log me!
             }
         }
-    }
-
-    /* (non-Javadoc)
-     * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-     */
-    public Object getAdapter(Class adapter) {
-        Object result = super.getAdapter(adapter);
-        if(result == null && adapter.isAssignableFrom(IFile.class)) return file;
-        else return result;
     }
 
     public boolean equals(Object other) {

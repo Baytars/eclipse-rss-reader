@@ -4,15 +4,12 @@
  */
 package com.pnehrer.rss.ui.views;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.help.browser.IBrowser;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -30,10 +27,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.ISetSelectionTarget;
 import org.eclipse.ui.part.ViewPart;
 
-import com.pnehrer.rss.core.IChannel;
-import com.pnehrer.rss.core.IItem;
 import com.pnehrer.rss.core.IRSSElement;
-import com.pnehrer.rss.ui.RSSUI;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
@@ -41,7 +35,7 @@ import com.pnehrer.rss.ui.RSSUI;
 public class ChannelNavigator extends ViewPart implements ISetSelectionTarget {
 
     private TreeViewer viewer;
-    private ChannelActionGroup actionGroup;
+    private ChannelNavigatorActionGroup actionGroup;
 
     private void initContextMenu() {
         MenuManager menuMgr = new MenuManager("#PopupMenu");
@@ -52,7 +46,7 @@ public class ChannelNavigator extends ViewPart implements ISetSelectionTarget {
             }
         });
 
-        Menu menu = menuMgr.createContextMenu(viewer.getTree());
+        Menu menu = menuMgr.createContextMenu(viewer.getControl());
         viewer.getControl().setMenu(menu);
         getSite().registerContextMenu(menuMgr, viewer);
     }
@@ -81,12 +75,21 @@ public class ChannelNavigator extends ViewPart implements ISetSelectionTarget {
                 if(object instanceof IAdaptable) {
                     IRSSElement rssElement = (IRSSElement)
                         ((IAdaptable)object).getAdapter(IRSSElement.class);
-                    msg = rssElement == null ?
-                        String.valueOf(object) :
-                        rssElement.getLink();
+                    if(rssElement == null) {
+                        IResource resource = (IResource)
+                            ((IAdaptable)object).getAdapter(IResource.class);
+                        msg = resource == null ?
+                            null :
+                            resource.getFullPath().toString();
+                    }
+                    else {
+                        msg = rssElement == null ?
+                            null :
+                            rssElement.getLink();
+                    }
                 }
                 else
-                    msg = String.valueOf(object);
+                    msg = null;
                 
                 break;
                 
@@ -103,6 +106,11 @@ public class ChannelNavigator extends ViewPart implements ISetSelectionTarget {
         updateActionBars(sel);
     }
 
+    private void handleOpen(OpenEvent event) {
+        IStructuredSelection selection = (IStructuredSelection)event.getSelection();
+        actionGroup.runDefaultAction(selection);
+    }
+
     /* (non-Javadoc)
      * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
      */
@@ -115,40 +123,7 @@ public class ChannelNavigator extends ViewPart implements ISetSelectionTarget {
         
         viewer.addOpenListener(new IOpenListener() {
             public void open(OpenEvent event) {
-                IStructuredSelection selection = 
-                    (IStructuredSelection)event.getSelection();
-                if(!selection.isEmpty()) {
-                    Object element = selection.getFirstElement();
-                    String url;
-                    if(element instanceof IChannel)
-                        url = ((IChannel)element).getLink();
-                    else if(element instanceof IItem)
-                        url = ((IItem)element).getLink();
-                    else
-                        url = null;
-
-                    if(url != null) {                            
-                        try {
-                            IBrowser browser = 
-                                RSSUI.getDefault().createBrowser();
-                            browser.displayURL(url);
-                        }
-                        catch(CoreException ex) {
-                            ErrorDialog.openError(
-                                getViewSite().getShell(),
-                                "Browser Error",
-                                "Could not open browser.",
-                                ex.getStatus());
-                        }
-                        catch(Exception ex) {
-                            MessageDialog.openError(
-                                getViewSite().getShell(),
-                                "Browser Error",
-                                "Could not open link " + url 
-                                    + ". Exception: " + ex);
-                        }
-                    }
-                }                    
+                handleOpen(event);
             }
         });
 
@@ -163,8 +138,7 @@ public class ChannelNavigator extends ViewPart implements ISetSelectionTarget {
         viewer.setInput(ResourcesPlugin.getWorkspace());
 
         initContextMenu();
-        actionGroup = new ChannelActionGroup();
-
+        actionGroup = new ChannelNavigatorActionGroup(this);
         actionGroup.fillActionBars(getViewSite().getActionBars());
         updateActionBars((IStructuredSelection) viewer.getSelection());
 
@@ -176,6 +150,10 @@ public class ChannelNavigator extends ViewPart implements ISetSelectionTarget {
      */
     public void setFocus() {
         viewer.getTree().setFocus();
+    }
+    
+    public TreeViewer getViewer() {
+        return viewer;
     }
 
     /* (non-Javadoc)

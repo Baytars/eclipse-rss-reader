@@ -5,8 +5,10 @@
 package com.pnehrer.rss.core.internal;
 
 import java.net.URL;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,8 +33,6 @@ import com.pnehrer.rss.core.RSSCore;
  */
 public class ChannelManager {
     
-    private static final long MILISEC_PER_MIN = 60000;
-
     private static ChannelManager instance;
     private final Map fileChannelMap =  new HashMap();
     private final Timer timer = new Timer();
@@ -47,11 +47,13 @@ public class ChannelManager {
         return instance;
     }
 
-    void scheduleTask(TimerTask task, int updateInterval) {
-        timer.schedule(
-            task, 
-            MILISEC_PER_MIN * updateInterval, 
-            MILISEC_PER_MIN * updateInterval);
+    void scheduleTask(TimerTask task, Date lastUpdated, int updateInterval) {
+        Calendar cal = Calendar.getInstance();
+        if(lastUpdated != null)
+            cal.setTime(lastUpdated);
+
+        cal.add(Calendar.MINUTE, updateInterval);
+        timer.schedule(task, cal.getTime());
     }
     
     public synchronized void cancelPendingTasks() {

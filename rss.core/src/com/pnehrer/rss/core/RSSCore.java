@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Preferences;
 import org.w3c.dom.Document;
 
+import com.pnehrer.rss.core.internal.ChannelAdapterFactory;
 import com.pnehrer.rss.core.internal.ChannelManager;
 import com.pnehrer.rss.core.internal.ResourceAdapterFactory;
 import com.pnehrer.rss.core.internal.TranslatorManager;
@@ -32,6 +33,7 @@ public class RSSCore extends Plugin {
     private ChannelManager channelManager;
     private TranslatorManager translatorManager;
     private ResourceAdapterFactory resourceAdapterFactory;
+    private ChannelAdapterFactory channelAdapterFactory;
     
     private boolean prefInit;
 
@@ -65,9 +67,10 @@ public class RSSCore extends Plugin {
         super.startup();
         translatorManager = new TranslatorManager();
         channelManager = new ChannelManager();
-        resourceAdapterFactory = new ResourceAdapterFactory();
         IAdapterManager mgr = Platform.getAdapterManager();
-        mgr.registerAdapters(resourceAdapterFactory, IFile.class);
+        channelAdapterFactory = new ChannelAdapterFactory();
+        mgr.registerAdapters(channelAdapterFactory, IFile.class);
+        resourceAdapterFactory = new ResourceAdapterFactory();
         mgr.registerAdapters(resourceAdapterFactory, IRSSElement.class);
     }
     
@@ -77,7 +80,8 @@ public class RSSCore extends Plugin {
     public void shutdown() throws CoreException {
         channelManager.cancelPendingTasks();
         IAdapterManager mgr = Platform.getAdapterManager();
-        mgr.unregisterAdapters(resourceAdapterFactory);        
+        mgr.unregisterAdapters(resourceAdapterFactory);
+        mgr.unregisterAdapters(channelAdapterFactory);
         super.shutdown();
     }
     

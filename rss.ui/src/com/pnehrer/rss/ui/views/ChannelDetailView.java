@@ -4,16 +4,18 @@
  */
 package com.pnehrer.rss.ui.views;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.help.browser.IBrowser;
-import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.OpenEvent;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
@@ -21,10 +23,12 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.part.ViewPart;
 
 import com.pnehrer.rss.core.IChannel;
@@ -40,6 +44,65 @@ public class ChannelDetailView extends ViewPart implements ISelectionListener {
 
     private static final String[] COLUMNS = {"Title", "Description"};
     private TableViewer viewer;
+    private ChannelActionGroup actionGroup;
+
+    private void initContextMenu() {
+        MenuManager menuMgr = new MenuManager("#PopupMenu");
+        menuMgr.setRemoveAllWhenShown(true);
+        menuMgr.addMenuListener(new IMenuListener() {
+            public void menuAboutToShow(IMenuManager manager) {
+                ChannelDetailView.this.fillContextMenu(manager);
+            }
+        });
+
+        Menu menu = menuMgr.createContextMenu(viewer.getControl());
+        viewer.getControl().setMenu(menu);
+    }
+
+    private void fillContextMenu(IMenuManager menu) {
+        IStructuredSelection selection = 
+            (IStructuredSelection) viewer.getSelection();
+        actionGroup.setContext(new ActionContext(selection));
+        actionGroup.fillContextMenu(menu);
+    }
+
+    private void updateActionBars(IStructuredSelection selection) {
+        actionGroup.setContext(new ActionContext(selection));
+        actionGroup.updateActionBars();
+    }
+
+    private void updateStatusLine(IStructuredSelection selection) {
+        String msg;
+        switch(selection.size()) {
+            case 0:
+                msg = "No selection.";
+                break;
+                
+            case 1:
+                Object object = selection.getFirstElement();
+                if(object instanceof IItem)
+                    msg = ((IItem)object).getLink();
+                else
+                    msg = null;
+                                    
+                break;
+                
+            default:
+                msg = "Multiple selection.";
+        }
+
+        getViewSite().getActionBars().getStatusLineManager().setMessage(msg);
+    }
+
+    private void handleSelectionChanged(SelectionChangedEvent event) {
+        IStructuredSelection sel = (IStructuredSelection)event.getSelection();
+        updateStatusLine(sel);
+    }
+
+    private void handleOpen(OpenEvent event) {
+        IStructuredSelection selection = (IStructuredSelection)event.getSelection();
+        actionGroup.runDefaultAction(selection);
+    }
 
 	/**
 	 * @see ViewPart#createPartControl
@@ -92,34 +155,22 @@ public class ChannelDetailView extends ViewPart implements ISelectionListener {
         
         viewer.addOpenListener(new IOpenListener() {
             public void open(OpenEvent event) {
-                IStructuredSelection selection = 
-                    (IStructuredSelection)event.getSelection();
-                if(!selection.isEmpty()) {
-                    IItem item = (IItem)selection.getFirstElement();
-                    try {
-                        IBrowser browser = 
-                            RSSUI.getDefault().createBrowser();
-                        browser.displayURL(item.getLink());
-                    }
-                    catch(CoreException ex) {
-                        ErrorDialog.openError(
-                            getViewSite().getShell(),
-                            "Browser Error",
-                            "Could not open browser.",
-                            ex.getStatus());
-                    }
-                    catch(Exception ex) {
-                        MessageDialog.openError(
-                            getViewSite().getShell(),
-                            "Browser Error",
-                            "Could not open link " + item.getLink() 
-                                + ". Exception: " + ex);
-                    }
-                }                    
+                handleOpen(event);
             }
         });
         
+        viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            public void selectionChanged(SelectionChangedEvent event) {
+                handleSelectionChanged(event);
+            }
+        });
+        
+        initContextMenu();
+        actionGroup = new ChannelActionGroup(this);
+        actionGroup.fillActionBars(getViewSite().getActionBars());
+
         selectionChanged(this, getSite().getPage().getSelection());
+
         getSite().getPage().addSelectionListener(
             "org.eclipse.ui.views.ResourceNavigator", 
             this);
@@ -158,8 +209,12 @@ public class ChannelDetailView extends ViewPart implements ISelectionListener {
         if(rssElement == null) {
             viewer.setInput(null);
             setTitle("No channel selected");
-            setTitleImage(null);
+            setTitleImage(null);    // TODO Set default image.
             setTitleToolTip("Please select a channel.");
+
+            IStructuredSelection sel = new StructuredSelection();
+            updateStatusLine(sel);
+            updateActionBars(sel);
         }
         else {
             IChannel channel = rssElement.getChannel();
@@ -174,6 +229,8 @@ public class ChannelDetailView extends ViewPart implements ISelectionListener {
                 imageDescriptor.createImage());
                     
             setTitleToolTip(channel.getLink());
+            updateStatusLine((IStructuredSelection)selection);
+            updateActionBars((IStructuredSelection)selection);
         }
     }
     

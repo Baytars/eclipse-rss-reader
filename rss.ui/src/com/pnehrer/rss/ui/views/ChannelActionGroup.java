@@ -12,6 +12,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.actions.ActionGroup;
 
+import com.pnehrer.rss.ui.actions.OpenLinkAction;
 import com.pnehrer.rss.ui.actions.UpdateAction;
 
 /**
@@ -19,9 +20,18 @@ import com.pnehrer.rss.ui.actions.UpdateAction;
  */
 public class ChannelActionGroup extends ActionGroup {
     
+    private final OpenLinkAction openChannelLinkAction;
+    private final OpenLinkAction openItemLinkAction;
     private final UpdateAction updateAction;
     
-    public ChannelActionGroup() {
+    private final ChannelDetailView channelDetailView;
+    
+    public ChannelActionGroup(ChannelDetailView channelDetailView) {
+        this.channelDetailView = channelDetailView;
+        openChannelLinkAction = new OpenLinkAction(
+            channelDetailView.getSite().getShell());
+        openItemLinkAction = new OpenLinkAction(
+            channelDetailView.getSite().getShell());
         updateAction = new UpdateAction();
     }
 
@@ -30,10 +40,12 @@ public class ChannelActionGroup extends ActionGroup {
      */
     public void fillActionBars(IActionBars actionBars) {
         IMenuManager menu = actionBars.getMenuManager();
+        menu.add(openChannelLinkAction);
         menu.add(updateAction);
         
         IToolBarManager toolBar = actionBars.getToolBarManager();
         toolBar.add(new Separator());
+        toolBar.add(openChannelLinkAction);
         toolBar.add(updateAction);
     }
 
@@ -44,8 +56,8 @@ public class ChannelActionGroup extends ActionGroup {
         IStructuredSelection selection =
             (IStructuredSelection)getContext().getSelection();
     
-        menu.add(updateAction);
-        updateAction.selectionChanged(selection);
+        menu.add(openItemLinkAction);
+        openItemLinkAction.selectionChanged(selection);
         menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
     }
     
@@ -55,6 +67,13 @@ public class ChannelActionGroup extends ActionGroup {
     public void updateActionBars() {
         IStructuredSelection selection =
             (IStructuredSelection) getContext().getSelection();
+        openChannelLinkAction.selectionChanged(selection);
         updateAction.selectionChanged(selection);
+    }
+
+    public void runDefaultAction(IStructuredSelection selection) {
+        openItemLinkAction.selectionChanged(selection);
+        if(openItemLinkAction.isEnabled())
+            openItemLinkAction.run();
     }
 }

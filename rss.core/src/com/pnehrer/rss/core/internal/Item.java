@@ -100,7 +100,7 @@ public class Item extends PlatformObject implements IItem {
         if(date != null)
             item.setAttribute(DATE, DateFormat.getInstance().format(date));
     }
-    
+
     public boolean equals(Object other) {
         if(other instanceof Item)
             return link.equals(((Item)other).link);

@@ -47,7 +47,10 @@
             name="New Channel"
             category="rss.ui.category1"
             class="com.pnehrer.rss.ui.wizards.NewChannelWizard"
-            id="rss.ui.wizard1">
+            id="com.pnehrer.rss.ui.wizards.NewChannelWizard">
+         <selection
+               class="org.eclipse.core.resources.IContainer">
+         </selection>
       </wizard>
    </extension>
    <extension
@@ -75,9 +78,9 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            objectClass="org.eclipse.core.resources.IFile"
+            objectClass="com.pnehrer.rss.core.IRSSElement"
+            adaptable="true"
             name="RSS"
-            nameFilter="*.rss"
             class="com.pnehrer.rss.ui.RSSPropertyPage"
             id="rss.ui.page1">
       </page>
@@ -97,9 +100,15 @@
          <view
                ratio="0.5"
                relative="org.eclipse.ui.views.ResourceNavigator"
-               relationship="right"
+               relationship="stack"
                id="com.pnehrer.rss.ui.views.ChannelNavigator">
          </view>
+         <newWizardShortcut
+               id="com.pnehrer.rss.ui.wizards.NewChannelWizard">
+         </newWizardShortcut>
+         <showInPart
+               id="com.pnehrer.rss.ui.views.ChannelDetail">
+         </showInPart>
       </perspectiveExtension>
    </extension>
 

@@ -6,7 +6,6 @@ package com.pnehrer.rss.ui;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -21,6 +20,7 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.PropertyPage;
 
 import com.pnehrer.rss.core.IChannel;
+import com.pnehrer.rss.core.IRSSElement;
 import com.pnehrer.rss.core.RSSCore;
 import com.pnehrer.rss.ui.internal.ChannelPropertyGroup;
 import com.pnehrer.rss.ui.internal.UpdateIntervalGroup;
@@ -142,18 +142,11 @@ public class RSSPropertyPage
     }
     
     private IChannel getChannel() {
-        IFile file = (IFile)getElement();
-        IChannel channel = null;
-        try {
-            channel = RSSCore.getPlugin().getChannel(file);
-        }
-        catch(CoreException ex) {
-            MessageDialog.openError(
-                getShell(), 
-                "Error", 
-                "Could not obtain channel for file " + file + ". Exception: " + ex);
-        }
-        
-        return channel;        
+        IRSSElement rssElement = (IRSSElement)
+            getElement().getAdapter(IRSSElement.class);
+        if(rssElement == null)
+            return null;    // TODO Throw up!
+        else
+            return rssElement.getChannel();
     }
 }
