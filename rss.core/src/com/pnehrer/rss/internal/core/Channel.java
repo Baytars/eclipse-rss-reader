@@ -4,12 +4,14 @@
  */
 package com.pnehrer.rss.internal.core;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -67,6 +69,8 @@ public class Channel
     extends PlatformObject 
     implements IChannel, IResourceChangeListener {
 
+    private static final String VERSION_HEADER = "Eclipse RSS Reader v1.2.0";
+
     private static final String CHANNEL = "channel";
     private static final String TRANSLATOR_ID = "translatorId";
     private static final String URL = "url";
@@ -81,7 +85,6 @@ public class Channel
     private static final String TEXT_INPUT = "textInput";
 
     private UpdateTask updateTask;
-    private final Object updateTaskLock = new Object();
 
     private IFile file;
     private IRegisteredTranslator translator;
@@ -113,11 +116,21 @@ public class Channel
     }
     
     private void passivate() {
-        if(updateTask != null)
-            updateTask.cancel();
+        synchronized(this) {
+            if(updateTask != null)
+                updateTask.cancel();
+        }
             
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
         ChannelManager.getInstance().removeChannel(this);
+    }
+
+    private File getCache() {
+        return file
+            .getProject()
+            .getPluginWorkingLocation(RSSCore.getPlugin().getDescriptor())
+            .append(file.getProjectRelativePath())
+            .toFile();
     }
 
     /* (non-Javadoc)
@@ -131,7 +144,7 @@ public class Channel
         return translator;
     }
     
-    public synchronized void setTranslator(IRegisteredTranslator translator) {
+    public void setTranslator(IRegisteredTranslator translator) {
         this.translator = translator;
     }
     
@@ -142,7 +155,7 @@ public class Channel
         return url;
     }
     
-    public synchronized void setURL(URL url) {
+    public void setURL(URL url) {
         this.url = url;
     }
     
@@ -158,7 +171,7 @@ public class Channel
      */
     public synchronized void setUpdateInterval(Integer updateInterval) {
         this.updateInterval = updateInterval;
-        updateUpdateSchedule();
+        updateSchedule();
     }
     
     /* (non-Javadoc)
@@ -182,20 +195,12 @@ public class Channel
     public String getTitle() {
         return title;
     }
-    
-    private void setTitle(String title) {
-        this.title = title;
-    }
 
     /* (non-Javadoc)
      * @see com.pnehrer.rss.core.IChannel#getLink()
      */
     public String getLink() {
         return link;
-    }
-    
-    private void setLink(String link) {
-        this.link = link;
     }
 
     /* (non-Javadoc)
@@ -204,20 +209,12 @@ public class Channel
     public String getDescription() {
         return description;
     }
-    
-    private void setDescription(String description) {
-        this.description = description;
-    }
 
     /* (non-Javadoc)
      * @see com.pnehrer.rss.core.IChannel#getDate()
      */
     public Date getDate() {
         return date;
-    }
-    
-    private void setDate(Date date) {
-        this.date = date;
     }
 
     /* (non-Javadoc)
@@ -266,7 +263,7 @@ public class Channel
     }
     
     public void update(IProgressMonitor monitor) throws CoreException {
-        if(translator != null && url != null) {
+        if(url != null) {
             DocumentBuilderFactory factory = 
                 DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(true);
@@ -311,7 +308,7 @@ public class Channel
                 IStatus.ERROR,
                 RSSCore.PLUGIN_ID,
                 0,
-                "could not parse channel source",
+                "Could not parse channel source. File: " + file,
                 t));
     }
     
@@ -334,12 +331,15 @@ public class Channel
             SerializerFactory factory = 
                 SerializerFactory.getSerializerFactory(Method.XML);
             try {
+                FileWriter writer = new FileWriter(getCache()); 
                 Serializer serializer = 
                     factory.makeSerializer(
-                        new FileWriter(getCache()),
+                        writer,
                         new OutputFormat(document));
+
                 serializer.asDOMSerializer().serialize(document);
-                updateUpdateSchedule();
+                writer.close();
+                updateSchedule();
             }
             catch(IOException ex) {
                 throw new CoreException(
@@ -347,7 +347,7 @@ public class Channel
                         IStatus.ERROR,
                         RSSCore.PLUGIN_ID,
                         0,
-                        "could not cache channel contents",
+                        "Could not cache channel contents. File: " + file,
                         ex));   
             }
             
@@ -374,7 +374,7 @@ public class Channel
                         IStatus.ERROR,
                         RSSCore.PLUGIN_ID,
                         0,
-                        "invalid channel format",
+                        "invalid channel format. File: " + file,
                         null));
             }
         }
@@ -384,7 +384,7 @@ public class Channel
         }
     }
     
-    private synchronized void loadProperties() throws CoreException {                
+    private synchronized void loadProperties() throws CoreException {
         Properties props = new Properties();
         if(file.exists()) {
             try {
@@ -396,7 +396,7 @@ public class Channel
                         IStatus.ERROR,
                         RSSCore.PLUGIN_ID,
                         0,
-                        "could not load channel properties from file " + file,
+                        "Could not load channel properties from file " + file,
                         null));
             }
         }
@@ -412,105 +412,163 @@ public class Channel
                     TranslatorManager.getInstance().getTranslator(str); 
 
             if(matchingTranslator == null)
-                throw new CoreException(
-                    new Status(
-                        IStatus.ERROR,
-                        RSSCore.PLUGIN_ID,
-                        0,
-                        "could not find source translator with id " + str,
-                        null));
+                throwCouldNotFindTranslatorException(str);
 
-            setTranslator(matchingTranslator);
+            translator = matchingTranslator;
 
             str = props.getProperty(URL);
             if(str == null)
                 break;
 
             try {
-                setURL(new URL(str));
+                url = new URL(str);
             }
             catch(MalformedURLException ex) {
-                throw new CoreException(
-                    new Status(
-                        IStatus.ERROR,
-                        RSSCore.PLUGIN_ID,
-                        0,
-                        "invalid channel url " + str,
-                        ex));
+                throwInvalidChannelURL(str, ex);
             }
 
             str = props.getProperty(UPDATE_INTERVAL);
-            setUpdateInterval(str == null ? null : new Integer(str));
+            updateInterval = str == null ? null : new Integer(str);
+            updateSchedule();
             return;
         }
         while(false);
 
+        throwInvalidChannelFile();
+    }
+
+    private void throwCouldNotFindTranslatorException(String id) throws CoreException {    
         throw new CoreException(
             new Status(
                 IStatus.ERROR,
                 RSSCore.PLUGIN_ID,
                 0,
-                "invalid channel file",
+                "Could not find source translator with id " + id + ", file: " + file,
+                null));
+    }
+    
+    private void throwInvalidChannelURL(String url, Throwable t) throws CoreException {
+        throw new CoreException(
+            new Status(
+                IStatus.ERROR,
+                RSSCore.PLUGIN_ID,
+                0,
+                "Invalid channel url " + url + ", file: " + file,
+                t));
+    }
+
+    private void throwInvalidChannelFile() throws CoreException {
+        throw new CoreException(
+            new Status(
+                IStatus.ERROR,
+                RSSCore.PLUGIN_ID,
+                0,
+                "Invalid channel file: " + file,
                 null));
     }
 
-    private void throwCouldNotParseChannelFileException(Throwable t)
-        throws CoreException {
-        
-        throw new CoreException(
-            new Status(
-                IStatus.ERROR,
-                RSSCore.PLUGIN_ID,
-                0,
-                "could not parse channel file",
-                t));
-    }
-    
-    private File getCache() {
-        return file
-            .getProject()
-            .getPluginWorkingLocation(RSSCore.getPlugin().getDescriptor())
-            .append(file.getProjectRelativePath())
-            .toFile();
-    }
-
-    private synchronized void loadContents() throws CoreException {
-        File cache = getCache(); 
-        if(cache.isFile()) {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setNamespaceAware(true);
-            Document document = null; 
+    private void loadContents() throws CoreException {
+        Document document = null;
+        File cache = getCache();
+        if(cache.isFile())
             try {
-                DocumentBuilder builder = factory.newDocumentBuilder();
-                document = builder.parse(new FileInputStream(cache));
-            }
-            catch(ParserConfigurationException ex) {
-                throwCouldNotParseChannelFileException(ex);
-            }
-            catch(SAXException ex) {
-                throwCouldNotParseChannelFileException(ex);
+                FileInputStream in = new FileInputStream(cache);
+                DocumentBuilderFactory factory = 
+                    DocumentBuilderFactory.newInstance();
+                factory.setNamespaceAware(true);
+                try {
+                    DocumentBuilder builder = factory.newDocumentBuilder();
+                    document = builder.parse(in);
+                }
+                catch(ParserConfigurationException ex) {
+                    throwCouldNotParseChannelSourceException(ex);
+                }
+                catch(SAXException ex) {
+                    throwCouldNotParseChannelSourceException(ex);
+                }
+                finally {
+                    in.close();
+                }
             }
             catch(IOException ex) {
-                throwCouldNotParseChannelFileException(ex);
+                throwCouldNotParseChannelSourceException(ex);
             }
-        
-            Element channel = document.getDocumentElement();
-            if(CHANNEL.equals(channel.getLocalName()))
-                update(channel, false);
+    
+        Element channel = document.getDocumentElement();
+        if(CHANNEL.equals(channel.getLocalName()))
+            update(channel, false);
+    }
+    
+    private void load_1_1() throws CoreException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        Document document = null;
+        try {
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            document = builder.parse(file.getContents());
         }
+        catch(ParserConfigurationException ex) {
+            throwCouldNotParseChannelSourceException(ex);
+        }
+        catch(SAXException ex) {
+            throwCouldNotParseChannelSourceException(ex);
+        }
+        catch(IOException ex) {
+            throwCouldNotParseChannelSourceException(ex);
+        }
+        
+        Element channel = document.getDocumentElement();
+        if(CHANNEL.equals(channel.getLocalName())) {
+            do {
+                String str = channel.getAttribute(TRANSLATOR_ID);
+                if(str == null)
+                    break;
+                    
+                IRegisteredTranslator matchingTranslator = translator;
+                if(translator == null || !str.equals(translator.getId())) 
+                    matchingTranslator = 
+                        TranslatorManager.getInstance().getTranslator(str); 
+
+                if(matchingTranslator == null)
+                    throwCouldNotFindTranslatorException(str);
+
+                translator = matchingTranslator;
+
+                str = channel.getAttribute(URL);
+                if(str == null)
+                    break;
+
+                try {
+                    url = new URL(str);
+                }
+                catch(MalformedURLException ex) {
+                    throwInvalidChannelURL(str, ex);
+                }
+                
+                update(channel, false);
+
+                str = channel.getAttribute(UPDATE_INTERVAL);
+                updateInterval = str == null ? null : new Integer(str);
+                updateSchedule();
+                return;
+            }
+            while(false);
+        }
+
+        throwInvalidChannelFile();
     }
     
     private void update(Element channel, boolean processChanges) 
         throws CoreException {
             
-        setTitle(channel.getAttribute(TITLE));
-        setLink(channel.getAttribute(LINK));
-        setDescription(channel.getAttribute(DESCRIPTION));
+        title = channel.getAttribute(TITLE);
+        link = channel.getAttribute(LINK);
+        description = channel.getAttribute(DESCRIPTION);
         String dateStr = channel.getAttribute(DATE); 
-        setDate(
+        date = 
             dateStr == null || dateStr.trim().length() == 0 ? 
                 null : 
-                parseDate(dateStr));
+                parseDate(dateStr);
 
         boolean hasImage = false;
         boolean hasTextInput = false;
@@ -594,7 +652,7 @@ public class Channel
             
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
-            props.store(out, null);
+            props.store(out, VERSION_HEADER);
         }
         catch(IOException ex) {
             throw new CoreException(
@@ -602,7 +660,7 @@ public class Channel
                     IStatus.ERROR,
                     RSSCore.PLUGIN_ID,
                     0,
-                    "could not save channel properties",
+                    "Could not save channel properties to file " + file,
                     ex));
         }
         
@@ -615,18 +673,16 @@ public class Channel
         selfModificationStamp = file.getModificationStamp();
     }
     
-    private void updateUpdateSchedule() {
-        synchronized(updateTaskLock) {
-            if(updateTask != null)
-                updateTask.cancel();
+    private void updateSchedule() {
+        if(updateTask != null)
+            updateTask.cancel();
 
-            if(updateInterval != null) {
-                updateTask = new UpdateTask();
-                ChannelManager.getInstance().scheduleTask(
-                    updateTask,
-                    getLastUpdated(), 
-                    updateInterval.intValue());
-            }
+        if(updateInterval != null) {
+            updateTask = new UpdateTask();
+            ChannelManager.getInstance().scheduleTask(
+                updateTask,
+                getLastUpdated(), 
+                updateInterval.intValue());
         }
     }
 
@@ -727,7 +783,7 @@ public class Channel
 
         Channel channel = new Channel(file, translator);
         try {
-            channel.setURL(url);
+            channel.url = url;
             channel.updateInterval = updateInterval;
             channel.save(
                 monitor == null ?
@@ -738,7 +794,7 @@ public class Channel
                 monitor == null ?
                     null :
                     new SubProgressMonitor(monitor, 1));
-            channel.updateUpdateSchedule();
+            channel.updateSchedule();
         }
         finally {
             if(monitor != null)
@@ -750,8 +806,33 @@ public class Channel
     
     static Channel load(IFile file) throws CoreException {
         Channel channel = new Channel(file);
-        channel.loadProperties();
-        channel.loadContents();
+        BufferedReader reader = 
+            new BufferedReader(new InputStreamReader(file.getContents()));
+        String header = null;
+        try {
+            header = reader.readLine();
+            reader.close();
+        }
+        catch(IOException ex) {
+            throw new CoreException(
+                new Status(
+                    IStatus.ERROR,
+                    RSSCore.PLUGIN_ID,
+                    0,
+                    "Could not determine channel version for file " + file,
+                    ex));
+        }
+        
+        String expectedHeader = "#" + VERSION_HEADER;
+        if(expectedHeader.equals(header)) {
+            channel.loadProperties();
+            channel.loadContents();
+        }
+        else {
+            channel.load_1_1();
+            channel.save(null);
+        }
+
         return channel;
     }
     

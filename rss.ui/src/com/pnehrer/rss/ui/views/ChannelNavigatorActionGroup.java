@@ -34,14 +34,11 @@ import org.eclipse.ui.actions.AddBookmarkAction;
 import org.eclipse.ui.actions.AddTaskAction;
 import org.eclipse.ui.actions.CloseResourceAction;
 import org.eclipse.ui.actions.NewWizardMenu;
-import org.eclipse.ui.actions.OpenFileAction;
 import org.eclipse.ui.actions.OpenInNewWindowAction;
 import org.eclipse.ui.actions.OpenResourceAction;
-import org.eclipse.ui.actions.OpenWithMenu;
 import org.eclipse.ui.actions.RefreshAction;
 import org.eclipse.ui.dialogs.PropertyDialogAction;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eclipse.ui.views.navigator.OpenActionGroup;
 import org.eclipse.ui.views.navigator.ResourceNavigatorMessages;
 
 import com.pnehrer.rss.ui.RSSUI;
@@ -59,8 +56,6 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
     private final PropertyDialogAction propertyDialogAction;
     private final Action collapseAllAction;
     
-    private final OpenFileAction openFileAction;
-
     private final OpenResourceAction openProjectAction;
     private final CloseResourceAction closeProjectAction;
     private final RefreshAction refreshAction;
@@ -90,8 +85,6 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
         collapseAllAction.setToolTipText(ResourceNavigatorMessages.getString("CollapseAllAction.toolTip")); //$NON-NLS-1$
         collapseAllAction.setImageDescriptor(getImageDescriptor("elcl16/collapseall.gif")); //$NON-NLS-1$
         collapseAllAction.setHoverImageDescriptor(getImageDescriptor("clcl16/collapseall.gif")); //$NON-NLS-1$
-
-        openFileAction = new OpenFileAction(navigator.getSite().getPage());
 
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         openProjectAction = new OpenResourceAction(shell);
@@ -150,10 +143,6 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
         if(onlyFilesSelected) {
             menu.add(openLinkAction);
             openLinkAction.selectionChanged(selection);
-        
-            openFileAction.selectionChanged(selection);
-            menu.add(openFileAction);
-            fillOpenWithMenu(menu, selection);
 
             menu.add(textInputAction);
             textInputAction.selectionChanged(selection);
@@ -252,26 +241,6 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
             propertyDialogAction.selectionChanged(selection);
             menu.add(propertyDialogAction);
         }
-    }
-
-    private void fillOpenWithMenu(IMenuManager menu, IStructuredSelection selection) {
-        if (selection.size() != 1)
-            return;
-
-        Object element = selection.getFirstElement();
-        if(element instanceof IAdaptable) {
-            element = (IFile)((IAdaptable)element).getAdapter(IFile.class);
-            if(element == null)
-                return;
-        }
-        else
-            return;
-
-        MenuManager submenu = new MenuManager(
-            ResourceNavigatorMessages.getString("ResourceNavigator.openWith"), 
-            OpenActionGroup.OPEN_WITH_ID);
-        submenu.add(new OpenWithMenu(navigator.getSite().getPage(), (IFile) element));
-        menu.add(submenu);
     }
 
     private void addNewWindowAction(IMenuManager menu, IStructuredSelection selection) {

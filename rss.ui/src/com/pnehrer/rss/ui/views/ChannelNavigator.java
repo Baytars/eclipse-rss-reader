@@ -9,13 +9,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -40,7 +40,6 @@ import org.eclipse.ui.part.IShowInTarget;
 import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
 
-import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IItem;
 import com.pnehrer.rss.core.IRSSElement;
 
@@ -165,7 +164,11 @@ public class ChannelNavigator
         });
         
         viewer.setContentProvider(new ChannelNavigatorContentProvider());
-        viewer.setLabelProvider(new WorkbenchLabelProvider());
+        viewer.setLabelProvider(
+            new DecoratingLabelProvider(
+                new WorkbenchLabelProvider(), 
+                new ChannelNavigatorLabelDecorator()));
+                
         viewer.setInput(ResourcesPlugin.getWorkspace());
 
         initContextMenu();

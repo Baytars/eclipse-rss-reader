@@ -5,7 +5,6 @@
 package com.pnehrer.rss.internal.ui;
 
 import org.eclipse.jface.resource.CompositeImageDescriptor;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 
@@ -19,11 +18,11 @@ public class NewChannelImageDescriptor extends CompositeImageDescriptor {
     private final ImageData decorationData;
 
     public NewChannelImageDescriptor(
-        ImageDescriptor descriptor,
-        ImageDescriptor decoration) {
+        ImageData imageData,
+        ImageData decorationData) {
                 
-        imageData = descriptor.getImageData();
-        decorationData = decoration.getImageData(); 
+        this.imageData = imageData;
+        this.decorationData = decorationData; 
     }
 
     /* (non-Javadoc)

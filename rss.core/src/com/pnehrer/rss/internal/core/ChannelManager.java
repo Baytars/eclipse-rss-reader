@@ -88,11 +88,13 @@ public class ChannelManager {
     }
     
     synchronized void removeChannel(Channel channel) {
-        try {
-            channel.getFile().setSessionProperty(CHANNEL_KEY, null);
-        }
-        catch(CoreException ex) {
-            RSSCore.getPlugin().getLog().log(ex.getStatus());
-        }
+        IFile file = channel.getFile();
+        if(file.exists())
+            try {
+                channel.getFile().setSessionProperty(CHANNEL_KEY, null);
+            }
+            catch(CoreException ex) {
+                RSSCore.getPlugin().getLog().log(ex.getStatus());
+            }
     }
 }

@@ -31,10 +31,7 @@ public class WorkbenchItemAdapter implements IWorkbenchAdapter {
     public ImageDescriptor getImageDescriptor(Object object) {
         IItem item = (IItem)object;
         ImageRegistry reg = RSSUI.getDefault().getImageRegistry();
-        if(item.isUpdated())
-            return reg.getDescriptor(RSSUI.ITEM_NEW_ICON);
-        else
-            return reg.getDescriptor(RSSUI.ITEM_ICON);
+        return reg.getDescriptor(RSSUI.ITEM_ICON);
     }
 
     /* (non-Javadoc)
@@ -42,11 +39,7 @@ public class WorkbenchItemAdapter implements IWorkbenchAdapter {
      */
     public String getLabel(Object object) {
         IItem item = (IItem)object;
-        String title = item.getTitle();
-        if(item.isUpdated())
-            title += "*";
-            
-        return title;
+        return item.getTitle();
     }
     
     /* (non-Javadoc)

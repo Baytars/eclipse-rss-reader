@@ -26,17 +26,7 @@ public class WorkbenchChannelAdapter implements IWorkbenchAdapter {
      * @see org.eclipse.ui.model.IWorkbenchAdapter#getImageDescriptor(java.lang.Object)
      */
     public ImageDescriptor getImageDescriptor(Object object) {
-        IChannel channel = (IChannel)object;
-        ImageDescriptor descriptor = 
-            RSSUI.getDefault().getImageDescriptor16x16(channel);
-        
-        if(channel.hasUpdates())
-            return new NewChannelImageDescriptor(
-                descriptor, 
-                RSSUI.getDefault().getImageRegistry().getDescriptor(
-                    RSSUI.NEW_DECORATOR_ICON));
-        else
-            return descriptor;
+        return RSSUI.getDefault().getImageDescriptor16x16((IChannel)object);
     }
 
     /* (non-Javadoc)
@@ -44,11 +34,7 @@ public class WorkbenchChannelAdapter implements IWorkbenchAdapter {
      */
     public String getLabel(Object object) {
         IChannel channel = (IChannel)object;
-        String title = channel.getTitle();
-        if(channel.hasUpdates())
-            title += "*";
-        
-        return title;
+        return channel.getTitle();
     }
 
     /* (non-Javadoc)

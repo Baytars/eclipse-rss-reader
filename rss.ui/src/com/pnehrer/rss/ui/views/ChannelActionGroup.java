@@ -4,18 +4,22 @@
  */
 package com.pnehrer.rss.ui.views;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.actions.ActionGroup;
 
+import com.pnehrer.rss.core.IRSSElement;
 import com.pnehrer.rss.ui.RSSUI;
 import com.pnehrer.rss.ui.actions.OpenLinkAction;
 import com.pnehrer.rss.ui.actions.TextInputAction;
+import com.pnehrer.rss.ui.actions.ToggleShowNewOnlyAction;
 import com.pnehrer.rss.ui.actions.UpdateAction;
 
 /**
@@ -23,6 +27,7 @@ import com.pnehrer.rss.ui.actions.UpdateAction;
  */
 public class ChannelActionGroup extends ActionGroup {
     
+    private final ToggleShowNewOnlyAction toggleShowNewOnlyAction;
     private final OpenLinkAction openChannelLinkAction;
     private final OpenLinkAction openItemLinkAction;
     private final TextInputAction textInputAction;
@@ -33,6 +38,10 @@ public class ChannelActionGroup extends ActionGroup {
     public ChannelActionGroup(ChannelDetailView channelDetailView) {
         this.channelDetailView = channelDetailView;
         ImageRegistry reg = RSSUI.getDefault().getImageRegistry();
+
+        toggleShowNewOnlyAction = new ToggleShowNewOnlyAction(channelDetailView);
+        toggleShowNewOnlyAction.setToolTipText("Toggle showing only new items.");
+        toggleShowNewOnlyAction.setImageDescriptor(reg.getDescriptor(RSSUI.ITEM_NEW_ICON));
 
         openChannelLinkAction = new OpenLinkAction(
             channelDetailView.getSite().getShell());
@@ -59,12 +68,16 @@ public class ChannelActionGroup extends ActionGroup {
      */
     public void fillActionBars(IActionBars actionBars) {
         IMenuManager menu = actionBars.getMenuManager();
+        menu.add(toggleShowNewOnlyAction);
+        menu.add(new Separator());
         menu.add(openChannelLinkAction);
         menu.add(textInputAction);
         menu.add(new Separator());
         menu.add(updateAction);
         
         IToolBarManager toolBar = actionBars.getToolBarManager();
+        toolBar.add(new Separator());
+        toolBar.add(toggleShowNewOnlyAction);
         toolBar.add(new Separator());
         toolBar.add(openChannelLinkAction);
         toolBar.add(textInputAction);
@@ -90,9 +103,16 @@ public class ChannelActionGroup extends ActionGroup {
     public void updateActionBars() {
         IStructuredSelection selection =
             (IStructuredSelection) getContext().getSelection();
-        openChannelLinkAction.selectionChanged(selection);
         textInputAction.selectionChanged(selection);
         updateAction.selectionChanged(selection);
+        Object o = selection.getFirstElement();
+        if(o instanceof IAdaptable) {
+            IRSSElement rssElement = (IRSSElement)
+                ((IAdaptable)o).getAdapter(IRSSElement.class);
+            if(rssElement != null)
+                openChannelLinkAction.selectionChanged(
+                    new StructuredSelection(rssElement));
+        }
     }
 
     public void runDefaultAction(IStructuredSelection selection) {

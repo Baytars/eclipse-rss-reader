@@ -6,19 +6,53 @@ package com.pnehrer.rss.ui.views;
 
 import java.util.Date;
 
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 
 import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IItem;
+import com.pnehrer.rss.core.IRSSElement;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
 public class ChannelDetailLabelProvider
     extends LabelProvider
-    implements ITableLabelProvider {
+    implements ITableLabelProvider,
+        IColorProvider {
+            
+    private Color oldItemColor;
+    
+    public ChannelDetailLabelProvider() {
+        Display display = Display.getCurrent();
+        oldItemColor = new Color(display, 0x80, 0x80, 0x80); 
+    }
+    
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.viewers.IColorProvider#getForeground(java.lang.Object)
+     */
+    public Color getForeground(Object element) {
+        IRSSElement rssElement = (IRSSElement)
+            ((IAdaptable)element).getAdapter(IRSSElement.class);
+        if(rssElement instanceof IItem) {
+            if(!((IItem)rssElement).isUpdated())
+                return oldItemColor;
+        }
+            
+        return null;
+    }
+    
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.viewers.IColorProvider#getBackground(java.lang.Object)
+     */
+    public Color getBackground(Object element) {
+        return null;
+    }
         
     /* (non-Javadoc)
      * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
@@ -55,5 +89,13 @@ public class ChannelDetailLabelProvider
                 
             default: return "";
         }
+    }
+    
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
+     */
+    public void dispose() {
+        oldItemColor.dispose();
+        super.dispose();
     }
 }

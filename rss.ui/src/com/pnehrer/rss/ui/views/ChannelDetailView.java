@@ -27,18 +27,18 @@ import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IViewSite;
@@ -62,6 +62,8 @@ public class ChannelDetailView
     implements ISelectionListener,
         IResourceChangeListener {
 
+    private ImageDescriptor newItemDecoration;
+
     private static final String[] COLUMNS = {
         "#", 
         "Title", 
@@ -75,14 +77,19 @@ public class ChannelDetailView
     private static final String TAG_ELEMENT = "element";
     private static final String TAG_PATH = "path";
     private static final String TAG_LINK = "link";
+    private static final String TAG_SHOW_NEW_ONLY = "showNewOnly";
 
     private IChannel channel;
     private IMemento memento;
     private TableViewer viewer;
     private ChannelActionGroup actionGroup;
-    private Color oldItemColor;
+    private boolean showNewOnly;
     
     public ChannelDetailView() {
+        newItemDecoration = 
+            RSSUI.getDefault().getImageRegistry().getDescriptor(
+                RSSUI.NEW_DECORATOR_ICON);
+                
         ResourcesPlugin.getWorkspace().addResourceChangeListener(
             this,
             IResourceChangeEvent.POST_CHANGE);
@@ -203,6 +210,16 @@ public class ChannelDetailView
         
         viewer.setContentProvider(new ChannelDetailContentProvider());
         viewer.setLabelProvider(new ChannelDetailLabelProvider());
+
+        viewer.addFilter(new ViewerFilter() {
+            public boolean select(
+                Viewer viewer, 
+                Object parentElement, 
+                Object element) {
+
+                return (((IItem)element).isUpdated() || !isShowNewOnly());
+            }
+        });
         
         viewer.addOpenListener(new IOpenListener() {
             public void open(OpenEvent event) {
@@ -277,8 +294,6 @@ public class ChannelDetailView
 
         super.init(site, memento);
         this.memento = memento;
-        
-        oldItemColor = new Color(site.getShell().getDisplay(), 0x80, 0x80, 0x80);
     }
     
     private void restoreState(IMemento memento) {
@@ -294,6 +309,9 @@ public class ChannelDetailView
         if(sorterMem != null) {
             viewer.setSorter(ItemSorter.restoreState(sorterMem));
         }
+
+        setShowNewOnly(Boolean.TRUE.equals(
+            new Boolean(memento.getString(TAG_SHOW_NEW_ONLY))));
 
         String path = memento.getString(TAG_PATH);
         if(path == null) return;
@@ -312,8 +330,7 @@ public class ChannelDetailView
                     IMemento[] elementMem = childMem.getChildren(TAG_ELEMENT);
                     for(int i = 0; i < elementMem.length; ++i) {
                         links.add(elementMem[i].getString(TAG_LINK));
-                    }
-                    
+                    }                    
                     ArrayList elements = new ArrayList();
                     IItem[] items = channel.getItems();
                     for(int i = 0; i < items.length; ++i) {
@@ -354,6 +371,8 @@ public class ChannelDetailView
                 ((ItemSorter)sorter).saveState(childMem, columns.length);
             }
             
+            memento.putString(TAG_SHOW_NEW_ONLY, String.valueOf(showNewOnly));
+            
             Object input = viewer.getInput();
             if(input instanceof IChannel) {
                 IChannel channel = (IChannel)input;
@@ -384,9 +403,6 @@ public class ChannelDetailView
     public void dispose() {
         getSite().getPage().removeSelectionListener(this);
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
-        if(oldItemColor != null)
-            oldItemColor.dispose();
-            
         super.dispose();
     }
 
@@ -419,7 +435,8 @@ public class ChannelDetailView
                               || (delta.getFlags() & IResourceDelta.MARKERS) == 0)
                               return;
  
-                         processChannelChange();
+                        viewer.refresh(true);
+                        processChannelChange();
                     }
                 });
             }
@@ -441,25 +458,23 @@ public class ChannelDetailView
         if(hasUpdates && imageDescriptor != null)
             imageDescriptor = 
                 new NewChannelImageDescriptor(
-                    imageDescriptor,
-                    RSSUI.getDefault().getImageRegistry().getDescriptor(
-                        RSSUI.NEW_DECORATOR_ICON));
+                    imageDescriptor.getImageData(),
+                    newItemDecoration.getImageData());
                 
         setTitleImage(
             imageDescriptor == null ? 
                 null : 
                 imageDescriptor.createImage());
-
-        TableItem[] tableItems = viewer.getTable().getItems();
-        for(int i = 0; i < tableItems.length; ++i) {
-            Object data = tableItems[i].getData();
-            if(data instanceof IItem) {
-                IItem item = (IItem)data;
-                if(item.isUpdated())
-                    tableItems[i].setForeground(viewer.getTable().getForeground());
-                else
-                    tableItems[i].setForeground(oldItemColor);
-            }
-        }
+    }
+    
+    public void setShowNewOnly(boolean showNewOnly) {
+        boolean oldValue = this.showNewOnly;
+        this.showNewOnly = showNewOnly;
+        if(oldValue != showNewOnly)
+            viewer.refresh();
+    }
+    
+    private boolean isShowNewOnly() {
+        return showNewOnly;
     }
 }
