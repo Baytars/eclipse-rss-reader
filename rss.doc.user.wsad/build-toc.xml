@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="rss.doc.user.wsad toc.xml" default="generate">
+
+<target name="generate">
+	<eclipse.convertPath property="docRoot" fileSystemPath="${basedir}/doc"/>
+	<xslt style="website2toc.xsl" in=".website-config" out="toc.xml">
+		<param name="docRoot" expression="${docRoot}"/>
+		<param name="link_to" expression="../com.pnehrer.rss.doc.user/toc-book.xml#additional"/>
+	</xslt>
+</target>
+
+</project>
