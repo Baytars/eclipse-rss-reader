@@ -35,7 +35,6 @@ public class RSSPreferencePage
     private IWorkbench workbench;
     private final UpdateIntervalGroup updateIntervalGroup;
     private final BrowserGroup browserGroup;
-    private Button useAuthenticatorButton;
     private Button logUpdatesButton;
     private short pageComplete;
 
@@ -107,17 +106,8 @@ public class RSSPreferencePage
         prefs = RSSUI.getDefault().getPluginPreferences();
         browserGroup.setSelectedBrowser(prefs.getString(RSSUI.PREF_LINK_BROWSER));
 
-        useAuthenticatorButton = new Button(topLevel, SWT.CHECK);
-        GridData gd = new GridData();
-        gd.horizontalSpan = 3;
-        useAuthenticatorButton.setLayoutData(gd);
-        useAuthenticatorButton.setFont(topLevel.getFont());
-        useAuthenticatorButton.setText("ask for username/password on protected feeds");
-        useAuthenticatorButton.setSelection(
-        		prefs.getBoolean(RSSUI.PREF_USE_AUTHENTICATOR));
-        
         logUpdatesButton = new Button(topLevel, SWT.CHECK);
-        gd = new GridData();
+        GridData gd = new GridData();
         gd.horizontalSpan = 3;
         logUpdatesButton.setLayoutData(gd);
         logUpdatesButton.setFont(topLevel.getFont());
@@ -152,8 +142,6 @@ public class RSSPreferencePage
         prefs.setToDefault(RSSUI.PREF_LINK_BROWSER);
         browserGroup.setSelectedBrowser(
             prefs.getString(RSSUI.PREF_LINK_BROWSER));
-        prefs.setToDefault(RSSUI.PREF_USE_AUTHENTICATOR);
-        useAuthenticatorButton.setSelection(prefs.getBoolean(RSSUI.PREF_USE_AUTHENTICATOR));
     }
 
     /* (non-Javadoc)
@@ -183,13 +171,6 @@ public class RSSPreferencePage
         else
             prefs.setValue(RSSUI.PREF_LINK_BROWSER, id);
                             
-        prefs.setValue(
-        		RSSUI.PREF_USE_AUTHENTICATOR, 
-				useAuthenticatorButton.getSelection());
-        
-        RSSUI.getDefault().setUseAuthenticator(
-        		useAuthenticatorButton.getSelection());
-        
         RSSUI.getDefault().savePluginPreferences();
         return true;
     }
