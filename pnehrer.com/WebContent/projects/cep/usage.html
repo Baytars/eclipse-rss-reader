@@ -1,0 +1,65 @@
+<!-- tpl:insert page="/theme/home.htpl" --><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type"
+	content="text/html; charset=ANSI_X3.4-1968">
+<meta name="GENERATOR" content="IBM WebSphere Studio">
+<link rel="stylesheet" href="/presence/theme/blue.css" type="text/css">
+<!-- tpl:put name="head" --><title>Usage</title><!-- /tpl:put -->
+</head>
+<body>
+<A href="/presence/index.html"><IMG border="0"
+	src="/presence/theme/banner.png" width="604" height="45"
+	alt="pnehrer.com"></A>
+<div class="leftnav"><!-- siteedit:navbar target="sibling,self,children,ancestor,topchildren" spec="/presence/theme/leftnav.html" -->
+<div class="tabi1"></div>
+<div class="tabi1"><a href="/presence/index.html">Home</a></div>
+<div class="tabi1"><span style="font-weight: bolder"><a href="/presence/projects/index.html">Projects</a></span></div>
+<div class="tabi2"><span style="font-weight: bolder"><a href="/presence/projects/cep/index.html">Castor Plug-in for Eclipse</a></span></div>
+<div class="tabi3"><a href="/presence/projects/cep/news.html">News</a></div>
+<div class="tabi3"><a href="/presence/projects/cep/download.html">Download</a></div>
+<div class="tabi3"><a href="/presence/projects/cep/about.html">About</a></div>
+<div class="taba"><div class="taba3"><span style="font-weight: bolder">Usage</span></div></div>
+<div class="tabi3"><a href="/presence/projects/cep/ramblings.html">Ramblings</a></div>
+<div class="tabi1"></div>
+<!-- /siteedit:navbar --></div>
+<div class="content"><!-- tpl:put name="body" --><h1>Using the Plug-in</h1><p>At the moment the primary
+functional feature of the plug-in is generation of Java source code
+from XML Schema. The plug-in serves as a front-end to Castor's Source
+Generator. After right-clicking on an *.xsd file the user will find two
+Castor-related menu items in the context menu: 1). Generate Castor XML
+Sources..., and 2).
+Run Castor Automatically.</p>
+            <p>As its name implies, the first menu item allows for
+generation of
+Castor XML sources based on the selected XML Schema file. When the menu
+item
+is selected, a dialog box will ask the user to provide values for the
+Source Generator as well as where to save the generated files. After
+clicking OK the generator is run. If the output directory is within the
+project, the workspace is refreshed and generated files appear in the
+navigator view.</p>
+            <p>The second menu option turns on the plug-in's
+incremental builder for
+the selected XML Schema file (or files). This means that whenever the
+project is built, or whenever the *.xsd file changes, the incremental
+builder will run Castor Source Generator and produce files according to
+the contents of the XML Schema file. The builder keeps track of changes
+and adds or deletes generated files accordingly. The generator can be
+configured using the file's property page; when the XML Schema file's
+property dialog is open, a Castor tab will appear, allowing the user to
+configure output folder as well as other generator configuration
+options.</p>
+            <p>Default configuration options can be specified in the
+Castor tab of the
+workspace Preferences dialog.</p>
+
+            <p>Please note that the generated files will not compile
+unless Castor
+libraries are added to the project's build path. You may use your own
+Castor jars or those provided with the plug-in in its lib directory.</p><!-- /tpl:put --></div>
+<div style="padding: 4px; text-align: center; clear: left"><!-- tpl:insert page="/footer.html" --><span style="font-size: smaller">Copyright &copy; 2003 <a
+	href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>.</span><!-- /tpl:insert --></div>
+</body>
+</html>
+<!-- /tpl:insert -->

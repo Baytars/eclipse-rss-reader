@@ -1,0 +1,56 @@
+<!-- tpl:insert page="/theme/home.htpl" --><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type"
+	content="text/html; charset=ANSI_X3.4-1968">
+<meta name="GENERATOR" content="IBM WebSphere Studio">
+<link rel="stylesheet" href="/presence/theme/blue.css" type="text/css">
+<!-- tpl:put name="head" --><title>About</title><!-- /tpl:put -->
+</head>
+<body>
+<A href="/presence/index.html"><IMG border="0"
+	src="/presence/theme/banner.png" width="604" height="45"
+	alt="pnehrer.com"></A>
+<div class="leftnav"><!-- siteedit:navbar target="sibling,self,children,ancestor,topchildren" spec="/presence/theme/leftnav.html" -->
+<div class="tabi1"></div>
+<div class="tabi1"><a href="/presence/index.html">Home</a></div>
+<div class="tabi1"><span style="font-weight: bolder"><a href="/presence/projects/index.html">Projects</a></span></div>
+<div class="tabi2"><span style="font-weight: bolder"><a href="/presence/projects/cep/index.html">Castor Plug-in for Eclipse</a></span></div>
+<div class="tabi3"><a href="/presence/projects/cep/news.html">News</a></div>
+<div class="tabi3"><a href="/presence/projects/cep/download.html">Download</a></div>
+<div class="tabi3"><a href="/presence/projects/cep/about.html">About</a></div>
+<div class="tabi3"><a href="/presence/projects/cep/usage.html">Usage</a></div>
+<div class="taba"><div class="taba3"><span style="font-weight: bolder">Ramblings</span></div></div>
+<div class="tabi1"></div>
+<!-- /siteedit:navbar --></div>
+<div class="content"><!-- tpl:put name="body" --><h1>What I still don't get</h1><p>I learned a great deal
+about Eclipse while working on this small project. However, here some
+of
+the things I still don't get:</p>
+            <ul>
+              <li>The pattern of various element "ids", such as object
+contributions, pop-up menu actions, builders, natures, etc. It seems
+that some follow the namespace/local name paradigm, where the plug-in
+id
+is the namespace and the element id (e.g., the builder id) is the local
+name. Thus to refer to a builder you must provide the whole name.
+However, some other elements, such as pop-up menu action, don't seem to
+follow this (judging from the wizard-generated ids).</li>
+              <li>When and how the resource changes are generated. Why
+do I get two CHANGED deltas in the builder when I "touch" a file? Does
+changing a file's persistent property fire an event?</li>
+              <li>Why are some paths workspace-relative, some
+project-relative, and some local-filesystem-relative? Why is a "root
+path" workbench-relative?</li>
+
+              <li>When should I use the IAdaptable interface on
+resources? Should always use <span style="font-style: italic;">instanceof</span>
+first, then use IAdaptable? Why not always IAdaptable?</li>
+            </ul>
+<p>I'm sure there are more. Maybe I'll add them when I remember. If anyone
+can provide any clarification, please feel free.</p><!-- /tpl:put --></div>
+<div style="padding: 4px; text-align: center; clear: left"><!-- tpl:insert page="/footer.html" --><span style="font-size: smaller">Copyright &copy; 2003 <a
+	href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>.</span><!-- /tpl:insert --></div>
+</body>
+</html>
+<!-- /tpl:insert -->

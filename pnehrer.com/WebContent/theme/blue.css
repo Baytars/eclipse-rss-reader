@@ -1,0 +1,99 @@
+.tabi1 {
+	border-bottom-style: solid;
+	border-color: #9999ff;
+	border-width: 1px;
+	margin: 0px 1px 0px 1px;
+	padding: 4px;
+	background-color: #ccdddd;
+}
+
+.tabi2 {
+	border-bottom-style: solid;
+	border-color: #9999ff;
+	border-width: 1px;
+	margin: 0px 1px 0px 1px;
+	padding: 4px 4px 4px 19px;
+	background-color: #cceeee;
+}
+
+.tabi3 {
+	border-bottom-style: solid;
+	border-color: #9999ff;
+	border-width: 1px;
+	margin: 0px 1px 0px 1px;
+	padding: 4px 4px 4px 34px;
+	background-color: #ccffff;
+}
+
+.taba {
+	margin-left: 1px;
+	padding-left: 1px;
+	background-color: #9999ff;
+}
+
+.taba1 {
+	border-style: solid none solid solid;
+	border-color: black;
+	border-width: 1px 0px 1px 1px;
+	padding: 4px;
+	background-color: white;
+}
+
+.taba2 {
+	border-style: solid none solid solid;
+	border-color: black;
+	border-width: 1px 0px 1px 1px;
+	padding: 4px 4px 4px 19px;
+	background-color: white;
+}
+
+.taba3 {
+	border-style: solid none solid solid;
+	border-color: black;
+	border-width: 1px 0px 1px 1px;
+	padding: 4px 4px 4px 34px;
+	background-color: white;
+}
+
+.leftnav {
+	width: 150px;
+	border-style: solid none solid none;
+	border-width: 1px 0px 1px 0px;
+	border-color: black;
+	margin: 8px;
+	background-color: black;
+	float: left;
+}
+
+.content {
+	min-height: 350px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	margin: 4px;
+	padding: 4px 4px 4px 8px;
+	background-color: white;
+}
+
+a:link {
+	color: #0000cc;	
+	text-decoration: none;
+}
+
+a:hover {
+	color: #0099cc;	
+	text-decoration: underline;
+}
+
+a:visited {
+	color: #000099;	
+	text-decoration: none;
+}
+
+body {
+	margin: 0px;
+}
+
+h1 {
+	color: navy;
+}
