@@ -9,7 +9,6 @@
 
    <runtime>
       <library name="bugzilla.jar">
-         <export name="*"/>
       </library>
    </runtime>
    <requires>
