@@ -18,7 +18,7 @@
 				<title>Projects</title>
 
 				<page src="/WebContent/projects/cep/index.html" id="5" template="/WebContent/theme/home.htpl" icon="/presence/theme/icons/folder_blue_open.png">
-					<title>Castor Plug-in for Eclipse</title>
+					<title>Castor Plug-in</title>
 					<page src="/WebContent/projects/cep/news.html" id="12" template="/WebContent/theme/home.htpl" icon="/presence/theme/icons/news.png">
 						<title>News</title>
 					</page>
@@ -26,24 +26,38 @@
 						<description></description>
 						<title>Download</title>
 					</page>
+					<page src="/WebContent/projects/cep/usage.html" id="13" template="/WebContent/theme/home.htpl" icon="/presence/theme/icons/unknown.png">
+						<title>Usage</title>
+					</page>
 					<page src="/WebContent/projects/cep/about.html" template="/WebContent/theme/home.htpl" id="6" icon="/presence/theme/icons/info.png">
 						<description></description>
 						<title>About</title>
 					</page>
-					<page src="/WebContent/projects/cep/usage.html" id="13" template="/WebContent/theme/home.htpl" icon="/presence/theme/icons/unknown.png">
-						<title>Usage</title>
-					</page>
+
 					<page src="/WebContent/projects/cep/ramblings.html" id="14" template="/WebContent/theme/home.htpl" icon="/presence/theme/icons/unknown.png">
 						<title>Ramblings</title>
 					</page>
 				</page>
+				<page src="/WebContent/projects/rss/index.html" template="/WebContent/theme/home.htpl" id="15" icon="/presence/theme/icons/xml_16.gif">
+					<title>RSS Reader</title>
+					<page src="/WebContent/projects/rss/news.html" template="/WebContent/theme/home.htpl" id="16" icon="/presence/theme/icons/detail_16.png">
+						<title>News</title>
+					</page>
+					<page src="/WebContent/projects/rss/download.html" template="/WebContent/theme/home.htpl" id="17" icon="/presence/theme/icons/update_16.png">
+						<title>Download</title>
+					</page>
+					<page src="/WebContent/projects/rss/usage.html" template="/WebContent/theme/home.htpl" id="18" icon="/presence/theme/icons/browse_16.png">
+						<title>Usage</title>
+					</page>
+				</page>
 				<page src="/WebContent/projects/jelly4eclipse/index.html" id="8" template="/WebContent/theme/home.htpl" icon="/presence/theme/icons/folder_blue_open.png">
 					<title>Eclipse Scripting</title>
-					<page src="newpage9" id="9" icon="/presence/theme/icons/info.png">
-						<title>About</title>
-					</page>
+
 					<page src="newpage10" id="10" icon="/presence/theme/icons/down.png">
 						<title>Download</title>
+					</page>
+					<page src="newpage9" id="9" icon="/presence/theme/icons/info.png">
+						<title>About</title>
 					</page>
 				</page>
 			</page>

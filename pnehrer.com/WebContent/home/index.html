@@ -6,26 +6,49 @@
 <meta name="GENERATOR" content="IBM WebSphere Studio">
 <link rel="stylesheet" href="/presence/theme/blue.css" type="text/css">
 <!-- tpl:put name="head" --><!-- /tpl:put -->
-<!-- siteedit:navtrail target="home,parent,ancestor,self" separator="&gt;" start="[" end="]" spec="/presence/theme/trail.html" -->
-<TITLE>Home </TITLE>
-<!-- /siteedit:navtrail -->
 </head>
 <body>
+<div style="border-bottom: 2px solid; background-color: black">
 <a href="/presence/home/index.html"><img border="0"
-	src="/presence/theme/banner.png" width="604" height="45"
+	src="/presence/theme/banner.png" width="224" height="32"
 	alt="pnehrer.com"></a>
-<div class="content">
-<div class="leftnav"><!-- siteedit:navbar target="sibling,self,children,ancestor,topchildren" spec="/presence/theme/leftnav.html" targetlevel="2-3" onlychilden="true" -->
-<div class="tabi1"></div>
-<div class="taba"><div class="taba1"><img src="/presence/theme/icons/folder_home.png" border="0" align="bottom"> Home</div></div>
-<div class="tabi2"><a href="/presence/home/about.html"><img src="/presence/theme/icons/info.png" border="0" align="bottom"> About</a></div>
-<div class="tabi2"><a href="/presence/home/resume.html"><img src="/presence/theme/icons/document.png" border="0" align="bottom"> Resume</a></div>
-<div class="tabi1"><a href="/presence/projects/index.html"><img src="/presence/theme/icons/exec.png" border="0" align="bottom"> Projects</a></div>
-<div class="tabi1"></div>
-<!-- /siteedit:navbar --></div>
-<!-- tpl:put name="body" -->
+</div>
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tr>
+		<td valign="top" align="center" width="150">
+<!-- siteedit:navbar spec="/presence/theme/leftnav2.html" target="ancestor" -->
+<!-- /siteedit:navbar -->
+<!-- siteedit:navbar spec="/presence/theme/leftnav.html" target="self,sibling" -->
+<IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends" border="0">
+<TABLE width="100%" cellpadding="0" cellspacing="0">
+<TBODY><TR><TD>
+<DIV class="menuBox">
+<DIV class="menuSelf"><IMG src="/presence/theme/icons/folder_home.png" alt="Home" class="icon"> Home</DIV>
+<DIV class="menu"><A href="/presence/projects/index.html"><IMG src="/presence/theme/icons/exec.png" alt="Projects" class="icon"> Projects</A></DIV>
+</DIV>
+</TD><TD width="8">
+<IMG src="/presence/theme/blackdot.gif" width="8" height="2" alt="aggregates">
+</TD></TR>
+</TBODY></TABLE>
+<!-- /siteedit:navbar -->
+<!-- siteedit:navbar target="children" spec="/presence/theme/leftnav.html" -->
+<IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends" border="0">
+<TABLE width="100%" cellpadding="0" cellspacing="0">
+<TBODY><TR><TD>
+<DIV class="menuBox">
+<DIV class="menu"><A href="/presence/home/about.html"><IMG src="/presence/theme/icons/info.png" alt="About" class="icon"> About</A></DIV>
+<DIV class="menu"><A href="/presence/home/resume.html"><IMG src="/presence/theme/icons/document.png" alt="Resume" class="icon"> Resume</A></DIV>
+</DIV>
+</TD><TD width="8">
+</TD></TR>
+</TBODY></TABLE>
+<!-- /siteedit:navbar -->
+		</td>
+		<td valign="top"><div class="content"><!-- tpl:put name="body" -->
 		<H1>Welcome to my namespace!</H1>
-		<P>My name is Peter Nehrer. You're probably asking, why would a web site be named pnehrer.com? Well, after a decade of living in a networked world I found myself being known (at least to the machines, and the occasional message board readers) mostly as pnehrer. The user's last name prefixed by their first initial is by far the most common user id format. Why fight it? After a while all my e-mail, Windows and Unix accounts were named pnehrer, followed by many other public on-line identities I often had to create to access one nearly-free service or another. Once I started working with XML and Java using my most common user id as part of a namespace URI or a package name became a natural extension.</P><P>This site is my on-line presence. It is something like a personal portal; it aggregates my digital artifacts under one namespace. It also makes them conveniently accessible from one place. There is no particular theme aside from the fact that most items you will find here are in one way or another related to me. I am a software engineer, and most of the material shows it. Feel free to browse; you may find something interesting.</P><!-- /tpl:put --></div>
+		<P>My name is Peter Nehrer. You're probably asking, why would a web site be named pnehrer.com? Well, after a decade of living in a networked world I found myself being known (at least to the machines, and the occasional message board readers) mostly as pnehrer. The user's last name prefixed by their first initial is by far the most common user id format. Why fight it? After a while all my e-mail, Windows and Unix accounts were named pnehrer, followed by many other public on-line identities I often had to create to access one nearly-free service or another. Once I started working with XML and Java using my most common user id as part of a namespace URI or a package name became a natural extension.</P><P>This site is my on-line presence. It is something like a personal portal; it aggregates my digital artifacts under one namespace. It also makes them conveniently accessible from one place. There is no particular theme aside from the fact that most items you will find here are in one way or another related to me. I am a software engineer, and most of the material shows it. Feel free to browse; you may find something interesting.</P><!-- /tpl:put --></div></td>
+	</tr>
+</table>
 <div class="footer"><!-- tpl:insert page="/footer.html" -->Copyright &copy; 2003 <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>.<br>Version $Id$.<!-- /tpl:insert --></div>
 </body>
 </html>

@@ -5,22 +5,24 @@
 	content="text/html; charset=ANSI_X3.4-1968">
 <meta name="GENERATOR" content="IBM WebSphere Studio">
 <link rel="stylesheet" href="/presence/theme/blue.css" type="text/css">
-<!-- tpl:insert attribute="head" --><!-- /tpl:insert -->
-<!-- siteedit:navtrail target="home,parent,ancestor,self" separator="&gt;" start="[" end="]" spec="/presence/theme/trail.html" --><!-- /siteedit:navtrail -->
+<!-- tpl:insert attribute="head" --><title>pnehrer.com</title><!-- /tpl:insert -->
 </head>
 <body>
+<div style="border-bottom: 2px solid; background-color: black">
 <a href="/presence/home/index.html"><img border="0"
-	src="/presence/theme/banner.png" width="604" height="45"
+	src="/presence/theme/banner.png" width="224" height="32"
 	alt="pnehrer.com"></a>
-<div class="content">
-<div class="leftnav"><!-- siteedit:navbar target="sibling,self,children,ancestor,topchildren" spec="/presence/theme/leftnav.html" targetlevel="2-3" onlychilden="true" --><div class="tabi1"></div>
-<div class="tabi1"><a href="#">Inactive</a></div>
-<div class="tabi1"><span style="font-weight: bolder"><a href="#">Active Parent</a></span></div>
-<div class="tabi2"><span style="font-weight: bolder"><a href="#">Active Sub-parent</a></span></div>
-<div class="taba"><div class="taba3"><span style="font-weight: bolder">Active Item</span></div></div>
-<div class="tabi3"><a href="#">Inactive Item</a></div>
-<div class="tabi1"></div><!-- /siteedit:navbar --></div>
-<!-- tpl:insert attribute="body" -->This page is currently under construction.<!-- /tpl:insert --></div>
+</div>
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tr>
+		<td valign="top" align="center" width="150">
+<!-- siteedit:navbar spec="/presence/theme/leftnav2.html" target="ancestor" --><!-- /siteedit:navbar -->
+<!-- siteedit:navbar spec="/presence/theme/leftnav.html" target="self,sibling" --><!-- /siteedit:navbar -->
+<!-- siteedit:navbar target="children" spec="/presence/theme/leftnav.html" --><!-- /siteedit:navbar -->
+		</td>
+		<td valign="top"><div class="content"><!-- tpl:insert attribute="body" -->This page is currently under construction.<!-- /tpl:insert --></div></td>
+	</tr>
+</table>
 <div class="footer"><!-- tpl:insert page="/footer.html" -->Copyright &copy; 2003 <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>.<br>Version $Id$.<!-- /tpl:insert --></div>
 </body>
 </html>

@@ -1,0 +1,18 @@
+<HTML>
+<HEAD>
+<TITLE>vertical-text</TITLE>
+</HEAD>
+<BODY>
+<!--siteedit:forEach var="item" items="${sitenav.items}"-->
+<IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends" border="0">
+<TABLE width="100%" cellpadding="0" cellspacing="0">
+<TR><TD>
+<DIV class="menuBox">
+<DIV class="menuAncestor"><A href="${item.href}"><!--siteedit:if test="${item.icon!=null}"--><IMG src="${item.icon}" alt="${item.label}" class="icon"> <!--/siteedit:if-->${item.label}</A></DIV>
+</DIV>
+</TD><TD width="8">
+</TD></TR>
+</TABLE>
+<!--/siteedit:forEach-->
+</BODY>
+</HTML>

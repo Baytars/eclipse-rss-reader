@@ -26,15 +26,24 @@
 </TD><TD width="8">
 </TD></TR>
 </TBODY></TABLE>
+<IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends" border="0">
+<TABLE width="100%" cellpadding="0" cellspacing="0">
+<TBODY><TR><TD>
+<DIV class="menuBox">
+<DIV class="menuAncestor"><A href="/presence/projects/rss/index.html"><IMG src="/presence/theme/icons/xml_16.gif" alt="RSS Reader" class="icon"> RSS Reader</A></DIV>
+</DIV>
+</TD><TD width="8">
+</TD></TR>
+</TBODY></TABLE>
 <!-- /siteedit:navbar -->
 <!-- siteedit:navbar spec="/presence/theme/leftnav.html" target="self,sibling" -->
 <IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends" border="0">
 <TABLE width="100%" cellpadding="0" cellspacing="0">
 <TBODY><TR><TD>
 <DIV class="menuBox">
-<DIV class="menu"><A href="/presence/projects/cep/index.html"><IMG src="/presence/theme/icons/folder_blue_open.png" alt="Castor Plug-in" class="icon"> Castor Plug-in</A></DIV>
-<DIV class="menu"><A href="/presence/projects/rss/index.html"><IMG src="/presence/theme/icons/xml_16.gif" alt="RSS Reader" class="icon"> RSS Reader</A></DIV>
-<DIV class="menuSelf"><IMG src="/presence/theme/icons/folder_blue_open.png" alt="Eclipse Scripting" class="icon"> Eclipse Scripting</DIV>
+<DIV class="menu"><A href="/presence/projects/rss/news.html"><IMG src="/presence/theme/icons/detail_16.png" alt="News" class="icon"> News</A></DIV>
+<DIV class="menuSelf"><IMG src="/presence/theme/icons/update_16.png" alt="Download" class="icon"> Download</DIV>
+<DIV class="menu"><A href="/presence/projects/rss/usage.html"><IMG src="/presence/theme/icons/browse_16.png" alt="Usage" class="icon"> Usage</A></DIV>
 </DIV>
 </TD><TD width="8">
 <IMG src="/presence/theme/blackdot.gif" width="8" height="2" alt="aggregates">
@@ -42,19 +51,20 @@
 </TBODY></TABLE>
 <!-- /siteedit:navbar -->
 <!-- siteedit:navbar target="children" spec="/presence/theme/leftnav.html" -->
-<IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends" border="0">
-<TABLE width="100%" cellpadding="0" cellspacing="0">
-<TBODY><TR><TD>
-<DIV class="menuBox">
-<DIV class="menu"><A href="#"><IMG src="/presence/theme/icons/down.png" alt="Download" class="icon"> Download</A></DIV>
-<DIV class="menu"><A href="#"><IMG src="/presence/theme/icons/info.png" alt="About" class="icon"> About</A></DIV>
-</DIV>
-</TD><TD width="8">
-</TD></TR>
-</TBODY></TABLE>
 <!-- /siteedit:navbar -->
 		</td>
-		<td valign="top"><div class="content"><!-- tpl:put name="body" -->This page is under construction.<!-- /tpl:put --></div></td>
+		<td valign="top"><div class="content"><!-- tpl:put name="body" -->
+		<H1>Download</H1>
+		<P>Before downloading the Eclipse RSS Reader, please make sure you have the following pre-requisites:</P>
+		<UL>
+			<LI><A href="http://www.eclipse.org/downloads/index.php">Eclipse 2.1</A> with <A
+				href="http://java.sun.com/j2se/1.4.2/download.html">JRE 1.4</A><BR>-OR-<BR>
+			IBM WebSphere Studio Application Developer, v5.1</LI>
+			<LI>Web browser with Internet connection</LI>
+		</UL>
+		<P>To install the Eclipse RSS Reader into your workbench using Eclipse, point your Update Manager to http://pnehrer.com/rss. Alternatively, you can download the <A
+			href="http://prdownloads.sourceforge.net/morphine/com.pnehrer.rss_1.0.0.zip?download">latest feature archive</A> and unzip it into your Eclipse product installation directory (i.e., the one that contains the main <EM>eclipse</EM> subdirectory).</P>
+		<P>This software has been developed and tested on Slackware Linux 9.1 w/ GTK, and MS Windows 2000.</P><!-- /tpl:put --></div></td>
 	</tr>
 </table>
 <div class="footer"><!-- tpl:insert page="/footer.html" -->Copyright &copy; 2003 <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>.<br>Version $Id$.<!-- /tpl:insert --></div>

@@ -3,20 +3,33 @@
 <TITLE>vertical-text</TITLE>
 </HEAD>
 <BODY>
-<div class="tabi1"></div>
-<!--siteedit:forEach var="item" items="${sitenav.items}"-->
- <!--siteedit:choose-->
-  <!--siteedit:when test="${item.self}"-->
-<div class="taba"><div class="taba${item.level}"><img src="${item.icon}" border="0" align="bottom"> ${item.label}</div></div>
-  <!--/siteedit:when-->
-  <!--siteedit:when test="${item.ancestor}"-->
-<div class="tabi${item.level}"><span style="font-weight: bolder"><a href="${item.href}"><img src="${item.icon}" border="0" align="bottom"> ${item.label}</a></span></div>
-  <!--/siteedit:when-->
-  <!--siteedit:otherwise-->
-<div class="tabi${item.level}"><a href="${item.href}"><img src="${item.icon}" border="0" align="bottom"> ${item.label}</a></div>
-  <!--/siteedit:otherwise-->
- <!--/siteedit:choose-->
+<!--siteedit:forEach var="dummy" items="${sitenav.items}" end="0"-->
+<IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends" border="0">
+<TABLE width="100%" cellpadding="0" cellspacing="0">
+<TR><TD>
+<DIV class="menuBox">
+  <!--siteedit:forEach var="item" items="${sitenav.items}"-->
+   <!--siteedit:choose-->
+    <!--siteedit:when test="${item.self}"-->
+<DIV class="menuSelf"><!--siteedit:if test="${item.icon!=null}"--><IMG src="${item.icon}" alt="${item.label}" class="icon"> <!--/siteedit:if-->${item.label}</DIV>
+    <!--/siteedit:when-->
+    <!--siteedit:when test="${item.ancestor}"-->
+<DIV class="menuAncestor"><A href="${item.href}"><!--siteedit:if test="${item.icon!=null}"--><IMG src="${item.icon}" alt="${item.label}" class="icon"> <!--/siteedit:if-->${item.label}</A></DIV>
+    <!--/siteedit:when-->
+    <!--siteedit:otherwise-->
+<DIV class="menu"><A href="${item.href}"><!--siteedit:if test="${item.icon!=null}"--><IMG src="${item.icon}" alt="${item.label}" class="icon"> <!--/siteedit:if-->${item.label}</A></DIV>
+    <!--/siteedit:otherwise-->
+   <!--/siteedit:choose-->
+  <!--/siteedit:forEach-->
+</DIV>
+</TD><TD width="8">
+  <!--siteedit:forEach var="item" items="${sitenav.items}"-->
+   <!--siteedit:if test="${item.self}"-->
+<IMG src="/presence/theme/blackdot.gif" width="8" height="2" alt="aggregates">
+   <!--/siteedit:if-->
+  <!--/siteedit:forEach-->
+</TD></TR>
+</TABLE>
 <!--/siteedit:forEach-->
-<div class="tabi1"></div>
 </BODY>
 </HTML>

@@ -1,0 +1,123 @@
+<!-- tpl:insert page="/theme/home.htpl" --><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type"
+	content="text/html; charset=ANSI_X3.4-1968">
+<meta name="GENERATOR" content="IBM WebSphere Studio">
+<link rel="stylesheet" href="/presence/theme/blue.css" type="text/css">
+<!-- tpl:put name="head" --><!-- /tpl:put -->
+</head>
+<body>
+<div style="border-bottom: 2px solid; background-color: black">
+<a href="/presence/home/index.html"><img border="0"
+	src="/presence/theme/banner.png" width="224" height="32"
+	alt="pnehrer.com"></a>
+</div>
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tr>
+		<td valign="top" align="center" width="150">
+<!-- siteedit:navbar spec="/presence/theme/leftnav2.html" target="ancestor" -->
+<IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends" border="0">
+<TABLE width="100%" cellpadding="0" cellspacing="0">
+<TBODY><TR><TD>
+<DIV class="menuBox">
+<DIV class="menuAncestor"><A href="/presence/projects/index.html"><IMG src="/presence/theme/icons/exec.png" alt="Projects" class="icon"> Projects</A></DIV>
+</DIV>
+</TD><TD width="8">
+</TD></TR>
+</TBODY></TABLE>
+<!-- /siteedit:navbar -->
+<!-- siteedit:navbar spec="/presence/theme/leftnav.html" target="self,sibling" -->
+<IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends" border="0">
+<TABLE width="100%" cellpadding="0" cellspacing="0">
+<TBODY><TR><TD>
+<DIV class="menuBox">
+<DIV class="menu"><A href="/presence/projects/cep/index.html"><IMG src="/presence/theme/icons/folder_blue_open.png" alt="Castor Plug-in" class="icon"> Castor Plug-in</A></DIV>
+<DIV class="menuSelf"><IMG src="/presence/theme/icons/xml_16.gif" alt="RSS Reader" class="icon"> RSS Reader</DIV>
+<DIV class="menu"><A href="/presence/projects/jelly4eclipse/index.html"><IMG src="/presence/theme/icons/folder_blue_open.png" alt="Eclipse Scripting" class="icon"> Eclipse Scripting</A></DIV>
+</DIV>
+</TD><TD width="8">
+<IMG src="/presence/theme/blackdot.gif" width="8" height="2" alt="aggregates">
+</TD></TR>
+</TBODY></TABLE>
+<!-- /siteedit:navbar -->
+<!-- siteedit:navbar target="children" spec="/presence/theme/leftnav.html" -->
+<IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends" border="0">
+<TABLE width="100%" cellpadding="0" cellspacing="0">
+<TBODY><TR><TD>
+<DIV class="menuBox">
+<DIV class="menu"><A href="/presence/projects/rss/news.html"><IMG src="/presence/theme/icons/detail_16.png" alt="News" class="icon"> News</A></DIV>
+<DIV class="menu"><A href="/presence/projects/rss/download.html"><IMG src="/presence/theme/icons/update_16.png" alt="Download" class="icon"> Download</A></DIV>
+<DIV class="menu"><A href="/presence/projects/rss/usage.html"><IMG src="/presence/theme/icons/browse_16.png" alt="Usage" class="icon"> Usage</A></DIV>
+</DIV>
+</TD><TD width="8">
+</TD></TR>
+</TBODY></TABLE>
+<!-- /siteedit:navbar -->
+		</td>
+		<td valign="top"><div class="content"><!-- tpl:put name="body" --><H1>Eclipse RSS Reader</H1><P>Publishing web-based news of all kinds via a summary format (RSS) is becoming increasingly popular. The applications include regular headline news (<A
+			href="http://news.yahoo.com">Yahoo! News</A>), web logs (<A
+			href="http://slashdot.org">Slashdot.org</A>), professional bulletins (<A
+			href="http://www.ibm.com/developerWorks">IBM developerWorks</A>), and project updates (<A
+			href="http://sourceforge.net">SourceForge.net</A>). A variety of RSS formats currently exist, which increases application complexity. Often, a reader capable of understanding one format cannot handle another. </P>
+		<P>Eclipse RSS Reader takes advantage of the Eclipse platform in a number of ways:</P>
+		<OL>
+			<LI>Extension points and plug-in based architecture support addition
+		of new channel formats. </LI>
+			<LI>Workbench provides user interface consistency for users of
+			existing Eclipse-based tools (I for one like to keep up-to-date while
+			working in JDT).</LI>
+			<LI>Resource and UI model provides opportunities for integration with
+			other Eclipse-based tools.</LI>
+		</OL>
+		<H2>Features</H2>
+		<P>The following features are currently supported:</P>
+		<DL>
+			<DT>Uniform channel model</DT>
+			<DD>
+RSS Feeds of various versions are coerced into a uniform channel model, which is persisted in the workspace.  Third-party plug-ins may contribute "translators" for various channel formats. The default implementation handles  RSS 0.91, 0.92, 1.0, and 2.0. In case more than one registered translator understands a format, the user is given a  choice to select one they wish to use. In the future, annonymous elements external to the model will be exposed via  untyped property interface (map), thus giving access to third-party plug-ins that may understand them.
+
+</DD>
+			<DT>Periodic updates </DT>
+			<DD>Based on user specification, channels are
+			periodically updated from the source. All viewers are refreshed to
+			display up-to-date information. In the future, markers will be used
+			to identify changes and allow viewers to highlight them.</DD>
+			<DT>Property page</DT>
+			<DD>Individual channel files have a property page
+			with RSS-specific options.</DD>
+			<DT>Preference page </DT>
+			<DD>Preference page allows users to specify
+			default values.</DD>
+			<DT>New Channel wizard </DT>
+			<DD>Allows users to create new channels from an
+			external RSS feed source. </DD>
+			<DT>Channel Navigator </DT>
+			<DD>Allows users to navigate channels in
+			container hierarchy. </DD>
+			<DT>Channel Detail view </DT>
+			<DD>Allows users to view details of selected
+			channel.</DD>
+		</DL>
+		<H2>Planned Work</H2>
+		<P>In future releases you are likely to find:</P>
+		<UL>
+			<LI>User documentation (plug-in), context help, javadoc...
+:-)</LI>
+			<LI>Internationalization (externalize strings into resource
+			bundles). </LI>
+			<LI>Improve channel change delta; mark changed items with resource
+			markers; extend views to highlight changed items until user reads
+			them. </LI>
+			<LI>Expose data external to the core model via mapped properties so
+			other plug-ins may consume them. </LI>
+			<LI>Multi-page channel editor to allow user to modify the channel.</LI>
+		</UL>
+		<P>Your <A href="mailto:pnehrer@users.sourceforge.net">comments,
+		questions or suggestions</A> are most welcome.</P><!-- /tpl:put --></div></td>
+	</tr>
+</table>
+<div class="footer"><!-- tpl:insert page="/footer.html" -->Copyright &copy; 2003 <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>.<br>Version $Id$.<!-- /tpl:insert --></div>
+</body>
+</html>
+<!-- /tpl:insert -->
