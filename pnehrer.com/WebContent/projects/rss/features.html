@@ -86,17 +86,17 @@
 		<P>The included preference page allows you to specify the default channel update interval and select the default link browser, which are used when creating new channels. In addition, the included link browsers (help and editor) have their own preference pages; the former allows you to select a configured help browser, and the latter an editor to use for browsing channel items.</P>
 		<H2>6. Property page</H2>
 		<P>Each channel file has a property page with RSS-specific options, such as the update interval, source translator, and link browser. These can be modified even after the channel has been created.</P>
-		<H2>7. RSS feed translators</H2>
+		<H2>7. Search page</H2>
+		<P>The RSS-specific search page allows you to use the familiar Eclipse Search dialog to find RSS items whose titles and/or descriptions contain the specified search term.</P>
+		<H2>8. RSS feed translators</H2>
 		<P>RSS feeds based on various formats and versions are translated into a uniform channel model, which allows the various RSS views to present their contents in a uniform fashion. The default translator understands RSS versions 0.90, 0.91, 0.92, 1.0, and 2.0. 3rd-party providers may offer translators for new RSS versions, or entirely different formats.</P>
-		<H2>8. Periodic updates</H2>
+		<H2>9. Periodic updates</H2>
 		<P>For each channel you may specify an interval, in minutes, which dictates how often the channel's contents are updated from its source feed. After an update, any new items are flagged and displayed with different icons and colors in the various RSS views, until they are read (i.e., opened using a link browser).</P>
-		<H2>9. Channel content caching</H2>
+		<H2>10. Channel content caching</H2>
 		<P>RSS channels are represented in the workspace as files, which contain information on where to get the updates, how often, etc. The channel content, after an update, is cached in a temporary location outside of workspace. Thus it is possible to share the channel files using a Version Control System (e.g., CVS); each user then gets its own copy of the channel contents.</P>
 		<H2>Future Plans</H2>
 		<P>Over the next couple of releases, I'm planning to do the following:</P>
 		<UL>
-			<LI>Provide support for searching through the channels and items in the workspace.</LI>
-			<LI>Filter HTML tags from title and description fields.</LI>
 			<LI>Expose data external to the core model via mapped properties so
 			other plug-ins may consume them.</LI>
 			<LI>Allow user to select their own channel image.</LI>
