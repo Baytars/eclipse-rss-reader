@@ -34,7 +34,8 @@ public class ImageManager {
 
     public synchronized ImageDescriptor getImageDescriptor(IChannel channel) {
         IImage image = channel.getImage();
-        if(image == null) return null; // TODO Return default channel image.
+        if(image == null) 
+            return RSSUI.getDefault().getImageRegistry().getDescriptor(RSSUI.XML_ICON);
         else {
             ImageDescriptor result = (ImageDescriptor)imageMap.get(channel);
             if(result == null) {
@@ -56,7 +57,8 @@ public class ImageManager {
     
     public synchronized ImageDescriptor getImageDescriptor16(IChannel channel) {
         IImage image = channel.getImage();
-        if(image == null) return null; // TODO Return default channel image.
+        if(image == null)
+            return RSSUI.getDefault().getImageRegistry().getDescriptor(RSSUI.XML_ICON);
         else {
             ImageDescriptor result = 
                 (ImageDescriptor)image16Map.get(channel);
@@ -80,7 +82,8 @@ public class ImageManager {
     
     public synchronized ImageDescriptor getImageDescriptor16x16(IChannel channel) {
         IImage image = channel.getImage();
-        if(image == null) return null; // TODO Return default channel image.
+        if(image == null) 
+            return RSSUI.getDefault().getImageRegistry().getDescriptor(RSSUI.XML_ICON);
         else {
             ImageDescriptor result = 
                 (ImageDescriptor)image16x16Map.get(channel);

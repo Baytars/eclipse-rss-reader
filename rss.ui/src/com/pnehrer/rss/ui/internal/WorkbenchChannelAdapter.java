@@ -4,9 +4,6 @@
  */
 package com.pnehrer.rss.ui.internal;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
@@ -17,8 +14,6 @@ import com.pnehrer.rss.ui.RSSUI;
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
 public class WorkbenchChannelAdapter implements IWorkbenchAdapter {
-
-    private final Map imageMap = new HashMap();
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.model.IWorkbenchAdapter#getChildren(java.lang.Object)

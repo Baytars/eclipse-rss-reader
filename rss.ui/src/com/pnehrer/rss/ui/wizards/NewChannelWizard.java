@@ -7,9 +7,13 @@ package com.pnehrer.rss.ui.wizards;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -17,6 +21,7 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.eclipse.ui.dialogs.ContainerGenerator;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 import org.w3c.dom.Document;
@@ -74,7 +79,6 @@ public class NewChannelWizard extends Wizard implements INewWizard {
         final IRegisteredTranslator translator = 
             channelOptionsPage.getTranslator();
         final Integer updateInterval = channelOptionsPage.getUpdateInterval();
-        final IFile file = newFileCreationPage.createNewFile();
         setNeedsProgressMonitor(true);
         try {
             getContainer().run(false, true, new WorkspaceModifyOperation() {
@@ -82,30 +86,74 @@ public class NewChannelWizard extends Wizard implements INewWizard {
                     throws CoreException, 
                         InvocationTargetException, 
                         InterruptedException {
-    
-                    RSSCore.getPlugin().createChannel(
-                        file, 
-                        translator, 
-                        document,
-                        url,
-                        updateInterval,
-                        monitor);
 
-                    IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
-                    if(windows != null && windows.length > 0)
-                        BasicNewResourceWizard.selectAndReveal(file, windows[0]);
-                        
-//                    IEditorRegistry registry = workbench.getEditorRegistry();
-//                    IEditorDescriptor editor = registry.getDefaultEditor(file);
-//                    if(editor == null) editor = registry.getDefaultEditor();
+//                    final IFile[] files = new IFile[1];
+//                    Display.getDefault().syncExec(new Runnable() {
+//                        public void run() {
+//                            files[0] = newFileCreationPage.createNewFile();    
+//                        }
+//                    });
 //
-//                    IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
-//                    if(windows != null && windows.length > 0) {
-//                        windows[0].getActivePage().openEditor(
-//                            file, 
-//                            editor.getId(), 
-//                            true);
-//                    }
+//                    RSSCore.getPlugin().createChannel(
+//                        files[0], 
+//                        translator, 
+//                        document,
+//                        url,
+//                        updateInterval,
+//                        monitor);
+
+                    if(monitor != null)
+                        monitor.beginTask("Creating Channel...", 2);
+                        
+                    try {
+                        IPath containerPath = 
+                            newFileCreationPage.getContainerFullPath();
+                        ContainerGenerator generator = 
+                            new ContainerGenerator(containerPath);
+                        IContainer container = generator.generateContainer(
+                            monitor == null ?
+                                null :
+                                new SubProgressMonitor(monitor, 1));
+    
+                        IFile file = container.getFile(
+                            new Path(newFileCreationPage.getFileName()));
+                        RSSCore.getPlugin().createChannel(
+                            file, 
+                            translator, 
+                            document,
+                            url,
+                            updateInterval,
+                            monitor == null ?
+                                null :
+                                new SubProgressMonitor(monitor, 1));
+
+//                        Display.getDefault().asyncExec(new Runnable() {
+//                            public void run() {    
+                        IWorkbenchWindow window = 
+                            workbench.getActiveWorkbenchWindow();
+                        if(window != null)
+                            BasicNewResourceWizard.selectAndReveal(
+                                file, 
+                                window);
+//                            }
+//                        });
+                            
+    //                    IEditorRegistry registry = workbench.getEditorRegistry();
+    //                    IEditorDescriptor editor = registry.getDefaultEditor(file);
+    //                    if(editor == null) editor = registry.getDefaultEditor();
+    //
+    //                    IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
+    //                    if(windows != null && windows.length > 0) {
+    //                        windows[0].getActivePage().openEditor(
+    //                            file, 
+    //                            editor.getId(), 
+    //                            true);
+    //                    }
+                    }
+                    finally {
+                        if(monitor != null)
+                            monitor.done();
+                    }
                 }
             });
                 

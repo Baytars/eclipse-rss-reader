@@ -79,7 +79,7 @@ public class ChannelNavigatorContentProvider
     /* (non-Javadoc)
      * @see com.pnehrer.rss.core.IChannelChangeListener#channelChanged(com.pnehrer.rss.core.ChannelChangeEvent)
      */
-    public void channelChanged(ChannelChangeEvent event) {
+    public void channelChanged(final ChannelChangeEvent event) {
         Control ctrl = viewer.getControl();
         if(ctrl != null && !ctrl.isDisposed()) {
             final IChannel channel = event.getChannel();
@@ -88,8 +88,12 @@ public class ChannelNavigatorContentProvider
                     Control ctrl = viewer.getControl();
                     if(ctrl != null && !ctrl.isDisposed()) {
                         StructuredViewer v = (StructuredViewer)viewer;
-                        // TODO For now, refresh parent in case channel was created.
-                        v.refresh(channel.getFile().getParent(), true);
+                        if((event.getFlags() & ChannelChangeEvent.ADDED) != 0
+                            || (event.getFlags() & ChannelChangeEvent.REMOVED) != 0)
+
+                            v.refresh(channel.getFile().getParent(), true);
+                        else
+                            v.refresh(channel, true);
                     }
                 }
             });

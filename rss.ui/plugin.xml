@@ -46,7 +46,7 @@
             id="rss.ui.category1">
       </category>
       <wizard
-            name="New Channel"
+            name="RSS Channel"
             icon="new_16.png"
             category="rss.ui.category1"
             class="com.pnehrer.rss.ui.wizards.NewChannelWizard"
@@ -62,8 +62,9 @@
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
-            objectClass="com.pnehrer.rss.core.IRSSElement"
-            adaptable="true"
+            objectClass="org.eclipse.core.resources.IFile"
+            adaptable="false"
+            nameFilter="*.rss"
             id="rss.ui.objectContribution1">
          <menu
                label="RSS"

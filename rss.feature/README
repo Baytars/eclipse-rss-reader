@@ -1,0 +1,59 @@
+Eclipse RSS Reader
+
+Publishing web-based news of all kinds via a summary format (RSS) is becoming increasingly popular. The applications include regular headline news (Yahoo! News), web logs (Slashdot.org), professional bulletins (IBM developerWorks), and project updates (SourceForge.net). A variety of RSS formats currently exist, which increases application complexity. Often, a reader capable of understanding one format cannot handle another. The solution presented herein takes advantage of Eclipse platform in the following ways:
+1. Extension points and plug-in based architecture support addition of new channel formats.
+2. Workbench provides user interface consistency for users of existing Eclipse-based tools (I for one like to keep up-to-date while working in JDT).
+3. Resource and UI model provides opportunities for integration with other Eclipse-based tools.
+
+Pre-requisites
+============
+1. Eclipse 2.1
+2. JDK 1.4 (dependency on JAXP/Xalan)
+3. Internet connection
+
+Developed and tested on Slackware Linux 9.1 w/ GTK, and MS Windows 2000.
+
+Installation
+========
+Unzip the feature archive into your Eclipse installation directory.
+
+Getting Started
+===============
+1. Start your Workbench with a new or pre-existing workspace. Switch to the Resource perspective. If the workspace  is empty, create a new project.
+2. In Resource Navigator, right-click on a folder and select New -> RSS Channel.
+3. Enter a URL for the RSS Channel; e.g., http://www.ibm.com/developerworks/news/dw_tech_nl.rss. Click "Load".
+4. Select the default translator and click Next.
+5. Enter a filename (with *.rss extension) and click Finish.
+6. Select the newly created file in Resource Navigator. From the main menu, select Navigate -> Show In -> Channel  Navigator and/or Channel Detail.
+7. Browse and/or create channels in the Channel Navigator. Open the Properties view to see properties of selected  items. Double-click on selected items to read the channel or item link.
+
+Features
+========
+1. Uniform channel model
+RSS Feeds of various versions are coerced into a uniform channel model, which is persisted in the workspace.  Third-party plug-ins may contribute "translators" for various channel formats. The default implementation handles  RSS 0.91, 0.92, 1.0, and 2.0. In case more than one registered translator understands a format, the user is given a  choice to select one they wish to use. In the future, annonymous elements external to the model will be exposed via  untyped property interface (map), thus giving access to third-party plug-ins that may understand them.
+
+2. Periodic updates
+Based on user specification, channels are periodically updated from the source. All viewers are refreshed to display  up-to-date information. In the future, markers will be used to identify changes and allow viewers to highlight them.
+
+3. Property page
+Individual channel files have a property page with RSS-specific options.
+
+4. Preference page
+Preference page allows the user to specify default values.
+
+5. New Channel wizard
+Allows users to create new channels from an external RSS feed source.
+
+6. Channel Navigator
+Allows users to navigate channels in container hierarchy.
+
+7. Channel Detail view
+Allows users to view details of selected channel.
+
+TODO
+=====
+1. User documentation (plug-in), context help, javadoc.
+2. Internationalization (externalize strings into resource bundles).
+3. Improve channel change delta; mark changed items with resource markers; extend views to highlight changed items until user reads them.
+4. Expose data external to the core model via mapped properties so other plug-ins may consume them.
+5. Multi-page channel editor to allow user to modify the channel.

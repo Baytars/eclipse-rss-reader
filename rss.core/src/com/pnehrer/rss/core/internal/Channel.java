@@ -50,6 +50,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.pnehrer.rss.core.ChannelChangeEvent;
 import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IImage;
 import com.pnehrer.rss.core.IItem;
@@ -129,7 +130,7 @@ public class Channel
     
     public synchronized void setTranslator(IRegisteredTranslator translator) {
         this.translator = translator;
-        firePropertyChange();
+        firePropertyChange(ChannelChangeEvent.CHANGED);
     }
     
     /* (non-Javadoc)
@@ -141,7 +142,7 @@ public class Channel
     
     public synchronized void setURL(URL url) {
         this.url = url;
-        firePropertyChange();
+        firePropertyChange(ChannelChangeEvent.CHANGED);
     }
     
     /* (non-Javadoc)
@@ -157,7 +158,7 @@ public class Channel
     public synchronized void setUpdateInterval(Integer updateInterval) {
         this.updateInterval = updateInterval;
         updateUpdateSchedule();
-        firePropertyChange();
+        firePropertyChange(ChannelChangeEvent.CHANGED);
     }
     
     /* (non-Javadoc)
@@ -169,7 +170,7 @@ public class Channel
     
     private void setLastUpdated(Date lastUpdated) {
         this.lastUpdated = lastUpdated;
-        firePropertyChange();
+        firePropertyChange(ChannelChangeEvent.CHANGED);
     }
     
     /* (non-Javadoc)
@@ -244,11 +245,11 @@ public class Channel
         return textInput;
     }
     
-    private void firePropertyChange() {
+    private void firePropertyChange(int flags) {
         if(suppressChangeEvents)
             return;
 
-        ChannelManager.getInstance().firePropertyChange(this);            
+        ChannelManager.getInstance().firePropertyChange(this, flags);            
     }
     
     public void update(IProgressMonitor monitor) throws CoreException {
@@ -455,7 +456,7 @@ public class Channel
                 }
                 finally {
                     suppressChangeEvents = false;
-                    firePropertyChange();
+                    firePropertyChange(ChannelChangeEvent.CHANGED);
                 }
             }
             while(false);
@@ -593,13 +594,21 @@ public class Channel
                 monitor.worked(1);
         
             ignoreResourceChange = true;
-            file.setContents(
-                new ByteArrayInputStream(out.toByteArray()), 
-                true, 
-                true, 
-                monitor == null ?
-                    null :
-                    new SubProgressMonitor(monitor, 1));
+            if(file.exists())
+                file.setContents(
+                    new ByteArrayInputStream(out.toByteArray()), 
+                    true, 
+                    true, 
+                    monitor == null ?
+                        null :
+                        new SubProgressMonitor(monitor, 1));
+            else
+                file.create(
+                    new ByteArrayInputStream(out.toByteArray()), 
+                    true, 
+                    monitor == null ?
+                        null :
+                        new SubProgressMonitor(monitor, 1));
         }
         catch(ParserConfigurationException ex) {
             throw new CoreException(
@@ -650,8 +659,11 @@ public class Channel
         switch(event.getType()) {
             case IResourceChangeEvent.PRE_CLOSE:
             case IResourceChangeEvent.PRE_DELETE:
-                if(file.getProject().equals(resource.getProject()))
+                if(file.getProject().equals(resource.getProject())) {
                     stopListening();
+                    ChannelManager.getInstance().removeChannel(this);
+                    firePropertyChange(ChannelChangeEvent.REMOVED);
+                }
 
                 break;
                 
@@ -708,6 +720,10 @@ public class Channel
         channel.setURL(url);
         channel.setUpdateInterval(updateInterval);
         channel.update(document, monitor);
+        ChannelManager.getInstance().firePropertyChange(
+            channel, 
+            ChannelChangeEvent.ADDED);
+
         return channel;
     }
     
@@ -733,9 +749,19 @@ public class Channel
                         break;
                                     
                     case IResourceDelta.ADDED:
-                        if((delta.getFlags() & IResourceDelta.MOVED_FROM) == 0)
+                        if((delta.getFlags() & IResourceDelta.MOVED_FROM) == 0) {
                             load();
+                            firePropertyChange(ChannelChangeEvent.ADDED);
+                        }
 
+                        break;
+                        
+                    case IResourceDelta.REMOVED:
+                        if((delta.getFlags() & IResourceDelta.MOVED_TO) == 0) {
+                            ChannelManager.getInstance().removeChannel(Channel.this);
+                            firePropertyChange(ChannelChangeEvent.REMOVED);
+                        }
+                        
                         break;
                 }
                                     

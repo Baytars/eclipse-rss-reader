@@ -36,6 +36,7 @@ public class ChannelManager {
     private static ChannelManager instance;
     private final Map fileChannelMap =  new HashMap();
     private final Timer timer = new Timer();
+    private volatile boolean timerCancelled;
     private final Collection listeners = 
         Collections.synchronizedCollection(new HashSet());
     
@@ -48,6 +49,9 @@ public class ChannelManager {
     }
 
     void scheduleTask(TimerTask task, Date lastUpdated, int updateInterval) {
+        if(timerCancelled)
+            return;
+            
         Calendar cal = Calendar.getInstance();
         if(lastUpdated != null)
             cal.setTime(lastUpdated);
@@ -58,6 +62,7 @@ public class ChannelManager {
     
     public synchronized void cancelPendingTasks() {
         timer.cancel();
+        timerCancelled = true;
     }
     
     public synchronized Channel getChannel(IFile file) throws CoreException {
@@ -103,6 +108,10 @@ public class ChannelManager {
             return channel;
         }        
     }
+    
+    synchronized void removeChannel(Channel channel) {
+        fileChannelMap.remove(channel.getFile());
+    }
 
     public void addChannelChangeListener(IChannelChangeListener listener) {
         listeners.add(listener);
@@ -112,8 +121,8 @@ public class ChannelManager {
         listeners.remove(listener);
     }
     
-    void firePropertyChange(Channel channel) {
-        ChannelChangeEvent event = new ChannelChangeEvent(channel);
+    void firePropertyChange(Channel channel, int flags) {
+        ChannelChangeEvent event = new ChannelChangeEvent(channel, flags);
         synchronized(listeners) {
             for(Iterator i = listeners.iterator(); i.hasNext();) {
                 IChannelChangeListener listener = 
