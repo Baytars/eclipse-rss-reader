@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<website version="510">
+	<structure>
+		<page src="/doc/new-channel-wizard.html" id="3" template="/doc/theme/master.htpl">
+			<title>New Channel Wizard</title>
+		</page>
+		<page src="/doc/channel-navigator.html" id="1" template="/doc/theme/master.htpl">
+			<title>Channel Navigator View</title>
+		</page>
+		<page src="/doc/channel-detail.html" id="2" template="/doc/theme/master.htpl">
+			<title>Channel Detail View</title>
+		</page>
+		<page src="/doc/channel-properties.html" id="4" template="/doc/theme/master.htpl">
+			<title>Channel Properties</title>
+		</page>
+		<page src="/doc/preferences.html" id="5" template="/doc/theme/master.htpl">
+			<title>RSS Preferences</title>
+		</page>
+		<page src="/doc/search-dialog.html" id="6" template="/doc/theme/master.htpl">
+			<title>RSS Search</title>
+		</page>
+	</structure>
+</website>

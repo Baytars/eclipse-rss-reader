@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<website version="510">
+	<structure>
+		<page src="/doc/index.html" template="" id="1">
+			<title>Developer Documentation</title>
+
+
+			<page src="/doc/reference/api/overview-summary.html" template="" id="4">
+				<title>API Reference</title>
+				<page src="/doc/reference/api/com/pnehrer/rss/core/package-summary.html" template="" id="5">
+					<title>com.pnehrer.rss.core</title>
+				</page>
+				<page src="/doc/reference/api/com/pnehrer/rss/ui/package-summary.html" template="" id="6">
+					<title>com.pnehrer.rss.ui</title>
+				</page>
+				<page src="/doc/reference/api/com/pnehrer/rss/ui/actions/package-summary.html" template="" id="7">
+					<title>com.pnehrer.rss.ui.actions</title>
+				</page>
+				<page src="/doc/reference/api/com/pnehrer/rss/ui/views/package-summary.html" template="" id="8">
+					<title>com.pnehrer.rss.ui.views</title>
+				</page>
+				<page src="/doc/reference/api/com/pnehrer/rss/ui/wizards/package-summary.html" template="" id="9">
+					<title>com.pnehrer.rss.ui.wizards</title>
+				</page>
+			</page>
+			<page src="newpage2" template="" author="" status="" style="" icon="" id="3">
+				<description></description>
+				<title>Extension Points</title>
+				<page src="/doc/reference/extension-points/com_pnehrer_rss_core_translator.html" template="" id="10">
+					<title>com.pnehrer.rss.core.translator</title>
+				</page>
+				<page src="/doc/reference/extension-points/com_pnehrer_rss_ui_linkbrowser.html" template="" id="11">
+					<title>com.pnehrer.rss.ui.linkbrowser</title>
+				</page>
+			</page>
+		</page>
+	</structure>
+</website>

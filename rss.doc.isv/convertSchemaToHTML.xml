@@ -1,0 +1,10 @@
+<project name="convertSchemaToHTML" default="convert">
+
+<target name="convert">
+	<eclipse.convertPath property="rss.core.dir" resourcePath="/rss.core"/>
+	<pde.convertSchemaToHTML manifest="${rss.core.dir}/plugin.xml" destination="${basedir}/doc/reference/extension-points"/>
+	<eclipse.convertPath property="rss.ui.dir" resourcePath="/rss.ui"/>
+	<pde.convertSchemaToHTML manifest="${rss.ui.dir}/plugin.xml" destination="${basedir}/doc/reference/extension-points"/>
+</target>
+
+</project>
