@@ -1,5 +1,5 @@
 #Eclipse RSS Reader v1.2.0
-#Fri Mar 05 10:41:18 EST 2004
+#Tue Mar 09 11:30:11 EST 2004
 translatorId=com.pnehrer.rss.core.default
 url=http\://servlet.java.sun.com/syndication/rss_java_highlights-PARTNER-20.xml
 updateInterval=1440
