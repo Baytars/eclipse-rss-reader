@@ -21,7 +21,7 @@
 </xsl:template>
 
 <xsl:template match="long_desc">
-	<item title="{who}" link="#c{1 + count(preceding-sibling::long_desc)}" description="{thetext}" date="{bug_when}"/>
+	<item title="{who}" link="#c{count(preceding-sibling::long_desc)}" description="{thetext}" date="{bug_when}"/>
 </xsl:template>
 
 </xsl:stylesheet>
