@@ -13,7 +13,7 @@
 <DIV class="extLinkDiv"><SPAN style="vertical-align: bottom"><A class="extLink" href="http://pnehrer.freeshell.org/presence/projects/rss/index.html">pnehrer.com</A> | <A class="extLink" href="http://sourceforge.net/projects/morphine">SourceForge.net</A></SPAN></DIV>
 <DIV class="header"><A href="/presence/projects/rss/index.html"><IMG border="0"
 	src="/presence/theme/icons/rss-banner.png" width="500" height="64" alt="Eclipse RSS Reader"></A></DIV>
-<!-- siteedit:navbar target="sibling,self" spec="/presence/theme/leftnav.html" -->
+<!-- siteedit:navbar spec="/presence/theme/leftnav.html" target="topchildren" -->
 <DIV class="leftnav">
 <DIV class="taba0"><img src="/presence/theme/icons/navigator_16.png" alt="Home" border="0" class="icon">&nbsp;Home</DIV>
 <DIV class="tabi1"><a href="/presence/projects/rss/news.html"><img src="/presence/theme/icons/detail_16.png" alt="News" border="0" class="icon">&nbsp;News</a></DIV>

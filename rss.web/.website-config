@@ -14,6 +14,9 @@
 			</page>
 			<page src="/WebContent/projects/rss/download.html" id="3" icon="/presence/theme/icons/update_16.png" template="/WebContent/theme/home.htpl">
 				<title>Download</title>
+				<page src="/WebContent/projects/rss/updates.html" id="6" template="/WebContent/theme/home.htpl" icon="/presence/theme/icons/item_16.gif">
+					<title>Updates</title>
+				</page>
 			</page>
 			<page src="/WebContent/projects/rss/usage.html" id="4" template="/WebContent/theme/home.htpl" icon="/presence/theme/icons/browse_16.png">
 				<title>Usage</title>

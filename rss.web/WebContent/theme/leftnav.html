@@ -12,7 +12,13 @@
   <!--siteedit:when test="${item.self &amp;&amp; item.icon==null}"-->
 <LI class="menuSelf">${item.label}</LI>
   <!--/siteedit:when-->
-  <!--siteedit:when test="${!item.self &amp;&amp; item.icon!=null}"-->
+  <!--siteedit:when test="${item.ancestor &amp;&amp; item.icon!=null}"-->
+<LI class="menuAncestor" style="list-style-image: url('${item.icon}')"><A class="leftNavLink" href="${item.href}">${item.label}</A></LI>
+  <!--/siteedit:when-->
+  <!--siteedit:when test="${item.ancestor &amp;&amp; item.icon==null}"-->
+<LI class="menuAncestor"><A class="leftNavLink" href="${item.href}">${item.label}</A></LI>
+  <!--/siteedit:when-->
+  <!--siteedit:when test="${item.icon!=null}"-->
 <LI class="menu" style="list-style-image: url('${item.icon}')"><A class="leftNavLink" href="${item.href}">${item.label}</A></LI>
   <!--/siteedit:when-->
   <!--siteedit:otherwise-->

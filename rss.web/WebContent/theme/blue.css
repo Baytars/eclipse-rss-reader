@@ -14,7 +14,7 @@ ul.menubox li {
 li.menu {
 }
 
-li.menuSelf {
+li.menuSelf, li.menuAncestor {
 	font-weight: bolder;
 }
 
