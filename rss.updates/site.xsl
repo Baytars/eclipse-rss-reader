@@ -12,10 +12,10 @@
 		<xsl:sort select="@name" order="ascending" case-order="upper-first"/>
 		<table width="100%" border="0" cellpadding="2" cellspacing="2" class="tableList">
 	<xsl:if test="count(key('cat',@name)) != 0">
-			<caption>
+			<caption class="tableList">
 				<xsl:value-of select="@label"/>
 			</caption>
-			<tr><th width="40%">Feature</th><th width="20%">Version</th><th width="40%">Environment</th></tr>
+			<tr><th width="40%" class="tableList">Feature</th><th width="20%" class="tableList">Version</th><th width="40%" class="tableList">Environment</th></tr>
 			<xsl:for-each select="key('cat',@name)">
 			<xsl:sort select="ancestor::feature//@version" order="ascending"/>
 			<xsl:sort select="ancestor::feature//@id" order="ascending" case-order="upper-first"/>
