@@ -15,6 +15,7 @@ import org.eclipse.ui.actions.ActionGroup;
 
 import com.pnehrer.rss.ui.RSSUI;
 import com.pnehrer.rss.ui.actions.OpenLinkAction;
+import com.pnehrer.rss.ui.actions.TextInputAction;
 import com.pnehrer.rss.ui.actions.UpdateAction;
 
 /**
@@ -24,6 +25,7 @@ public class ChannelActionGroup extends ActionGroup {
     
     private final OpenLinkAction openChannelLinkAction;
     private final OpenLinkAction openItemLinkAction;
+    private final TextInputAction textInputAction;
     private final UpdateAction updateAction;
     
     private final ChannelDetailView channelDetailView;
@@ -42,6 +44,11 @@ public class ChannelActionGroup extends ActionGroup {
         openItemLinkAction.setToolTipText("Open item link in browser.");
         openItemLinkAction.setImageDescriptor(reg.getDescriptor(RSSUI.BROWSE_ICON));
 
+        textInputAction = new TextInputAction(
+            channelDetailView .getSite().getShell());
+        textInputAction.setToolTipText("Submit text input to channel site.");
+        textInputAction.setImageDescriptor(reg.getDescriptor(RSSUI.TEXT_INPUT_ICON));
+
         updateAction = new UpdateAction();
         updateAction.setToolTipText("Update channel from its source.");
         updateAction.setImageDescriptor(reg.getDescriptor(RSSUI.UPDATE_ICON));
@@ -53,11 +60,15 @@ public class ChannelActionGroup extends ActionGroup {
     public void fillActionBars(IActionBars actionBars) {
         IMenuManager menu = actionBars.getMenuManager();
         menu.add(openChannelLinkAction);
+        menu.add(textInputAction);
+        menu.add(new Separator());
         menu.add(updateAction);
         
         IToolBarManager toolBar = actionBars.getToolBarManager();
         toolBar.add(new Separator());
         toolBar.add(openChannelLinkAction);
+        toolBar.add(textInputAction);
+        toolBar.add(new Separator());
         toolBar.add(updateAction);
     }
 
@@ -80,6 +91,7 @@ public class ChannelActionGroup extends ActionGroup {
         IStructuredSelection selection =
             (IStructuredSelection) getContext().getSelection();
         openChannelLinkAction.selectionChanged(selection);
+        textInputAction.selectionChanged(selection);
         updateAction.selectionChanged(selection);
     }
 

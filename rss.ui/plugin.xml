@@ -72,26 +72,41 @@
                label="RSS"
                id="rss.ui.menu1">
             <groupMarker
-                  name="additions">
+                  name="browse">
             </groupMarker>
+            <separator
+                  name="update">
+            </separator>
+            <separator
+                  name="additions">
+            </separator>
          </menu>
-         <action
-               label="&amp;Update from Source"
-               icon="update_16.png"
-               tooltip="Update channel from its source."
-               class="com.pnehrer.rss.ui.actions.UpdateActionDelegate"
-               menubarPath="rss.ui.menu1/additions"
-               enablesFor="+"
-               id="rss.ui.action1">
-         </action>
          <action
                label="Open &amp;Link"
                icon="browse_16.png"
                tooltip="Open channel link in browser."
                class="com.pnehrer.rss.ui.actions.OpenLinkActionDelegate"
-               menubarPath="rss.ui.menu1/additions"
+               menubarPath="rss.ui.menu1/browse"
                enablesFor="1"
                id="rss.ui.action2">
+         </action>
+         <action
+               label="Text &amp;Input..."
+               icon="textinput_16.png"
+               tooltip="Submit text to channel site."
+               class="com.pnehrer.rss.ui.actions.TextInputActionDelegate"
+               menubarPath="rss.ui.menu1/browse"
+               enablesFor="1"
+               id="rss.ui.action3">
+         </action>
+         <action
+               label="&amp;Update from Source"
+               icon="update_16.png"
+               tooltip="Update channel from its source."
+               class="com.pnehrer.rss.ui.actions.UpdateActionDelegate"
+               menubarPath="rss.ui.menu1/update"
+               enablesFor="+"
+               id="rss.ui.action1">
          </action>
       </objectContribution>
    </extension>

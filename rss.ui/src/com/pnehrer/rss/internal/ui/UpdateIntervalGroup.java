@@ -132,8 +132,9 @@ public class UpdateIntervalGroup {
         updateIntervalLabel.setText("Update interval:");
 
         updateIntervalText = new Text(topLevel, SWT.SINGLE | SWT.BORDER);
-        layoutData = new GridData(GridData.FILL_HORIZONTAL);
+        layoutData = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
         layoutData.horizontalSpan = columns - 2;
+        layoutData.widthHint = 100;
         updateIntervalText.setLayoutData(layoutData);
 
         updateIntervalText.addModifyListener(new ModifyListener() {
@@ -170,5 +171,14 @@ public class UpdateIntervalGroup {
         minutesLabel.setText("minutes");
 
         setUpdateInterval(updateInterval);
+    }
+    
+    public void setFocus() {
+        if(updateIntervalButton.getSelection()) {
+            updateIntervalText.selectAll();
+            updateIntervalText.setFocus();
+        }
+        else
+            updateIntervalButton.setFocus();
     }
 }

@@ -45,6 +45,7 @@ public class RSSUI extends AbstractUIPlugin {
     public static final String NEW_ICON = "new_16.png";
     public static final String UPDATE_ICON = "update_16.png";
     public static final String ITEM_ICON = "item_16.gif";
+    public static final String TEXT_INPUT_ICON = "textinput_16.png";
     
     public static final String PREF_BROWSER = "browser";
     private static final QualifiedName PROP_BROWSER = 
@@ -245,6 +246,7 @@ public class RSSUI extends AbstractUIPlugin {
         reg.put(NEW_ICON, ImageDescriptor.createFromURL(pd.find(new Path(NEW_ICON))));
         reg.put(UPDATE_ICON, ImageDescriptor.createFromURL(pd.find(new Path(UPDATE_ICON))));
         reg.put(ITEM_ICON, ImageDescriptor.createFromURL(pd.find(new Path(ITEM_ICON))));
+        reg.put(TEXT_INPUT_ICON, ImageDescriptor.createFromURL(pd.find(new Path(TEXT_INPUT_ICON))));
     }
 
     /* (non-Javadoc)

@@ -136,4 +136,13 @@ public class WizardChannelOptionsPage extends WizardPage {
             setPageComplete(false);  
         }
     }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.dialogs.IDialogPage#setVisible(boolean)
+     */
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        if(visible)
+            channelProperties.setFocus();
+    }
 }

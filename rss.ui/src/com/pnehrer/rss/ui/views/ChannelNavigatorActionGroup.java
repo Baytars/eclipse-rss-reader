@@ -46,6 +46,7 @@ import org.eclipse.ui.views.navigator.ResourceNavigatorMessages;
 
 import com.pnehrer.rss.ui.RSSUI;
 import com.pnehrer.rss.ui.actions.OpenLinkAction;
+import com.pnehrer.rss.ui.actions.TextInputAction;
 import com.pnehrer.rss.ui.actions.UpdateAction;
 
 /**
@@ -65,6 +66,7 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
     private final RefreshAction refreshAction;
     
     private final OpenLinkAction openLinkAction;
+    private final TextInputAction textInputAction;
     private final UpdateAction updateAction;
     
     private final ChannelNavigator navigator;
@@ -107,6 +109,10 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
         openLinkAction.setToolTipText("Open selected element's link in browser.");
         openLinkAction.setImageDescriptor(reg.getDescriptor(RSSUI.BROWSE_ICON));
         
+        textInputAction = new TextInputAction(navigator.getSite().getShell());
+        textInputAction.setToolTipText("Submit text input to channel site.");
+        textInputAction.setImageDescriptor(reg.getDescriptor(RSSUI.TEXT_INPUT_ICON));
+
         updateAction = new UpdateAction();
         updateAction.setToolTipText("Update selected channel(s) from their sources.");
         updateAction.setImageDescriptor(reg.getDescriptor(RSSUI.UPDATE_ICON));
@@ -120,9 +126,6 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
             new MenuManager(ResourceNavigatorMessages.getString("ResourceNavigator.new"));
         menu.add(newMenu);
         new NewWizardMenu(newMenu, navigator.getSite().getWorkbenchWindow(), false);
-        
-        menu.add(openLinkAction);
-        openLinkAction.selectionChanged(selection);
         
         boolean onlyFilesSelected;
         if(selection.isEmpty())
@@ -145,9 +148,15 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
         }
 
         if(onlyFilesSelected) {
+            menu.add(openLinkAction);
+            openLinkAction.selectionChanged(selection);
+        
             openFileAction.selectionChanged(selection);
             menu.add(openFileAction);
             fillOpenWithMenu(menu, selection);
+
+            menu.add(textInputAction);
+            textInputAction.selectionChanged(selection);
         }
 
         boolean anyResourceSelected;
@@ -229,10 +238,11 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
             }
         }                   
 
-        menu.add(new Separator());
-
-        menu.add(updateAction);
-        updateAction.selectionChanged(selection);
+        if(onlyFilesSelected) {
+            menu.add(new Separator());
+            menu.add(updateAction);
+            updateAction.selectionChanged(selection);
+        }
                 
         menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
         menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end"));
@@ -247,8 +257,14 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
     private void fillOpenWithMenu(IMenuManager menu, IStructuredSelection selection) {
         if (selection.size() != 1)
             return;
+
         Object element = selection.getFirstElement();
-        if (!(element instanceof IFile))
+        if(element instanceof IAdaptable) {
+            element = (IFile)((IAdaptable)element).getAdapter(IFile.class);
+            if(element == null)
+                return;
+        }
+        else
             return;
 
         MenuManager submenu = new MenuManager(
@@ -314,6 +330,7 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
         closeProjectAction.selectionChanged(selection);
         
         openLinkAction.selectionChanged(selection);
+        textInputAction.selectionChanged(selection);
         updateAction.selectionChanged(selection);
     } 
     

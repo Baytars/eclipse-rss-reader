@@ -162,9 +162,10 @@ public class ChannelPropertyGroup {
         });
             
         loadButton = new Button(topLevel, SWT.PUSH | SWT.BORDER);
-        loadButton.setLayoutData(
-            new GridData(
-                GridData.HORIZONTAL_ALIGN_END | GridData.VERTICAL_ALIGN_FILL));
+        layoutData = new GridData(
+            GridData.HORIZONTAL_ALIGN_END | GridData.VERTICAL_ALIGN_FILL);
+        layoutData.widthHint = 100;
+        loadButton.setLayoutData(layoutData);
         loadButton.setText("&Load");
         loadButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
@@ -185,6 +186,8 @@ public class ChannelPropertyGroup {
 
         layoutData = new GridData(GridData.FILL_HORIZONTAL);
         layoutData.horizontalSpan = columns;
+        layoutData.widthHint = 250;
+        layoutData.heightHint = 200;
         translatorList.setLayoutData(layoutData);
         translatorList.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
@@ -205,6 +208,11 @@ public class ChannelPropertyGroup {
 
         if(defaultTranslatorId != null) 
             selectTranslator(defaultTranslatorId);
+    }
+    
+    public void setFocus() {
+        urlText.selectAll();
+        urlText.setFocus();
     }
     
     private void setComplete(short element, boolean complete) {

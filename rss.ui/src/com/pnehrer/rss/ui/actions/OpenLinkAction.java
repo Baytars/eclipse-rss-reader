@@ -56,7 +56,8 @@ public class OpenLinkAction extends SelectionListenerAction {
         IRSSElement item = (IRSSElement)selection.getFirstElement();
         try {
             BrowserFactoryDescriptor bdf = 
-                RSSUI.getDefault().getBrowserFactoryDescriptor(item.getChannel());
+                RSSUI.getDefault().getBrowserFactoryDescriptor(
+                    item.getChannel());
 
             IBrowser browser = bdf.getFactory().createBrowser();
             browser.displayURL(item.getLink());

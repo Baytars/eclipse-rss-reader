@@ -97,4 +97,8 @@ public class BrowserGroup {
 
         setSelectedBrowserFactory(selectedBrowserFactory);
     }
+    
+    public void setFocus() {
+        browserFactoryList.setFocus();
+    }
 }
