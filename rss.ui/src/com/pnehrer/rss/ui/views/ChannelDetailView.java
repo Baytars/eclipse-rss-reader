@@ -19,6 +19,7 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -33,6 +34,7 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -62,8 +64,6 @@ public class ChannelDetailView
     implements ISelectionListener,
         IResourceChangeListener {
 
-    private ImageDescriptor newItemDecoration;
-
     private static final String[] COLUMNS = {
         "#", 
         "Title", 
@@ -84,11 +84,14 @@ public class ChannelDetailView
     private TableViewer viewer;
     private ChannelActionGroup actionGroup;
     private boolean showNewOnly;
+
+    private final ImageDescriptor newItemDecoration;
+    private final Image detailIcon;
     
     public ChannelDetailView() {
-        newItemDecoration = 
-            RSSUI.getDefault().getImageRegistry().getDescriptor(
-                RSSUI.NEW_DECORATOR_ICON);
+        ImageRegistry reg = RSSUI.getDefault().getImageRegistry();
+        newItemDecoration = reg.getDescriptor(RSSUI.NEW_DECORATOR_ICON);
+        detailIcon = reg.get(RSSUI.DETAIL_ICON);
                 
         ResourcesPlugin.getWorkspace().addResourceChangeListener(
             this,
@@ -274,15 +277,15 @@ public class ChannelDetailView
         }
         
         if(rssElement != null) {
-            channel = rssElement.getChannel();
-            viewer.setInput(channel);
-            viewer.setSelection(selection, true);
+            IChannel newChannel = rssElement.getChannel(); 
+            if(!newChannel.equals(channel)) {
+                channel = newChannel;
+                processChannelChange();
+            }
 
-            setTitleToolTip(channel.getLink());
+            viewer.setSelection(selection, true);
             updateStatusLine((IStructuredSelection)selection);
             updateActionBars((IStructuredSelection)selection);
-
-            processChannelChange();
         }
     }
     
@@ -312,6 +315,7 @@ public class ChannelDetailView
 
         setShowNewOnly(Boolean.TRUE.equals(
             new Boolean(memento.getString(TAG_SHOW_NEW_ONLY))));
+        actionGroup.setShowNewOnly(showNewOnly);
 
         String path = memento.getString(TAG_PATH);
         if(path == null) return;
@@ -424,19 +428,22 @@ public class ChannelDetailView
                 ctrl.getDisplay().syncExec(new Runnable() {
                     public void run() {
                         if(delta.getKind() == IResourceDelta.REMOVED
-                             && (delta.getFlags() & IResourceDelta.MOVED_TO) == 0) {
-        
-                             channel = null;
-                             viewer.setInput(null);
-                             return;
-                         }
-        
-                         if(delta.getKind() != IResourceDelta.CHANGED
-                              || (delta.getFlags() & IResourceDelta.MARKERS) == 0)
-                              return;
- 
-                        viewer.refresh(true);
-                        processChannelChange();
+                            && (delta.getFlags() & IResourceDelta.MOVED_TO) == 0) {
+
+                            channel = null;
+                            processChannelChange();
+                            IStructuredSelection selection = 
+                                StructuredSelection.EMPTY;
+                            viewer.setSelection(selection);
+                            updateStatusLine((IStructuredSelection)selection);
+                            updateActionBars((IStructuredSelection)selection);
+                        }
+                        else if(delta.getKind() == IResourceDelta.CHANGED
+                            && (delta.getFlags() & IResourceDelta.MARKERS) != 0) {
+
+                            viewer.refresh();
+                            updateViewDecorations();
+                        }
                     }
                 });
             }
@@ -445,29 +452,43 @@ public class ChannelDetailView
     }
     
     private void processChannelChange() {
-        boolean hasUpdates = channel.hasUpdates();
-
-        String title = channel.getTitle();
-        if(hasUpdates)
-            title += "*";
-                 
-        setTitle(title);
-
-        ImageDescriptor imageDescriptor =
-            RSSUI.getDefault().getImageDescriptor16(channel);
-        if(hasUpdates && imageDescriptor != null)
-            imageDescriptor = 
-                new NewChannelImageDescriptor(
-                    imageDescriptor.getImageData(),
-                    newItemDecoration.getImageData());
-                
-        setTitleImage(
-            imageDescriptor == null ? 
-                null : 
-                imageDescriptor.createImage());
+        viewer.setInput(channel);
+        updateViewDecorations();
     }
     
-    public void setShowNewOnly(boolean showNewOnly) {
+    private void updateViewDecorations() {
+        if(channel == null) {
+            setTitle("Channel Detail");
+            setTitleImage(detailIcon);
+            setTitleToolTip("Select RSS channel to view.");
+        }
+        else {
+            boolean hasUpdates = channel.hasUpdates();
+    
+            String title = channel.getTitle();
+            if(hasUpdates)
+                title += "*";
+                     
+            setTitle(title);
+    
+            ImageDescriptor imageDescriptor =
+                RSSUI.getDefault().getImageDescriptor16(channel);
+            if(hasUpdates && imageDescriptor != null)
+                imageDescriptor = 
+                    new NewChannelImageDescriptor(
+                        imageDescriptor.getImageData(),
+                        newItemDecoration.getImageData());
+                    
+            setTitleImage(
+                imageDescriptor == null ? 
+                    null : 
+                    imageDescriptor.createImage());
+    
+            setTitleToolTip(channel.getLink());
+        }
+    }
+    
+    void setShowNewOnly(boolean showNewOnly) {
         boolean oldValue = this.showNewOnly;
         this.showNewOnly = showNewOnly;
         if(oldValue != showNewOnly)

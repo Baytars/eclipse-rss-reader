@@ -4,6 +4,7 @@
  */
 package com.pnehrer.rss.internal.ui;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -11,6 +12,7 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.RSSCore;
+import com.pnehrer.rss.ui.RSSUI;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
@@ -68,7 +70,8 @@ public class ChannelPropertySource implements IPropertySource {
                 return channel.getURL();
 
             case UPDATE_INTERVAL:
-                return channel.getUpdateInterval();
+                Integer updateInterval = channel.getUpdateInterval();
+                return updateInterval == null ? "" : updateInterval.toString();
                 
             case LAST_UPDATED:
                 return channel.getLastUpdated();
@@ -116,15 +119,27 @@ public class ChannelPropertySource implements IPropertySource {
      */
     public void setPropertyValue(Object id, Object value) {
         if(id.equals(new Integer(UPDATE_INTERVAL))) {
+            Integer oldValue = channel.getUpdateInterval();
+            Integer newValue = null;
             try {
-                channel.setUpdateInterval(
-                    value == null ? 
-                        null : 
-                        new Integer(value.toString()));
+                if(value != null)
+                    newValue = new Integer(value.toString());
+                         
+                channel.setUpdateInterval(newValue);
             }
             catch(NumberFormatException ex) {
-                // ignore
+                newValue = oldValue;
             }
+
+            if((oldValue != null && !oldValue.equals(newValue)) || 
+                (newValue != null) && !newValue.equals(oldValue))
+
+                try {
+                    channel.save(null);
+                }
+                catch(CoreException ex) {
+                    RSSUI.getDefault().getLog().log(ex.getStatus());
+                }
         }
     }
 }

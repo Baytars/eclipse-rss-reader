@@ -39,7 +39,13 @@ public class ChannelActionGroup extends ActionGroup {
         this.channelDetailView = channelDetailView;
         ImageRegistry reg = RSSUI.getDefault().getImageRegistry();
 
-        toggleShowNewOnlyAction = new ToggleShowNewOnlyAction(channelDetailView);
+        toggleShowNewOnlyAction = new ToggleShowNewOnlyAction(            
+            new ToggleShowNewOnlyAction.INewItemFilteringPart() {
+                public void setShowNewOnly(boolean value) {
+                    ChannelActionGroup.this.channelDetailView.setShowNewOnly(value);
+                }
+            });
+            
         toggleShowNewOnlyAction.setToolTipText("Toggle showing only new items.");
         toggleShowNewOnlyAction.setImageDescriptor(reg.getDescriptor(RSSUI.ITEM_NEW_ICON));
 
@@ -119,5 +125,9 @@ public class ChannelActionGroup extends ActionGroup {
         openItemLinkAction.selectionChanged(selection);
         if(openItemLinkAction.isEnabled())
             openItemLinkAction.run();
+    }
+
+    public void setShowNewOnly(boolean value) {
+        toggleShowNewOnlyAction.setChecked(value);
     }
 }

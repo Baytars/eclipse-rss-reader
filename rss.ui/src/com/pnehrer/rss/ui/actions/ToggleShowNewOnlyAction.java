@@ -6,27 +6,30 @@ package com.pnehrer.rss.ui.actions;
 
 import org.eclipse.jface.action.Action;
 
-import com.pnehrer.rss.ui.views.ChannelDetailView;
-
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
 public class ToggleShowNewOnlyAction extends Action {
     
-    private final ChannelDetailView channelDetailView;
+    public interface INewItemFilteringPart {
+        
+        public void setShowNewOnly(boolean value);
+    }
+    
+    private final INewItemFilteringPart part;
 
     /**
      * @param text
      */
-    public ToggleShowNewOnlyAction(ChannelDetailView channelDetailView) {
+    public ToggleShowNewOnlyAction(INewItemFilteringPart part) {
         super("Show New Items Only", AS_CHECK_BOX);
-        this.channelDetailView = channelDetailView;
+        this.part = part;
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.jface.action.IAction#run()
      */
     public void run() {
-        channelDetailView.setShowNewOnly(isChecked());
+        part.setShowNewOnly(isChecked());
     }
 }

@@ -24,6 +24,8 @@ import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -48,17 +50,21 @@ import com.pnehrer.rss.core.IRSSElement;
  */
 public class ChannelNavigator 
     extends ViewPart 
-    implements ISetSelectionTarget, IShowInSource, IShowInTarget {
+    implements ISetSelectionTarget, 
+        IShowInSource, 
+        IShowInTarget {
 
     private static final String TAG_SELECTION = "selection";
     private static final String TAG_EXPANDED = "expanded";
     private static final String TAG_ELEMENT = "element";
     private static final String TAG_PATH = "path";
     private static final String TAG_LINK = "link";
+    private static final String TAG_SHOW_NEW_ONLY = "showNewOnly";
 
     private IMemento memento;
     private TreeViewer viewer;
     private ChannelNavigatorActionGroup actionGroup;
+    private boolean showNewOnly;
 
     private void initContextMenu() {
         MenuManager menuMgr = new MenuManager("#PopupMenu");
@@ -168,7 +174,20 @@ public class ChannelNavigator
             new DecoratingLabelProvider(
                 new WorkbenchLabelProvider(), 
                 new ChannelNavigatorLabelDecorator()));
-                
+
+        viewer.addFilter(new ViewerFilter() {
+            public boolean select(
+                Viewer viewer, 
+                Object parentElement, 
+                Object element) {
+
+                if(element instanceof IItem)
+                    return (((IItem)element).isUpdated() || !isShowNewOnly());
+                else
+                    return true;
+            }
+        });
+
         viewer.setInput(ResourcesPlugin.getWorkspace());
 
         initContextMenu();
@@ -291,6 +310,10 @@ public class ChannelNavigator
     }
 
     private void restoreState(IMemento memento) {
+        setShowNewOnly(Boolean.TRUE.equals(
+            new Boolean(memento.getString(TAG_SHOW_NEW_ONLY))));
+        actionGroup.setShowNewOnly(showNewOnly);
+
         IContainer container = ResourcesPlugin.getWorkspace().getRoot();
         IMemento childMem = memento.getChild(TAG_EXPANDED);
         if(childMem != null) {
@@ -359,6 +382,8 @@ public class ChannelNavigator
                 memento.putMemento(this.memento);
         }
         else {
+            memento.putString(TAG_SHOW_NEW_ONLY, String.valueOf(showNewOnly));
+
             Object expandedElements[] = viewer.getVisibleExpandedElements();
             if(expandedElements.length > 0) {
                 IMemento expandedMem = memento.createChild(TAG_EXPANDED);
@@ -400,5 +425,16 @@ public class ChannelNavigator
                 }
             }
         }
+    }
+    
+    void setShowNewOnly(boolean showNewOnly) {
+        boolean oldValue = this.showNewOnly;
+        this.showNewOnly = showNewOnly;
+        if(oldValue != showNewOnly)
+            viewer.refresh();
+    }
+    
+    private boolean isShowNewOnly() {
+        return showNewOnly;
     }
 }

@@ -44,12 +44,15 @@ import org.eclipse.ui.views.navigator.ResourceNavigatorMessages;
 import com.pnehrer.rss.ui.RSSUI;
 import com.pnehrer.rss.ui.actions.OpenLinkAction;
 import com.pnehrer.rss.ui.actions.TextInputAction;
+import com.pnehrer.rss.ui.actions.ToggleShowNewOnlyAction;
 import com.pnehrer.rss.ui.actions.UpdateAction;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
 public class ChannelNavigatorActionGroup extends ActionGroup {
+
+    private final ToggleShowNewOnlyAction toggleShowNewOnlyAction;
 
     private final AddBookmarkAction addBookmarkAction;
     private final AddTaskAction addTaskAction;  
@@ -109,6 +112,16 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
         updateAction = new UpdateAction();
         updateAction.setToolTipText("Update selected channel(s) from their sources.");
         updateAction.setImageDescriptor(reg.getDescriptor(RSSUI.UPDATE_ICON));
+
+        toggleShowNewOnlyAction = new ToggleShowNewOnlyAction(
+            new ToggleShowNewOnlyAction.INewItemFilteringPart() {
+                public void setShowNewOnly(boolean value) {
+                    ChannelNavigatorActionGroup.this.navigator.setShowNewOnly(value);
+                }
+            });
+            
+        toggleShowNewOnlyAction.setToolTipText("Toggle showing only new items.");
+        toggleShowNewOnlyAction.setImageDescriptor(reg.getDescriptor(RSSUI.ITEM_NEW_ICON));
     }
 
     public void fillContextMenu(IMenuManager menu) {
@@ -284,6 +297,7 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
         
         IToolBarManager toolBar = actionBars.getToolBarManager();
         toolBar.add(new Separator());
+        toolBar.add(toggleShowNewOnlyAction);
         toolBar.add(collapseAllAction);     
     }
     
@@ -322,5 +336,9 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
         catch(MalformedURLException ex) {
             return ImageDescriptor.getMissingImageDescriptor();
         }
-    }   
+    }
+
+    public void setShowNewOnly(boolean value) {
+        toggleShowNewOnlyAction.setChecked(value);
+    }
 }
