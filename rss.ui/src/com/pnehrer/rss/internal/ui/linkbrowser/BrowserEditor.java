@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.IWorkbenchPage;
 
+import com.pnehrer.rss.core.IItem;
 import com.pnehrer.rss.core.IRSSElement;
 import com.pnehrer.rss.core.ITextInput;
 import com.pnehrer.rss.ui.ILinkBrowser;
@@ -47,7 +48,7 @@ public class BrowserEditor implements ILinkBrowser {
         throws CoreException {
 
         String id = getBrowserEditor(rssElement);
-        if(id != null)
+        if(id != null) {
             try {
                 page.openEditor(new LinkEditorInput(rssElement), id);
             }
@@ -60,6 +61,10 @@ public class BrowserEditor implements ILinkBrowser {
                         "could not create URL for link " + rssElement.getLink(),
                         e));
             }
+
+            if(rssElement instanceof IItem)
+                ((IItem)rssElement).resetUpdateFlag();
+        }
     }
 
     public void open(ITextInput textInput, String data, IWorkbenchPage page) 
