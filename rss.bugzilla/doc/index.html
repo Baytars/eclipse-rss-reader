@@ -22,7 +22,7 @@ in the RDF format, which is recognized by this plugin. If you want to provide a 
 for the channel (the query results don't come with any descriptive titles by default), 
 append <CODE>"&amp;title=&lt;YOUR+TITLE&gt;"</CODE>
 to the end of the URL as well. Be careful to properly URL-encode the title parameter.</P>
-<P>E.g., <CODE>https://bugs.eclipse.org/bugs/buglist.cgi?query_format=specific&amp;order=relevance+desc&amp;bug_status=__open__&amp;product=&amp;content=rss&amp;title=All+rss&amp;ctype=rdf</CODE></P>
+<P>E.g., <CODE>https://bugs.eclipse.org/bugs/buglist.cgi?query_format=specific&amp;order=relevance+desc&amp;bug_status=__open__&amp;product=&amp;content=rss&amp;ctype=rdf&amp;title=All+rss</CODE></P>
 <H2>Bug Detail</H2>
 <P>To set up a channel based on a Bugzilla bug detail page, start with the page's URL,
 then replace the file part (<CODE>show_bug.cgi</CODE>) with <CODE>xml.cgi</CODE>. This will
