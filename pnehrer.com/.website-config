@@ -48,6 +48,9 @@
 					<page src="/WebContent/projects/rss/usage.html" template="/WebContent/theme/home.htpl" id="18" icon="/presence/theme/icons/browse_16.png">
 						<title>Usage</title>
 					</page>
+					<page src="/WebContent/projects/rss/screenshots.html" template="/WebContent/theme/home.htpl" id="19" icon="/presence/theme/icons/view_16.png">
+						<title>Screenshots</title>
+					</page>
 				</page>
 				<page src="/WebContent/projects/jelly4eclipse/index.html" id="8" template="/WebContent/theme/home.htpl" icon="/presence/theme/icons/folder_blue_open.png">
 					<title>Eclipse Scripting</title>
