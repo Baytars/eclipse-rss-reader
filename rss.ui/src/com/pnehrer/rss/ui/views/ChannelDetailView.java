@@ -5,8 +5,10 @@
 package com.pnehrer.rss.ui.views;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
@@ -87,6 +89,7 @@ public class ChannelDetailView
 
     private final ImageDescriptor newItemDecoration;
     private final Image detailIcon;
+    private final Map images = new HashMap();
     
     public ChannelDetailView() {
         ImageRegistry reg = RSSUI.getDefault().getImageRegistry();
@@ -154,10 +157,6 @@ public class ChannelDetailView
     private void handleOpen(OpenEvent event) {
         IStructuredSelection selection = (IStructuredSelection)event.getSelection();
         actionGroup.runDefaultAction(selection);
-        for(Iterator i = selection.iterator(); i.hasNext();) {
-            IItem item = (IItem)i.next();
-            item.resetUpdateFlag();
-        }
     }
 
     private TableColumn createColumn(
@@ -407,6 +406,9 @@ public class ChannelDetailView
     public void dispose() {
         getSite().getPage().removeSelectionListener(this);
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+        for(Iterator i = images.values().iterator(); i.hasNext();)
+            ((Image)i.next()).dispose();
+        
         super.dispose();
     }
 
@@ -473,17 +475,21 @@ public class ChannelDetailView
     
             ImageDescriptor imageDescriptor =
                 RSSUI.getDefault().getImageDescriptor16(channel);
-            if(hasUpdates && imageDescriptor != null)
-                imageDescriptor = 
-                    new NewChannelImageDescriptor(
-                        imageDescriptor.getImageData(),
-                        newItemDecoration.getImageData());
+            Image image = null;
+            if(hasUpdates && imageDescriptor != null) {
+                image = (Image)images.get(imageDescriptor);
+                if(image == null) {
+                    ImageDescriptor decoratedImageDescriptor = 
+                        new NewChannelImageDescriptor(
+                            imageDescriptor.getImageData(),
+                            newItemDecoration.getImageData());
+                            
+                    image = decoratedImageDescriptor.createImage();
+                    images.put(imageDescriptor, image);
+                }
+            }
                     
-            setTitleImage(
-                imageDescriptor == null ? 
-                    null : 
-                    imageDescriptor.createImage());
-    
+            setTitleImage(image);
             setTitleToolTip(channel.getLink());
         }
     }

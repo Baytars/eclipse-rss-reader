@@ -36,11 +36,14 @@ import org.eclipse.ui.actions.CloseResourceAction;
 import org.eclipse.ui.actions.NewWizardMenu;
 import org.eclipse.ui.actions.OpenInNewWindowAction;
 import org.eclipse.ui.actions.OpenResourceAction;
+import org.eclipse.ui.actions.OpenWithMenu;
 import org.eclipse.ui.actions.RefreshAction;
 import org.eclipse.ui.dialogs.PropertyDialogAction;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.views.navigator.OpenActionGroup;
 import org.eclipse.ui.views.navigator.ResourceNavigatorMessages;
 
+import com.pnehrer.rss.core.IRSSElement;
 import com.pnehrer.rss.ui.RSSUI;
 import com.pnehrer.rss.ui.actions.MarkReadAction;
 import com.pnehrer.rss.ui.actions.OpenLinkAction;
@@ -106,7 +109,7 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
         openLinkAction = new OpenLinkAction(navigator.getSite().getShell());
         openLinkAction.setToolTipText("Open selected element's link in browser.");
         openLinkAction.setImageDescriptor(reg.getDescriptor(RSSUI.BROWSE_ICON));
-        
+
         textInputAction = new TextInputAction(navigator.getSite().getShell());
         textInputAction.setToolTipText("Submit text input to channel site.");
         textInputAction.setImageDescriptor(reg.getDescriptor(RSSUI.TEXT_INPUT_ICON));
@@ -162,6 +165,8 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
         if(onlyFilesSelected) {
             menu.add(openLinkAction);
             openLinkAction.selectionChanged(selection);
+
+            fillOpenWithMenu(menu, selection);
 
             menu.add(textInputAction);
             textInputAction.selectionChanged(selection);
@@ -264,6 +269,19 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
             propertyDialogAction.selectionChanged(selection);
             menu.add(propertyDialogAction);
         }
+    }
+
+    private void fillOpenWithMenu(IMenuManager menu, IStructuredSelection selection) {
+        if (selection.size() != 1)
+            return;
+        Object element = selection.getFirstElement();
+        if (!(element instanceof IRSSElement))
+            return;
+
+        MenuManager submenu =
+            new MenuManager("Open &With", OpenActionGroup.OPEN_WITH_ID);
+        submenu.add(new OpenWithMenu(navigator.getSite().getPage(), ((IRSSElement)element).getChannel()));
+        menu.add(submenu);
     }
 
     private void addNewWindowAction(IMenuManager menu, IStructuredSelection selection) {

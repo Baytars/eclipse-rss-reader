@@ -19,6 +19,7 @@ import org.eclipse.help.browser.IBrowser;
 import org.eclipse.help.browser.IBrowserFactory;
 import org.eclipse.ui.IWorkbenchPage;
 
+import com.pnehrer.rss.core.IItem;
 import com.pnehrer.rss.core.IRSSElement;
 import com.pnehrer.rss.core.ITextInput;
 import com.pnehrer.rss.ui.ILinkBrowser;
@@ -45,6 +46,8 @@ public class HelpBrowser implements ILinkBrowser {
         throws CoreException {
 
         open(rssElement, rssElement.getLink());
+        if(rssElement instanceof IItem)
+            ((IItem)rssElement).resetUpdateFlag();
     }
     
     public void open(ITextInput textInput, String data, IWorkbenchPage page) 

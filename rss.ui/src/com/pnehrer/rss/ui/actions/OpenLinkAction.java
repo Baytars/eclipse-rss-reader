@@ -63,8 +63,7 @@ public class OpenLinkAction extends SelectionListenerAction {
             return;
             
         try {
-            ILinkBrowser linkBrowser = 
-                RSSUI.getDefault().getLinkBrowser(item);
+            ILinkBrowser linkBrowser = RSSUI.getDefault().getLinkBrowser(item);
             if(linkBrowser != null) {
                 IWorkbench wb = RSSUI.getDefault().getWorkbench();
                 IWorkbenchWindow window = wb.getActiveWorkbenchWindow();
