@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -61,7 +62,8 @@ public class BugListTranslator extends XSLBasedTranslator {
 
 	protected Document postProcessDocument(Document document) {
 		Element channel = document.getDocumentElement();
-		channel.setAttribute("date", new Date().toString());
+		channel.setAttribute("date", DateFormat.getInstance()
+				.format(new Date()));
 		String link = channel.getAttribute(ATTR_LINK);
 		try {
 			URL url = new URL(link);
@@ -92,9 +94,9 @@ public class BugListTranslator extends XSLBasedTranslator {
 						}
 				}
 
-				StringBuffer buf = new StringBuffer("Bugzilla query ");
+				StringBuffer buf = new StringBuffer("Bugzilla query");
 				if (!params.isEmpty())
-					buf.append('(');
+					buf.append(" (");
 				
 				String content = params.getProperty("content");
 				if (content != null) {
@@ -112,13 +114,21 @@ public class BugListTranslator extends XSLBasedTranslator {
 				}
 				
 				String status = params.getProperty("bug_status");
-				if (status != null)
+				if (status != null) {
+					if ("__all__".equals(status))
+						status = "all";
+					else if ("__open__".equals(status))
+						status = "open";
+					else if ("__closed__".equals(status))
+						status = "closed";
+					
 					buf.append("status=").append(status);
+				}
 				
 				if (!params.isEmpty())
 					buf.append(')');
 
-				buf.append("at ");
+				buf.append(" at ");
 				buf.append(channel.getAttribute(ATTR_DESCRIPTION));
 				channel.setAttribute(ATTR_DESCRIPTION, buf.toString());
 			}

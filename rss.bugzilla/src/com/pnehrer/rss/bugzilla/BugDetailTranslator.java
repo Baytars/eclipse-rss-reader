@@ -33,7 +33,7 @@ public class BugDetailTranslator extends XSLBasedTranslator {
 
 	private static final String ROOT_ELEMENT = "bugzilla";
 
-	private static final String ATTR_DATE = "pubDate";
+	private static final String ATTR_DATE = "date";
 
 	private static final DateFormat dateFormat;
 
@@ -59,8 +59,8 @@ public class BugDetailTranslator extends XSLBasedTranslator {
 		String dateStr = channel.getAttribute(ATTR_DATE);
 		if (dateStr != null) {
 			try {
-				channel.setAttribute(ATTR_DATE, dateFormat.parse(dateStr)
-						.toString());
+				channel.setAttribute(ATTR_DATE, DateFormat.getInstance()
+						.format(dateFormat.parse(dateStr)));
 			} catch (ParseException e) {
 				// ignore
 			}
@@ -72,8 +72,8 @@ public class BugDetailTranslator extends XSLBasedTranslator {
 			dateStr = item.getAttribute(ATTR_DATE);
 			if (dateStr != null) {
 				try {
-					item.setAttribute(ATTR_DATE, dateFormat.parse(dateStr)
-							.toString());
+					item.setAttribute(ATTR_DATE, DateFormat.getInstance()
+							.format(dateFormat.parse(dateStr)));
 				} catch (ParseException e) {
 					// ignore
 				}
