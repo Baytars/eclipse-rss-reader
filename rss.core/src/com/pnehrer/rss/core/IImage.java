@@ -4,6 +4,8 @@
  */
 package com.pnehrer.rss.core;
 
+import java.net.URL;
+
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
@@ -13,7 +15,7 @@ public interface IImage {
 
     public String getTitle();
     
-    public String getURL();
+    public URL getURL();
     
     public String getLink();
 }

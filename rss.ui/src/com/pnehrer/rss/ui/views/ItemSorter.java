@@ -21,15 +21,13 @@ public class ItemSorter extends ViewerSorter {
     public static final int DATE = 4;
     
     private final int sortBy;
+    private final int sign;
     private final ViewerSorter oldSorter;
     
-    public ItemSorter(int sortBy, ViewerSorter oldSorter) {
+    public ItemSorter(int sortBy, boolean reverse, ViewerSorter oldSorter) {
         this.sortBy = sortBy;
+        sign = reverse ? -1 : 1;
         this.oldSorter = oldSorter;
-    }
-    
-    public ItemSorter(int sortBy) {
-        this(sortBy, null);
     }
 
     /* (non-Javadoc)
@@ -40,40 +38,57 @@ public class ItemSorter extends ViewerSorter {
         IItem item2 = (IItem)e2;
         switch(sortBy) {
             case TITLE:
-                if(item1.getTitle() == null) return 1;
-                else if(item2.getTitle() == null) return -1;
+                if(item1.getTitle() == null) return sign;
+                else if(item2.getTitle() == null) return -sign;
                 else {
                     int result = item1.getTitle().compareTo(item2.getTitle());
                     if(result == 0 && oldSorter != null)
                         return oldSorter.compare(viewer, e1, e2);
                     else
-                        return result;
+                        return sign * result;
                 }
                 
             case DESCRIPTION:
-                if(item1.getDescription() == null) return 1;
-                else if(item2.getDescription() == null) return -1;
+                if(item1.getDescription() == null) return sign;
+                else if(item2.getDescription() == null) return -sign;
                 else {
                     int result = item1.getDescription().compareTo(
                         item2.getDescription());
                     if(result == 0 && oldSorter != null)
                         return oldSorter.compare(viewer, e1, e2);
                     else
-                        return result;
+                        return sign * result;
                 }
                 
             case LINK:
-                if(item1.getLink() == null) return 1;
-                else if(item2.getLink() == null) return -1;
-                else return item1.getLink().compareTo(item2.getLink());
+                if(item1.getLink() == null) return sign;
+                else if(item2.getLink() == null) return -sign;
+                else {
+                    int result = item1.getLink().compareTo(item2.getLink());
+                    if(result == 0 && oldSorter != null)
+                        return oldSorter.compare(viewer, e1, e2);
+                    else
+                        return sign * result;
+                }
                 
             case DATE:
-                if(item1.getDate() == null) return 1;
-                else if(item2.getDate() == null) return -1;
-                else return item1.getDate().compareTo(item2.getDate());
+                if(item1.getDate() == null) return sign;
+                else if(item2.getDate() == null) return -sign;
+                else {
+                    int result = item1.getDate().compareTo(
+                        item2.getDate());
+                    if(result == 0 && oldSorter != null)
+                        return oldSorter.compare(viewer, e1, e2);
+                    else
+                        return sign * result;
+                }
                 
             default:
                 return 0;
         }
+    }
+    
+    public boolean isReverse() {
+        return sign == -1;
     }
 }

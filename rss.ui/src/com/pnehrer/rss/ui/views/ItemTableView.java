@@ -4,14 +4,26 @@
  */
 package com.pnehrer.rss.ui.views;
 
-import org.eclipse.core.resources.IFile;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.help.browser.IBrowser;
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
@@ -21,7 +33,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 
 import com.pnehrer.rss.core.IChannel;
-import com.pnehrer.rss.core.RSSCore;
+import com.pnehrer.rss.core.IItem;
+import com.pnehrer.rss.ui.RSSUI;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
@@ -31,6 +44,7 @@ public class ItemTableView extends ViewPart implements ISelectionListener {
 
     private static final String[] COLUMNS = {"Title", "Description"};
     private TableViewer viewer;
+    private final Map imageMap = new HashMap();
 
 	/**
 	 * @see ViewPart#createPartControl
@@ -47,7 +61,14 @@ public class ItemTableView extends ViewPart implements ISelectionListener {
         column.setResizable(true);
         column.addSelectionListener(new SelectionAdapter() {
                 public void widgetSelected(SelectionEvent e) {
-                    viewer.setSorter(new ItemSorter(ItemSorter.TITLE));
+                    ViewerSorter oldSorter = viewer.getSorter();
+                    viewer.setSorter(
+                        new ItemSorter(
+                            ItemSorter.TITLE,
+                            oldSorter instanceof ItemSorter ?
+                                !((ItemSorter)oldSorter).isReverse() :
+                                false,
+                                oldSorter));
                 }
             });
 
@@ -57,7 +78,14 @@ public class ItemTableView extends ViewPart implements ISelectionListener {
         column.setResizable(true);
         column.addSelectionListener(new SelectionAdapter() {
                 public void widgetSelected(SelectionEvent e) {
-                    viewer.setSorter(new ItemSorter(ItemSorter.DESCRIPTION));
+                    ViewerSorter oldSorter = viewer.getSorter();
+                    viewer.setSorter(
+                        new ItemSorter(
+                            ItemSorter.DESCRIPTION,
+                            oldSorter instanceof ItemSorter ?
+                                !((ItemSorter)oldSorter).isReverse() :
+                                false,
+                                oldSorter));
                 }
             });
         
@@ -66,6 +94,35 @@ public class ItemTableView extends ViewPart implements ISelectionListener {
         
         viewer.setContentProvider(new ChannelContentProvider());
         viewer.setLabelProvider(new ChannelTableLabelProvider());
+        
+        viewer.addOpenListener(new IOpenListener() {
+                public void open(OpenEvent event) {
+                    IStructuredSelection selection = 
+                        (IStructuredSelection)event.getSelection();
+                    if(!selection.isEmpty()) {
+                        IItem item = (IItem)selection.getFirstElement();
+                        try {
+                            IBrowser browser = 
+                                RSSUI.getDefault().createBrowser();
+                            browser.displayURL(item.getLink());
+                        }
+                        catch(CoreException ex) {
+                            ErrorDialog.openError(
+                                getViewSite().getShell(),
+                                "Browser Error",
+                                "Could not open browser.",
+                                ex.getStatus());
+                        }
+                        catch(Exception ex) {
+                            MessageDialog.openError(
+                                getViewSite().getShell(),
+                                "Browser Error",
+                                "Could not open link " + item.getLink() 
+                                    + ". Exception: " + ex);
+                        }
+                    }                    
+                }
+            });
         
         getSite().getPage().addSelectionListener(this);
         selectionChanged(this, getSite().getPage().getSelection());
@@ -82,25 +139,37 @@ public class ItemTableView extends ViewPart implements ISelectionListener {
      * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
      */
     public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-        if(selection instanceof IStructuredSelection) {
+        IChannel channel;
+        if(selection == null || selection.isEmpty())
+            channel = null;
+        else {
             Object obj = ((IStructuredSelection)selection).getFirstElement();
-            if(obj instanceof IFile) {
-                IFile file = (IFile)obj;
-                if("rss".equals(file.getFileExtension())) {
-                    IChannel channel;
-                    try {
-                        channel = RSSCore.getPlugin().getChannel(file);
-                    }
-                    catch(CoreException ex) {
-                        channel = null;
-                    }
+            if(obj instanceof IChannel)
+                channel = (IChannel)obj;
+            else if(obj instanceof IItem)
+                channel = ((IItem)obj).getChannel();
+            else if(obj instanceof IAdaptable)
+                channel = (IChannel)((IAdaptable)obj).getAdapter(IChannel.class);
+            else
+                channel = null;
+        }
+        
+        if(channel == null) {
+            viewer.setInput(null);
+            setTitle("No channel selected");
+            setTitleImage(null);
+            setTitleToolTip("Please select a channel.");
+        }
+        else {
+            viewer.setInput(channel);
+            setTitle(channel.getTitle());
+            ImageDescriptor imageDescriptor = 
+                RSSUI.getDefault().getImageDescriptor16(channel);
+            setTitleImage(imageDescriptor == null ? 
+                null : 
+                imageDescriptor.createImage());
                     
-                    if(channel != null) {
-                        viewer.setInput(channel);
-                        setTitle(channel.getTitle());
-                    }
-                }
-            }
+            setTitleToolTip(channel.getLink());
         }
     }
 
@@ -109,6 +178,11 @@ public class ItemTableView extends ViewPart implements ISelectionListener {
      */
     public void dispose() {
         getSite().getPage().removeSelectionListener(this);
+        for(Iterator i = imageMap.values().iterator(); i.hasNext();) {
+            Image image = (Image)i.next();
+            image.dispose();
+        }
+        
         super.dispose();
     }
 }

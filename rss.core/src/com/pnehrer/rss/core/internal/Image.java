@@ -4,10 +4,17 @@
  */
 package com.pnehrer.rss.core.internal;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.w3c.dom.Element;
 
 import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IImage;
+import com.pnehrer.rss.core.RSSCore;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
@@ -20,7 +27,7 @@ public class Image implements IImage {
     
     private final Channel channel;
     private String title;
-    private String url;
+    private URL url;
     private String link;
 
     Image(Channel channel) {
@@ -48,11 +55,11 @@ public class Image implements IImage {
     /* (non-Javadoc)
      * @see com.pnehrer.rss.core.IImage#getURL()
      */
-    public String getURL() {
+    public URL getURL() {
         return url;
     }
     
-    private void setURL(String url) {
+    private void setURL(URL url) {
         this.url = url;
     }
 
@@ -67,15 +74,28 @@ public class Image implements IImage {
         this.link = link;
     }
     
-    void update(Element image) {
+    void update(Element image) throws CoreException {
         setTitle(image.getAttribute(TITLE));
-        setURL(image.getAttribute(URL));
+        String str = image.getAttribute(URL);
+        try {
+            setURL(new URL(str));
+        }
+        catch(MalformedURLException ex) {
+            throw new CoreException(
+                new Status(
+                    IStatus.ERROR,
+                    RSSCore.PLUGIN_ID,
+                    0,
+                    "invalid image url: " + str,
+                    ex));
+        }
+
         setLink(image.getAttribute(LINK));
     }
     
     void save(Element image) {
         image.setAttribute(TITLE, title);
-        image.setAttribute(URL, url);
+        image.setAttribute(URL, url.toExternalForm());
         image.setAttribute(LINK, link);
     }
     
@@ -91,6 +111,6 @@ public class Image implements IImage {
     }
     
     public String toString() {
-        return url;
+        return url.toExternalForm();
     }
 }

@@ -1,0 +1,29 @@
+All
+- error messages, codes
+- license, javadoc
+- smart update scheduling (period, fixed time points, value-based)
+- make file, url optional; channel should be updateable if url is provided,
+restoring/saving supported only if file provided
+- remove dependency on "rss" file extension
+- check schedule upon startup (i.e., check if update needed when channel instantiated)
+
+UI
+- browser selection (preferences)
+- re-use browser window?
+- mark items read/unread
+- label decorators
+- "update" menu on all views
+- perspective, perspective extensions
+- icons, help
+- productization (feature, update site, installation)
+
+Item Table View
+- better name/label
+- column selection, order
+- change to multi-page view (like content outline viewer)
+
+Channel Explorer View
+- context menu
+
+Editor
+- 

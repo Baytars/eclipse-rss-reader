@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterFactory;
 
 import com.pnehrer.rss.core.IChannel;
+import com.pnehrer.rss.core.IItem;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
@@ -21,10 +22,14 @@ public class ResourceAdapterFactory implements IAdapterFactory {
      * @see org.eclipse.core.runtime.IAdapterFactory#getAdapter(java.lang.Object, java.lang.Class)
      */
     public Object getAdapter(Object adaptableObject, Class adapterType) {
-        if(adapterType.isAssignableFrom(IFile.class) 
-            && adaptableObject instanceof IChannel)
-
-            return ((IChannel)adaptableObject).getFile();
+        if(adapterType.isAssignableFrom(IFile.class)) { 
+            if(adaptableObject instanceof IChannel)
+                return ((IChannel)adaptableObject).getFile();
+            else if(adaptableObject instanceof IItem)
+                return ((IItem)adaptableObject).getChannel().getFile();
+            else
+                return null;
+        }
         else if(IChannel.class.equals(adapterType)
             && adaptableObject instanceof IFile) {
 

@@ -4,15 +4,21 @@
  */
 package com.pnehrer.rss.ui.internal;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
 import com.pnehrer.rss.core.IChannel;
+import com.pnehrer.rss.ui.RSSUI;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
 public class WorkbenchChannelAdapter implements IWorkbenchAdapter {
+
+    private final Map imageMap = new HashMap();
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.model.IWorkbenchAdapter#getChildren(java.lang.Object)
@@ -25,7 +31,7 @@ public class WorkbenchChannelAdapter implements IWorkbenchAdapter {
      * @see org.eclipse.ui.model.IWorkbenchAdapter#getImageDescriptor(java.lang.Object)
      */
     public ImageDescriptor getImageDescriptor(Object object) {
-        return null;
+        return RSSUI.getDefault().getImageDescriptor16x16((IChannel)object);
     }
 
     /* (non-Javadoc)
@@ -40,5 +46,5 @@ public class WorkbenchChannelAdapter implements IWorkbenchAdapter {
      */
     public Object getParent(Object o) {
         return ((IChannel)o).getFile().getParent();
-    }
+    }    
 }

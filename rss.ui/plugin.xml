@@ -13,6 +13,8 @@
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="com.pnehrer.rss.core"/>
+      <import plugin="org.eclipse.help.ui"/>
+      <import plugin="org.eclipse.help"/>
    </requires>
 
 
@@ -23,13 +25,13 @@
             id="rss.ui.category1">
       </category>
       <view
-            name="Item Table"
+            name="Channel"
             category="rss.ui.category1"
             class="com.pnehrer.rss.ui.views.ItemTableView"
             id="com.pnehrer.rss.ui.itemTable">
       </view>
       <view
-            name="Navigator"
+            name="Channel Explorer"
             category="rss.ui.category1"
             class="com.pnehrer.rss.ui.views.ChannelNavigator"
             id="com.pnehrer.rss.ui.navigator">
@@ -42,7 +44,7 @@
             id="rss.ui.category1">
       </category>
       <wizard
-            name="New RSS Feed"
+            name="New Channel"
             category="rss.ui.category1"
             class="com.pnehrer.rss.ui.wizards.NewChannelWizard"
             id="rss.ui.wizard1">
@@ -62,7 +64,7 @@
             </groupMarker>
          </menu>
          <action
-               label="&amp;Update"
+               label="&amp;Update from Source"
                class="com.pnehrer.rss.ui.actions.UpdateAction"
                menubarPath="rss.ui.menu1/additions"
                enablesFor="+"

@@ -70,6 +70,7 @@ public class RSSCore extends Plugin {
         IAdapterManager mgr = Platform.getAdapterManager();
         mgr.registerAdapters(resourceAdapterFactory, IFile.class);
         mgr.registerAdapters(resourceAdapterFactory, IChannel.class);
+        mgr.registerAdapters(resourceAdapterFactory, IItem.class);
     }
     
     /* (non-Javadoc)

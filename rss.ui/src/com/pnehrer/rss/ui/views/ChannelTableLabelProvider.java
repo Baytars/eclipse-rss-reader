@@ -16,7 +16,7 @@ import com.pnehrer.rss.core.IItem;
 public class ChannelTableLabelProvider
     extends LabelProvider
     implements ITableLabelProvider {
-
+        
     /* (non-Javadoc)
      * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
      */
