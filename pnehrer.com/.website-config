@@ -11,7 +11,7 @@
 			<page src="/WebContent/home/resume.html" id="4" template="" icon="/presence/theme/icons/resume.png">
 				<title>Resume</title>
 			</page>
-			<page src="/WebContent/home/blog.html" id="22" template="/WebContent/theme/home.htpl" icon="/presence/theme/icons/blog.png">
+			<page src="/WebContent/home/blog.shtml" id="22" template="/WebContent/theme/home.htpl" icon="/presence/theme/icons/blog.png">
 				<title>Blog</title>
 			</page>
 			<page src="/WebContent/projects/index.html" id="2" template="/WebContent/theme/home.htpl" icon="/presence/theme/icons/projects.png">
