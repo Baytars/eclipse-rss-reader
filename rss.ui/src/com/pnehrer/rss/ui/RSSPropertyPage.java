@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.SWT;
@@ -33,24 +34,33 @@ public class RSSPropertyPage
     extends PropertyPage 
     implements IWorkbenchPropertyPage {
 
+    private static final short CHANNEL_OPTIONS_COMPLETE = 1;
+    private static final short UPDATE_INTERVAL_COMPLETE = 2;
+    private static final short PAGE_COMPLETE =
+        CHANNEL_OPTIONS_COMPLETE
+        + UPDATE_INTERVAL_COMPLETE;
+
     private ChannelPropertyGroup channelProperties;
     private final UpdateIntervalGroup updateIntervalGroup;
+    private short pageComplete;
 
     public RSSPropertyPage() {
         updateIntervalGroup = new UpdateIntervalGroup(new IPageContainer() {
 
-                public void setMessage(String message) {
-                    RSSPropertyPage.this.setMessage(message);
-                }
-    
-                public void setErrorMessage(String message) {
-                    RSSPropertyPage.this.setErrorMessage(message);
-                }
-    
-                public void setComplete(boolean complete) {
-                    setValid(complete);
-                }
-            });
+            public void setMessage(String message) {
+                RSSPropertyPage.this.setMessage(message);
+            }
+
+            public void setErrorMessage(String message) {
+                RSSPropertyPage.this.setErrorMessage(message);
+            }
+
+            public void setComplete(boolean complete) {
+                RSSPropertyPage.this.setComplete(
+                    UPDATE_INTERVAL_COMPLETE, 
+                    complete);
+            }
+        });
     }
 
 	/**
@@ -76,14 +86,16 @@ public class RSSPropertyPage
                 }
     
                 public void setComplete(boolean complete) {
-                    setValid(complete);
+                    RSSPropertyPage.this.setComplete(
+                        CHANNEL_OPTIONS_COMPLETE,
+                        complete);
                 } 
             },
             channel);
 
         channelProperties.createContents(topLevel);
-        updateIntervalGroup.setUpdateInterval(channel.getUpdateInterval());
         updateIntervalGroup.createContents(topLevel);
+        updateIntervalGroup.setUpdateInterval(channel.getUpdateInterval());
         
         setErrorMessage(null);
         setMessage(null);
@@ -96,10 +108,14 @@ public class RSSPropertyPage
      */
     protected void performDefaults() {
         super.performDefaults();
-        updateIntervalGroup.setUpdateInterval(
-            new Integer(
-                RSSCore.getPlugin().getPluginPreferences().getInt(
-                    RSSCore.PREF_UPDATE_INTERVAL)));
+        Preferences prefs = RSSCore.getPlugin().getPluginPreferences(); 
+        Integer updateInterval;
+        if(prefs.getBoolean(RSSCore.PREF_UPDATE_PERIODICALLY))
+            updateInterval = new Integer(prefs.getInt(RSSCore.PREF_UPDATE_INTERVAL));
+        else
+            updateInterval = null;
+            
+        updateIntervalGroup.setUpdateInterval(updateInterval);
     }
 
     /* (non-Javadoc)
@@ -112,18 +128,18 @@ public class RSSPropertyPage
             ProgressMonitorDialog dlg = new ProgressMonitorDialog(getShell());
             try {
                 dlg.run(false, true, new WorkspaceModifyOperation() {
-                        protected void execute(IProgressMonitor monitor) 
-                            throws CoreException, 
-                                InvocationTargetException, 
-                                InterruptedException {
-                
-                            channel.setURL(channelProperties.getURL());
-                            channel.setUpdateInterval(
-                                updateIntervalGroup.getUpdateInterval());
-                
-                            channel.save(monitor);
-                        }
-                    });
+                    protected void execute(IProgressMonitor monitor) 
+                        throws CoreException, 
+                            InvocationTargetException, 
+                            InterruptedException {
+            
+                        channel.setURL(channelProperties.getURL());
+                        channel.setUpdateInterval(
+                            updateIntervalGroup.getUpdateInterval());
+            
+                        channel.save(monitor);
+                    }
+                });
             }
             catch(InvocationTargetException ex) {
                 MessageDialog.openError(
@@ -144,9 +160,17 @@ public class RSSPropertyPage
     private IChannel getChannel() {
         IRSSElement rssElement = (IRSSElement)
             getElement().getAdapter(IRSSElement.class);
-        if(rssElement == null)
-            return null;    // TODO Throw up!
-        else
-            return rssElement.getChannel();
+        return rssElement.getChannel();
+    }
+    
+    private void setComplete(short bit, boolean complete) {
+        if(complete) {
+            pageComplete |= bit;
+            setValid(pageComplete == PAGE_COMPLETE);
+        }
+        else {
+            pageComplete &= ~bit;
+            setValid(false);  
+        }
     }
 }

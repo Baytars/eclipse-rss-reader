@@ -116,7 +116,12 @@ public class ChannelPropertyGroup {
                 
             translatorList.deselectAll();
             translatorList.setItems(items);
-            setComplete(TRANSLATOR_COMPLETE, false);
+            if(translatorList.getItemCount() > 0)
+                translatorList.select(0);
+
+            setComplete(
+                TRANSLATOR_COMPLETE, 
+                translatorList.getSelectionCount() == 1);
         }
     }
 
@@ -133,25 +138,28 @@ public class ChannelPropertyGroup {
         layoutData.horizontalSpan = columns - 2;
         urlText.setLayoutData(layoutData);
         urlText.addModifyListener(new ModifyListener() {
-                public void modifyText(ModifyEvent e) {
-                    if(urlText.getText().trim().length() == 0) {
-                        url = null;
-                        setComplete(URL_COMPLETE, false);
+            public void modifyText(ModifyEvent e) {
+                if(urlText.getText().trim().length() == 0) {
+                    url = null;
+                    setComplete(URL_COMPLETE, false);
+                    pageContainer.setErrorMessage("Channel URL must be a valid URL.");
+                }
+                else {
+                    try {
+                        url = new URL(urlText.getText().trim());
+                        loadButton.setEnabled(true);
+                        setComplete(URL_COMPLETE, true);
+                        pageContainer.setErrorMessage(null);
                     }
-                    else {
-                        try {
-                            url = new URL(urlText.getText().trim());
-                            loadButton.setEnabled(true);
-                            setComplete(URL_COMPLETE, true);
-                        }
-                        catch(MalformedURLException ex) {
-                            url = null;
-                            loadButton.setEnabled(false);
-                            setComplete(URL_COMPLETE, false);
-                        }
+                    catch(MalformedURLException ex) {
+                        url = null;
+                        loadButton.setEnabled(false);
+                        setComplete(URL_COMPLETE, false);
+                        pageContainer.setErrorMessage("Channel URL must be a valid URL.");
                     }
                 }
-            });
+            }
+        });
             
         loadButton = new Button(topLevel, SWT.PUSH | SWT.BORDER);
         loadButton.setLayoutData(
@@ -159,10 +167,11 @@ public class ChannelPropertyGroup {
                 GridData.HORIZONTAL_ALIGN_END | GridData.VERTICAL_ALIGN_FILL));
         loadButton.setText("&Load");
         loadButton.addSelectionListener(new SelectionAdapter() {
-                public void widgetSelected(SelectionEvent e) {
-                    loadDocument();
-                }
-            });
+            public void widgetSelected(SelectionEvent e) {
+                loadDocument();
+                translatorList.setFocus();
+            }
+        });
 
         label = new Label(topLevel, SWT.SINGLE);
         layoutData = new GridData();
@@ -175,16 +184,24 @@ public class ChannelPropertyGroup {
         layoutData.horizontalSpan = columns;
         translatorList.setLayoutData(layoutData);
         translatorList.addSelectionListener(new SelectionAdapter() {
-                public void widgetSelected(SelectionEvent e) {
-                    setComplete(
-                        TRANSLATOR_COMPLETE, 
-                        translatorList.getSelectionCount() == 1);
-                }
-            });
+            public void widgetSelected(SelectionEvent e) {
+                boolean selected = translatorList.getSelectionCount() == 1; 
+                setComplete(TRANSLATOR_COMPLETE, selected);
+                pageContainer.setErrorMessage(
+                    selected ? 
+                        null : 
+                        "Select channel translator.");
+            }
+        });
 
         setURL(url);
-        setTranslators(translators);
-        selectTranslator(defaultTranslatorId);
+        setTranslators(
+            translators == null ? 
+                new IRegisteredTranslator[0] : 
+                translators);
+
+        if(defaultTranslatorId != null) 
+            selectTranslator(defaultTranslatorId);
     }
     
     private void setComplete(short element, boolean complete) {
@@ -230,6 +247,5 @@ public class ChannelPropertyGroup {
             
         translatorList.deselectAll();
         translatorList.setItems(items);
-        setComplete(TRANSLATOR_COMPLETE, false);
     }
 }

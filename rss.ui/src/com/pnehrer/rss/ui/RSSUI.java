@@ -12,15 +12,17 @@ import org.eclipse.core.runtime.IAdapterManager;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.help.browser.IBrowser;
 import org.eclipse.help.browser.IBrowserFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import com.pnehrer.rss.core.IChannel;
-import com.pnehrer.rss.core.IItem;
+import com.pnehrer.rss.core.IRSSElement;
 import com.pnehrer.rss.ui.internal.ImageManager;
 import com.pnehrer.rss.ui.internal.WorkbenchAdapterFactory;
 
@@ -31,8 +33,18 @@ import com.pnehrer.rss.ui.internal.WorkbenchAdapterFactory;
 public class RSSUI extends AbstractUIPlugin {
     
     public static final String PLUGIN_ID = "com.pnehrer.rss.ui";
+
+    public static final String XML_ICON = "xml_16.png";
+    public static final String BROWSE_ICON = "browse_16.png";
+    public static final String DETAIL_ICON = "detail_16.png";
+    public static final String NAVIGATOR_ICON = "navigator_16.png";
+    public static final String NEW_ICON = "new_16.png";
+    public static final String UPDATE_ICON = "update_16.png";
+    public static final String ITEM_ICON = "item_16.gif";
+    
 	//The shared instance.
 	private static RSSUI plugin;
+
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
     
@@ -88,8 +100,7 @@ public class RSSUI extends AbstractUIPlugin {
         imageManager = new ImageManager();
         workbenchAdapterFactory = new WorkbenchAdapterFactory();
         IAdapterManager mgr = Platform.getAdapterManager();        
-        mgr.registerAdapters(workbenchAdapterFactory, IChannel.class);
-        mgr.registerAdapters(workbenchAdapterFactory, IItem.class);
+        mgr.registerAdapters(workbenchAdapterFactory, IRSSElement.class);
     }
 
     /* (non-Javadoc)
@@ -143,5 +154,19 @@ public class RSSUI extends AbstractUIPlugin {
                     null));
         
         return browserFactory.createBrowser();
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.plugin.AbstractUIPlugin#initializeImageRegistry(org.eclipse.jface.resource.ImageRegistry)
+     */
+    protected void initializeImageRegistry(ImageRegistry reg) {
+        IPluginDescriptor pd = getDescriptor();
+        reg.put(XML_ICON, ImageDescriptor.createFromURL(pd.find(new Path(XML_ICON))));
+        reg.put(BROWSE_ICON, ImageDescriptor.createFromURL(pd.find(new Path(BROWSE_ICON))));
+        reg.put(DETAIL_ICON, ImageDescriptor.createFromURL(pd.find(new Path(DETAIL_ICON))));
+        reg.put(NAVIGATOR_ICON, ImageDescriptor.createFromURL(pd.find(new Path(NAVIGATOR_ICON))));
+        reg.put(NEW_ICON, ImageDescriptor.createFromURL(pd.find(new Path(NEW_ICON))));
+        reg.put(UPDATE_ICON, ImageDescriptor.createFromURL(pd.find(new Path(UPDATE_ICON))));
+        reg.put(ITEM_ICON, ImageDescriptor.createFromURL(pd.find(new Path(ITEM_ICON))));
     }
 }

@@ -7,11 +7,13 @@ package com.pnehrer.rss.ui.views;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.actions.ActionGroup;
 
+import com.pnehrer.rss.ui.RSSUI;
 import com.pnehrer.rss.ui.actions.OpenLinkAction;
 import com.pnehrer.rss.ui.actions.UpdateAction;
 
@@ -28,11 +30,21 @@ public class ChannelActionGroup extends ActionGroup {
     
     public ChannelActionGroup(ChannelDetailView channelDetailView) {
         this.channelDetailView = channelDetailView;
+        ImageRegistry reg = RSSUI.getDefault().getImageRegistry();
+
         openChannelLinkAction = new OpenLinkAction(
             channelDetailView.getSite().getShell());
+        openChannelLinkAction.setToolTipText("Open channel link in browser.");
+        openChannelLinkAction.setImageDescriptor(reg.getDescriptor(RSSUI.BROWSE_ICON));
+
         openItemLinkAction = new OpenLinkAction(
             channelDetailView.getSite().getShell());
+        openItemLinkAction.setToolTipText("Open item link in browser.");
+        openItemLinkAction.setImageDescriptor(reg.getDescriptor(RSSUI.BROWSE_ICON));
+
         updateAction = new UpdateAction();
+        updateAction.setToolTipText("Update channel from its source.");
+        updateAction.setImageDescriptor(reg.getDescriptor(RSSUI.UPDATE_ICON));
     }
 
     /* (non-Javadoc)

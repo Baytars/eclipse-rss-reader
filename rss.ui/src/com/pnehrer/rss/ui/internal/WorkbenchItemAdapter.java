@@ -8,6 +8,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
 import com.pnehrer.rss.core.IItem;
+import com.pnehrer.rss.ui.RSSUI;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
@@ -27,7 +28,7 @@ public class WorkbenchItemAdapter implements IWorkbenchAdapter {
      * @see org.eclipse.ui.model.IWorkbenchAdapter#getImageDescriptor(java.lang.Object)
      */
     public ImageDescriptor getImageDescriptor(Object object) {
-        return null;
+        return RSSUI.getDefault().getImageRegistry().getDescriptor(RSSUI.ITEM_ICON);
     }
 
     /* (non-Javadoc)

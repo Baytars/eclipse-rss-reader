@@ -4,6 +4,10 @@
  */
 package com.pnehrer.rss.ui.views;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
@@ -16,6 +20,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -25,6 +30,8 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.ISetSelectionTarget;
+import org.eclipse.ui.part.IShowInSource;
+import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
 
 import com.pnehrer.rss.core.IRSSElement;
@@ -32,7 +39,9 @@ import com.pnehrer.rss.core.IRSSElement;
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
-public class ChannelNavigator extends ViewPart implements ISetSelectionTarget {
+public class ChannelNavigator 
+    extends ViewPart 
+    implements ISetSelectionTarget, IShowInSource {
 
     private TreeViewer viewer;
     private ChannelNavigatorActionGroup actionGroup;
@@ -160,6 +169,25 @@ public class ChannelNavigator extends ViewPart implements ISetSelectionTarget {
      * @see org.eclipse.ui.part.ISetSelectionTarget#selectReveal(org.eclipse.jface.viewers.ISelection)
      */
     public void selectReveal(ISelection selection) {
-        viewer.setSelection(selection, true);
+        if(selection instanceof IStructuredSelection) {
+            List list = new ArrayList();
+            for(Iterator i = ((IStructuredSelection)selection).iterator();
+                i.hasNext();) {
+    
+                IRSSElement rssElement = (IRSSElement)
+                    ((IAdaptable)i.next()).getAdapter(IRSSElement.class);
+                if(rssElement != null)
+                    list.add(rssElement);
+            }
+
+            viewer.setSelection(new StructuredSelection(list), true);
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.part.IShowInSource#getShowInContext()
+     */
+    public ShowInContext getShowInContext() {
+        return new ShowInContext(viewer.getInput(), viewer.getSelection());
     }
 }

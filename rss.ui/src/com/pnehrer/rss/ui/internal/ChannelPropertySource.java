@@ -7,8 +7,10 @@ package com.pnehrer.rss.ui.internal;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 import com.pnehrer.rss.core.IChannel;
+import com.pnehrer.rss.core.RSSCore;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
@@ -27,7 +29,7 @@ public class ChannelPropertySource implements IPropertySource {
     private static final IPropertyDescriptor[] PROPERTY_DESCRIPTORS = {
         new PropertyDescriptor(new Integer(FILE), "file"),
         new PropertyDescriptor(new Integer(URL), "URL"),
-        new PropertyDescriptor(new Integer(UPDATE_INTERVAL), "update interval"),
+        new TextPropertyDescriptor(new Integer(UPDATE_INTERVAL), "update interval"),
         new PropertyDescriptor(new Integer(LAST_UPDATED), "last updated"),
         new PropertyDescriptor(new Integer(TITLE), "title"),
         new PropertyDescriptor(new Integer(LINK), "link"),
@@ -92,18 +94,37 @@ public class ChannelPropertySource implements IPropertySource {
      * @see org.eclipse.ui.views.properties.IPropertySource#isPropertySet(java.lang.Object)
      */
     public boolean isPropertySet(Object id) {
-        return false;
+        if(id.equals(new Integer(UPDATE_INTERVAL)))
+            return channel.getUpdateInterval() != null;
+        else 
+            return false;
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.views.properties.IPropertySource#resetPropertyValue(java.lang.Object)
      */
     public void resetPropertyValue(Object id) {
+        if(id.equals(new Integer(UPDATE_INTERVAL))) {
+            channel.setUpdateInterval(new Integer(
+                RSSCore.getPlugin().getPluginPreferences().getInt(
+                    RSSCore.PREF_UPDATE_INTERVAL)));
+        }
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.views.properties.IPropertySource#setPropertyValue(java.lang.Object, java.lang.Object)
      */
     public void setPropertyValue(Object id, Object value) {
+        if(id.equals(new Integer(UPDATE_INTERVAL))) {
+            try {
+                channel.setUpdateInterval(
+                    value == null ? 
+                        null : 
+                        new Integer(value.toString()));
+            }
+            catch(NumberFormatException ex) {
+                // ignore
+            }
+        }
     }
 }

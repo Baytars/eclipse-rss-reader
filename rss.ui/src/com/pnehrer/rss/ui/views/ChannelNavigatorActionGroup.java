@@ -23,6 +23,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
@@ -42,8 +43,8 @@ import org.eclipse.ui.dialogs.PropertyDialogAction;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.views.navigator.OpenActionGroup;
 import org.eclipse.ui.views.navigator.ResourceNavigatorMessages;
-import org.eclipse.ui.views.navigator.ResourceSelectionUtil;
 
+import com.pnehrer.rss.ui.RSSUI;
 import com.pnehrer.rss.ui.actions.OpenLinkAction;
 import com.pnehrer.rss.ui.actions.UpdateAction;
 
@@ -83,6 +84,7 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
                 ChannelNavigatorActionGroup.this.navigator.getViewer().collapseAll();
             }
         };
+        
         collapseAllAction.setToolTipText(ResourceNavigatorMessages.getString("CollapseAllAction.toolTip")); //$NON-NLS-1$
         collapseAllAction.setImageDescriptor(getImageDescriptor("elcl16/collapseall.gif")); //$NON-NLS-1$
         collapseAllAction.setHoverImageDescriptor(getImageDescriptor("clcl16/collapseall.gif")); //$NON-NLS-1$
@@ -99,38 +101,75 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
         refreshAction.setImageDescriptor(getImageDescriptor("elcl16/refresh_nav.gif"));//$NON-NLS-1$
         refreshAction.setHoverImageDescriptor(getImageDescriptor("clcl16/refresh_nav.gif"));//$NON-NLS-1$       
         
+        ImageRegistry reg = RSSUI.getDefault().getImageRegistry();
+        
         openLinkAction = new OpenLinkAction(navigator.getSite().getShell());
-        openLinkAction.setToolTipText("Opens the link associated with the selected element.");
+        openLinkAction.setToolTipText("Open selected element's link in browser.");
+        openLinkAction.setImageDescriptor(reg.getDescriptor(RSSUI.BROWSE_ICON));
         
         updateAction = new UpdateAction();
-        updateAction.setToolTipText("Updates selected channel(s) from the source.");
+        updateAction.setToolTipText("Update selected channel(s) from their sources.");
+        updateAction.setImageDescriptor(reg.getDescriptor(RSSUI.UPDATE_ICON));
     }
 
     public void fillContextMenu(IMenuManager menu) {
         IStructuredSelection selection =
             (IStructuredSelection) getContext().getSelection();
-        boolean onlyFilesSelected =
-            !selection.isEmpty()
-                && ResourceSelectionUtil.allResourcesAreOfType(selection, IResource.FILE);
         
         MenuManager newMenu =
             new MenuManager(ResourceNavigatorMessages.getString("ResourceNavigator.new"));
         menu.add(newMenu);
         new NewWizardMenu(newMenu, navigator.getSite().getWorkbenchWindow(), false);
         
-        boolean anyResourceSelected =
-            !selection.isEmpty()
-                && ResourceSelectionUtil.allResourcesAreOfType(
-                    selection,
-                    IResource.PROJECT | IResource.FOLDER | IResource.FILE);
-
         menu.add(openLinkAction);
         openLinkAction.selectionChanged(selection);
+        
+        boolean onlyFilesSelected;
+        if(selection.isEmpty())
+            onlyFilesSelected = false;
+        else {
+            onlyFilesSelected = true;
+            for(Iterator i = selection.iterator(); i.hasNext();) {
+                Object item = i.next();
+                if(!(item instanceof IAdaptable)) {
+                    onlyFilesSelected = false;
+                    break;
+                }
+                    
+                IFile file = (IFile)((IAdaptable)item).getAdapter(IFile.class);                    
+                if(file == null) {
+                    onlyFilesSelected = false;
+                    break;
+                }
+            }
+        }
 
         if(onlyFilesSelected) {
             openFileAction.selectionChanged(selection);
             menu.add(openFileAction);
             fillOpenWithMenu(menu, selection);
+        }
+
+        boolean anyResourceSelected;
+        if(selection.isEmpty())
+            anyResourceSelected = false;
+        else {
+            anyResourceSelected = true;
+            for(Iterator i = selection.iterator(); i.hasNext();) {
+                Object item = i.next();
+                if(!(item instanceof IAdaptable)) {
+                    anyResourceSelected = false;
+                    break;
+                }
+
+                IResource resource = (IResource)
+                    ((IAdaptable)item).getAdapter(IResource.class);
+                    
+                if(resource == null) {
+                    anyResourceSelected = false;
+                    break;
+                }
+            }
         }
 
         if(anyResourceSelected) {
@@ -143,6 +182,7 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
             addBookmarkAction.selectionChanged(selection);
             menu.add(addBookmarkAction);
         }
+
         menu.add(new Separator());
         
         boolean isProjectSelection = true; 

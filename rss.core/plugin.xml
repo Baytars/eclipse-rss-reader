@@ -19,7 +19,7 @@
    <extension
          point="com.pnehrer.rss.core.translator">
       <translator
-            description="Default translator."
+            description="Default translator for RSS versions 0.91, 0.92, 1.0, and 2.0."
             class="com.pnehrer.rss.core.internal.DefaultTranslator"
             id="default">
       </translator>

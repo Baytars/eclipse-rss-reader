@@ -87,7 +87,9 @@ public class ChannelNavigatorContentProvider
                 public void run() {
                     Control ctrl = viewer.getControl();
                     if(ctrl != null && !ctrl.isDisposed()) {
-                        ((StructuredViewer)viewer).refresh(channel, true);
+                        StructuredViewer v = (StructuredViewer)viewer;
+                        // TODO For now, refresh parent in case channel was created.
+                        v.refresh(channel.getFile().getParent(), true);
                     }
                 }
             });

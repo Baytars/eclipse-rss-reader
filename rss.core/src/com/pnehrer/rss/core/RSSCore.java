@@ -27,6 +27,7 @@ import com.pnehrer.rss.core.internal.TranslatorManager;
 public class RSSCore extends Plugin {
 
     public static final String PLUGIN_ID = "com.pnehrer.rss.core";
+    public static final String PREF_UPDATE_PERIODICALLY = "updatePeriodically";
     public static final String PREF_UPDATE_INTERVAL = "updateInterval";
 
     private static RSSCore instance;
@@ -56,6 +57,7 @@ public class RSSCore extends Plugin {
         if(!prefInit) {
             prefInit = true;
             Preferences prefs = getPluginPreferences();
+            prefs.setDefault(PREF_UPDATE_PERIODICALLY, true);
             prefs.setDefault(PREF_UPDATE_INTERVAL, 30);
         }
     }

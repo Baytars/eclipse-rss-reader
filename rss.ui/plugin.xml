@@ -26,12 +26,14 @@
       </category>
       <view
             name="Channel Detail"
+            icon="detail_16.png"
             category="rss.ui.category1"
             class="com.pnehrer.rss.ui.views.ChannelDetailView"
             id="com.pnehrer.rss.ui.views.ChannelDetail">
       </view>
       <view
             name="Channel Navigator"
+            icon="navigator_16.png"
             category="rss.ui.category1"
             class="com.pnehrer.rss.ui.views.ChannelNavigator"
             id="com.pnehrer.rss.ui.views.ChannelNavigator">
@@ -45,19 +47,23 @@
       </category>
       <wizard
             name="New Channel"
+            icon="new_16.png"
             category="rss.ui.category1"
             class="com.pnehrer.rss.ui.wizards.NewChannelWizard"
             id="com.pnehrer.rss.ui.wizards.NewChannelWizard">
          <selection
                class="org.eclipse.core.resources.IContainer">
          </selection>
+         <description>
+            Create new channel from RSS feed.
+         </description>
       </wizard>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
-            objectClass="org.eclipse.core.resources.IFile"
-            nameFilter="*.rss"
+            objectClass="com.pnehrer.rss.core.IRSSElement"
+            adaptable="true"
             id="rss.ui.objectContribution1">
          <menu
                label="RSS"
@@ -68,10 +74,21 @@
          </menu>
          <action
                label="&amp;Update from Source"
+               icon="update_16.png"
+               tooltip="Update channel from its source."
                class="com.pnehrer.rss.ui.actions.UpdateActionDelegate"
                menubarPath="rss.ui.menu1/additions"
                enablesFor="+"
                id="rss.ui.action1">
+         </action>
+         <action
+               label="Open &amp;Link"
+               icon="browse_16.png"
+               tooltip="Open channel link in browser."
+               class="com.pnehrer.rss.ui.actions.OpenLinkActionDelegate"
+               menubarPath="rss.ui.menu1/additions"
+               enablesFor="1"
+               id="rss.ui.action2">
          </action>
       </objectContribution>
    </extension>
@@ -81,6 +98,7 @@
             objectClass="com.pnehrer.rss.core.IRSSElement"
             adaptable="true"
             name="RSS"
+            icon="xml_16.png"
             class="com.pnehrer.rss.ui.RSSPropertyPage"
             id="rss.ui.page1">
       </page>
@@ -100,6 +118,7 @@
          <view
                ratio="0.5"
                relative="org.eclipse.ui.views.ResourceNavigator"
+               visible="true"
                relationship="stack"
                id="com.pnehrer.rss.ui.views.ChannelNavigator">
          </view>
@@ -108,6 +127,9 @@
          </newWizardShortcut>
          <showInPart
                id="com.pnehrer.rss.ui.views.ChannelDetail">
+         </showInPart>
+         <showInPart
+               id="com.pnehrer.rss.ui.views.ChannelNavigator">
          </showInPart>
       </perspectiveExtension>
    </extension>

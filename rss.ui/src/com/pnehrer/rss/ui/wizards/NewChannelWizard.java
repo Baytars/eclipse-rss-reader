@@ -13,16 +13,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.ui.IEditorDescriptor;
-import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
+import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 import org.w3c.dom.Document;
 
-import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IRegisteredTranslator;
 import com.pnehrer.rss.core.RSSCore;
 
@@ -38,7 +36,7 @@ public class NewChannelWizard extends Wizard implements INewWizard {
     private WizardNewFileCreationPage newFileCreationPage;
 
     public NewChannelWizard() {
-        setWindowTitle("New RSS Feed");
+        setWindowTitle("New RSS Channel");
     }
     
     /* (non-Javadoc)
@@ -49,9 +47,13 @@ public class NewChannelWizard extends Wizard implements INewWizard {
             "options",
             "Channel Options",
             null);
+        channelOptionsPage.setDescription("Enter channel options.");
         addPage(channelOptionsPage);
         
         newFileCreationPage = new WizardNewFileCreationPage("file", selection);
+        newFileCreationPage.setDescription("Specify channel file (*.rss).");
+        newFileCreationPage.setTitle("Channel File");
+        newFileCreationPage.setFileName("channel1.rss");
         addPage(newFileCreationPage);
     }
 
@@ -76,32 +78,36 @@ public class NewChannelWizard extends Wizard implements INewWizard {
         setNeedsProgressMonitor(true);
         try {
             getContainer().run(false, true, new WorkspaceModifyOperation() {
-                    protected void execute(IProgressMonitor monitor) 
-                        throws CoreException, 
-                            InvocationTargetException, 
-                            InterruptedException {
-        
-                        IChannel channel = RSSCore.getPlugin().createChannel(
-                            file, 
-                            translator, 
-                            document,
-                            url,
-                            updateInterval,
-                            monitor);
-                            
-                        IEditorRegistry registry = workbench.getEditorRegistry();
-                        IEditorDescriptor editor = registry.getDefaultEditor(file);
-                        if(editor == null) editor = registry.getDefaultEditor();
+                protected void execute(IProgressMonitor monitor) 
+                    throws CoreException, 
+                        InvocationTargetException, 
+                        InterruptedException {
+    
+                    RSSCore.getPlugin().createChannel(
+                        file, 
+                        translator, 
+                        document,
+                        url,
+                        updateInterval,
+                        monitor);
 
-                        IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
-                        if(windows != null && windows.length > 0) {
-                            windows[0].getActivePage().openEditor(
-                                file, 
-                                editor.getId(), 
-                                true);
-                        }
-                    }
-                });
+                    IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
+                    if(windows != null && windows.length > 0)
+                        BasicNewResourceWizard.selectAndReveal(file, windows[0]);
+                        
+//                    IEditorRegistry registry = workbench.getEditorRegistry();
+//                    IEditorDescriptor editor = registry.getDefaultEditor(file);
+//                    if(editor == null) editor = registry.getDefaultEditor();
+//
+//                    IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
+//                    if(windows != null && windows.length > 0) {
+//                        windows[0].getActivePage().openEditor(
+//                            file, 
+//                            editor.getId(), 
+//                            true);
+//                    }
+                }
+            });
                 
             return true;
         }
@@ -111,10 +117,9 @@ public class NewChannelWizard extends Wizard implements INewWizard {
         catch(InvocationTargetException ex) {
             MessageDialog.openError(
                 getShell(), 
-                "RSS Feed Creation Error",
-                "Could not create RSS feed. Exception: " + ex);
+                "RSS Channel Creation Error",
+                "Could not create RSS channel. Exception: " + ex);
             return false;
         }
 	}
-    
 }

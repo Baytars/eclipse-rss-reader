@@ -28,6 +28,7 @@ public class UpdateIntervalGroup {
     private Button updateIntervalButton;
     private Label updateIntervalLabel;
     private Text updateIntervalText;
+    private Label minutesLabel;
 
     public UpdateIntervalGroup(IPageContainer pageContainer) {
         this.pageContainer = pageContainer;
@@ -38,7 +39,7 @@ public class UpdateIntervalGroup {
     }
     
     public void setUpdateInterval(Integer updateInterval) {
-        if(updateInterval != null && updateInterval.intValue() >= 0)
+        if(updateInterval != null && updateInterval.intValue() <= 0)
             updateInterval = null;
             
         this.updateInterval = updateInterval;
@@ -46,14 +47,16 @@ public class UpdateIntervalGroup {
             if(updateInterval == null) {
                 updateIntervalButton.setSelection(false);
                 updateIntervalLabel.setEnabled(false);
-                updateIntervalText.setText("");
+//                updateIntervalText.setText("");
                 updateIntervalText.setEnabled(false);
+                minutesLabel.setEnabled(false);
             }
             else {
                 updateIntervalButton.setSelection(true);
                 updateIntervalLabel.setEnabled(true);
                 updateIntervalText.setText(updateInterval.toString());
                 updateIntervalText.setEnabled(true);
+                minutesLabel.setEnabled(true);
             }
             
             pageContainer.setComplete(true);
@@ -71,62 +74,100 @@ public class UpdateIntervalGroup {
         updateIntervalButton.setLayoutData(layoutData);
         updateIntervalButton.setText("Update periodically");
         updateIntervalButton.addSelectionListener(new SelectionAdapter() {
-                public void widgetSelected(SelectionEvent e) {
-                    if(updateIntervalButton.getSelection()) {
-                        updateIntervalLabel.setEnabled(true);
-                        updateIntervalText.setEnabled(true);
-                        if(updateInterval == null || updateInterval.intValue() <= 0) {
-                            updateIntervalText.setText("");
+            public void widgetSelected(SelectionEvent e) {
+                if(updateIntervalButton.getSelection()) {
+                    updateIntervalLabel.setEnabled(true);
+                    updateIntervalText.setEnabled(true);
+                    minutesLabel.setEnabled(true);
+                    if(updateInterval == null || updateInterval.intValue() <= 0) {
+                        if(updateIntervalText.getText().trim().length() == 0) {
+                            updateInterval = null;
                             pageContainer.setComplete(false);
+                            pageContainer.setErrorMessage("Update interval must be a positive integer.");
                         }
                         else {
-                            updateIntervalText.setText(updateInterval.toString());
-                            pageContainer.setComplete(true);
+                            try {
+                                updateInterval = new Integer(
+                                    updateIntervalText.getText());
+                                if(updateInterval.intValue() >= 0) {
+                                    pageContainer.setComplete(true);
+                                    pageContainer.setErrorMessage(null);
+                                }
+                                else {
+                                    updateInterval = null;
+                                    pageContainer.setComplete(false);
+                                    pageContainer.setErrorMessage("Update interval must be a positive integer.");
+                                }
+                            }
+                            catch(NumberFormatException ex) {
+                                updateInterval = null;
+                                pageContainer.setComplete(false);
+                                pageContainer.setErrorMessage("Update interval must be a positive integer.");
+                            }
                         }
                     }
                     else {
-                        updateIntervalLabel.setEnabled(false);
-                        updateIntervalText.setEnabled(false);
-                        updateInterval = null;
+                        updateIntervalText.setText(updateInterval.toString());
+                        pageContainer.setComplete(true);
+                        pageContainer.setErrorMessage(null);
                     }
+                    
+                    updateIntervalText.setFocus();
                 }
-            });
+                else {
+                    updateIntervalLabel.setEnabled(false);
+                    updateIntervalText.setEnabled(false);
+                    minutesLabel.setEnabled(false);
+                    updateInterval = null;
+                    pageContainer.setComplete(true);
+                    pageContainer.setErrorMessage(null);
+                }
+            }
+        });
         
         updateIntervalLabel = new Label(topLevel, SWT.SINGLE);
         layoutData = new GridData();
         layoutData.horizontalIndent = 20;
-        updateIntervalLabel.setText("Update interval (minutes):");
+        updateIntervalLabel.setLayoutData(layoutData);
+        updateIntervalLabel.setText("Update interval:");
 
         updateIntervalText = new Text(topLevel, SWT.SINGLE | SWT.BORDER);
         layoutData = new GridData(GridData.FILL_HORIZONTAL);
-        layoutData.horizontalSpan = columns - 1;
+        layoutData.horizontalSpan = columns - 2;
         updateIntervalText.setLayoutData(layoutData);
 
         updateIntervalText.addModifyListener(new ModifyListener() {
-                public void modifyText(ModifyEvent e) {
-                    if(updateIntervalText.getText().trim().length() == 0) {
-                        updateInterval = null;
-                        pageContainer.setComplete(false);
-                    }
-                    else {
-                        try {
-                            updateInterval = new Integer(
-                                updateIntervalText.getText());
-                            if(updateInterval.intValue() >= 0) {
-                                pageContainer.setComplete(true);
-                            }
-                            else {
-                                updateInterval = null;
-                                pageContainer.setComplete(false);
-                            }
+            public void modifyText(ModifyEvent e) {
+                if(updateIntervalText.getText().trim().length() == 0) {
+                    updateInterval = null;
+                    pageContainer.setComplete(false);
+                    pageContainer.setErrorMessage("Update interval must be a positive integer.");
+                }
+                else {
+                    try {
+                        updateInterval = new Integer(
+                            updateIntervalText.getText());
+                        if(updateInterval.intValue() >= 0) {
+                            pageContainer.setComplete(true);
+                            pageContainer.setErrorMessage(null);
                         }
-                        catch(NumberFormatException ex) {
+                        else {
                             updateInterval = null;
                             pageContainer.setComplete(false);
+                            pageContainer.setErrorMessage("Update interval must be a positive integer.");
                         }
                     }
+                    catch(NumberFormatException ex) {
+                        updateInterval = null;
+                        pageContainer.setComplete(false);
+                        pageContainer.setErrorMessage("Update interval must be a positive integer.");
+                    }
                 }
-            });
+            }
+        });
+
+        minutesLabel = new Label(topLevel, SWT.SINGLE);
+        minutesLabel.setText("minutes");
 
         setUpdateInterval(updateInterval);
     }

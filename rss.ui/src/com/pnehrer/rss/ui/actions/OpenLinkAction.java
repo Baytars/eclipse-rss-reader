@@ -27,7 +27,7 @@ public class OpenLinkAction extends SelectionListenerAction {
      * @param text
      */
     public OpenLinkAction(Shell shell) {
-        super("Open Link");
+        super("Open &Link");
         this.shell = shell;
     }
 

@@ -10,6 +10,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -30,18 +31,18 @@ public class RSSPreferencePage
     public RSSPreferencePage() {
         updateIntervalGroup = new UpdateIntervalGroup(new IPageContainer() {
 
-                public void setMessage(String message) {
-                    RSSPreferencePage.this.setMessage(message);
-                }
-    
-                public void setErrorMessage(String message) {
-                    RSSPreferencePage.this.setErrorMessage(message);
-                }
-    
-                public void setComplete(boolean complete) {
-                    setValid(complete);
-                }
-            });        
+            public void setMessage(String message) {
+                RSSPreferencePage.this.setMessage(message);
+            }
+
+            public void setErrorMessage(String message) {
+                RSSPreferencePage.this.setErrorMessage(message);
+            }
+
+            public void setComplete(boolean complete) {
+                setValid(complete);
+            }
+        });        
     }
 
 	/**
@@ -63,10 +64,14 @@ public class RSSPreferencePage
         topLevel.setFont(parent.getFont());
 
         updateIntervalGroup.createContents(topLevel);
-        updateIntervalGroup.setUpdateInterval(
-            new Integer(
-                RSSCore.getPlugin().getPluginPreferences().getInt(
-                    RSSCore.PREF_UPDATE_INTERVAL)));
+        Integer updateInterval;
+        Preferences prefs = RSSCore.getPlugin().getPluginPreferences(); 
+        if(prefs.getBoolean(RSSCore.PREF_UPDATE_PERIODICALLY))
+            updateInterval = new Integer(prefs.getInt(RSSCore.PREF_UPDATE_INTERVAL));
+        else
+            updateInterval = null;
+            
+        updateIntervalGroup.setUpdateInterval(updateInterval);
         
         setErrorMessage(null);
         setMessage(null);
@@ -79,14 +84,16 @@ public class RSSPreferencePage
      */
     protected void performDefaults() {
         super.performDefaults();
-        RSSCore
-            .getPlugin()
-            .getPluginPreferences()
-            .setToDefault(RSSCore.PREF_UPDATE_INTERVAL);
-        updateIntervalGroup.setUpdateInterval(
-            new Integer(
-                RSSCore.getPlugin().getPluginPreferences().getInt(
-                    RSSCore.PREF_UPDATE_INTERVAL)));
+        Preferences prefs = RSSCore.getPlugin().getPluginPreferences(); 
+        prefs.setToDefault(RSSCore.PREF_UPDATE_PERIODICALLY);
+        prefs.setToDefault(RSSCore.PREF_UPDATE_INTERVAL);
+        Integer updateInterval;
+        if(prefs.getBoolean(RSSCore.PREF_UPDATE_PERIODICALLY))
+            updateInterval = new Integer(prefs.getInt(RSSCore.PREF_UPDATE_INTERVAL));
+        else
+            updateInterval = null;
+            
+        updateIntervalGroup.setUpdateInterval(updateInterval);
     }
 
     /* (non-Javadoc)
@@ -94,10 +101,17 @@ public class RSSPreferencePage
      */
     public boolean performOk() {
         Integer updateInterval = updateIntervalGroup.getUpdateInterval();
-        if(updateInterval != null)
-            RSSCore.getPlugin().getPluginPreferences().setValue(
+        Preferences prefs = RSSCore.getPlugin().getPluginPreferences(); 
+        if(updateInterval == null) {
+            prefs.setValue(RSSCore.PREF_UPDATE_PERIODICALLY, false);
+            prefs.setToDefault(RSSCore.PREF_UPDATE_INTERVAL);
+        }
+        else {
+            prefs.setValue(RSSCore.PREF_UPDATE_PERIODICALLY, true);
+            prefs.setValue(
                 RSSCore.PREF_UPDATE_INTERVAL, 
                 updateInterval.intValue());
+        }
                 
         RSSCore.getPlugin().savePluginPreferences();
         return true;

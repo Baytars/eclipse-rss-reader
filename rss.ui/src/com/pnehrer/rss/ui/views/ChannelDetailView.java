@@ -42,7 +42,13 @@ import com.pnehrer.rss.ui.RSSUI;
  */
 public class ChannelDetailView extends ViewPart implements ISelectionListener {
 
-    private static final String[] COLUMNS = {"Title", "Description"};
+    private static final String[] COLUMNS = {
+        "#", 
+        "Title", 
+        "Description", 
+        "Link", 
+        "Date"};
+
     private TableViewer viewer;
     private ChannelActionGroup actionGroup;
 
@@ -104,6 +110,32 @@ public class ChannelDetailView extends ViewPart implements ISelectionListener {
         actionGroup.runDefaultAction(selection);
     }
 
+    private TableColumn createColumn(
+        Table table, 
+        int index, 
+        int width, 
+        final int sort) {
+
+        TableColumn column = new TableColumn(table, SWT.LEFT);
+        column.setText(COLUMNS[index]);
+        column.setWidth(width);
+        column.setResizable(true);
+        column.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                ViewerSorter oldSorter = viewer.getSorter();
+                viewer.setSorter(
+                    new ItemSorter(
+                        sort,
+                        oldSorter instanceof ItemSorter ?
+                            !((ItemSorter)oldSorter).isReverse() :
+                            false,
+                            oldSorter));
+            }
+        });
+        
+        return column;
+    }
+
 	/**
 	 * @see ViewPart#createPartControl
 	 */
@@ -112,41 +144,13 @@ public class ChannelDetailView extends ViewPart implements ISelectionListener {
         table.setLayoutData(new GridData(GridData.FILL_BOTH));
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        
-        TableColumn column = new TableColumn(table, SWT.LEFT);
-        column.setText(COLUMNS[0]);
-        column.setWidth(200);
-        column.setResizable(true);
-        column.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                ViewerSorter oldSorter = viewer.getSorter();
-                viewer.setSorter(
-                    new ItemSorter(
-                        ItemSorter.TITLE,
-                        oldSorter instanceof ItemSorter ?
-                            !((ItemSorter)oldSorter).isReverse() :
-                            false,
-                            oldSorter));
-            }
-        });
 
-        column = new TableColumn(table, SWT.LEFT);
-        column.setText(COLUMNS[1]);
-        column.setWidth(300);
-        column.setResizable(true);
-        column.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                ViewerSorter oldSorter = viewer.getSorter();
-                viewer.setSorter(
-                    new ItemSorter(
-                        ItemSorter.DESCRIPTION,
-                        oldSorter instanceof ItemSorter ?
-                            !((ItemSorter)oldSorter).isReverse() :
-                            false,
-                            oldSorter));
-            }
-        });
-        
+        createColumn(table, 0, 20, ItemSorter.NONE);
+        createColumn(table, 1, 200, ItemSorter.TITLE);
+        createColumn(table, 2, 300, ItemSorter.DESCRIPTION);
+//        createColumn(table, 3, 300, ItemSorter.LINK);
+//        createColumn(table, 4, 100, ItemSorter.DATE);
+
         viewer = new TableViewer(table);
         viewer.setUseHashlookup(true);
         
@@ -209,7 +213,8 @@ public class ChannelDetailView extends ViewPart implements ISelectionListener {
         if(rssElement == null) {
             viewer.setInput(null);
             setTitle("No channel selected");
-            setTitleImage(null);    // TODO Set default image.
+            setTitleImage(
+                RSSUI.getDefault().getImageRegistry().get(RSSUI.DETAIL_ICON));
             setTitleToolTip("Please select a channel.");
 
             IStructuredSelection sel = new StructuredSelection();
