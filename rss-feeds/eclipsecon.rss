@@ -1,0 +1,5 @@
+#Eclipse RSS Reader v1.2.0
+#Wed Feb 23 13:55:40 EST 2005
+translatorId=com.pnehrer.rss.core.default
+url=http\://www.eclipsecon.org/index.rdf
+updateInterval=30

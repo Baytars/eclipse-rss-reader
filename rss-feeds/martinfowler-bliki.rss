@@ -1,0 +1,5 @@
+#Eclipse RSS Reader v1.2.0
+#Mon Mar 07 14:51:18 EST 2005
+translatorId=com.pnehrer.rss.core.default
+url=http\://martinfowler.com/bliki/bliki.rss
+updateInterval=30
