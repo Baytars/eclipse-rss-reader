@@ -114,6 +114,19 @@ a.leftNavLink:hover {
 	text-decoration: underline;
 }
 
+.tableListLink {
+}
+
+a.tableListLink:link, a.tableListLink:visited {
+	color: black;
+	text-decoration: underline;
+}
+
+a.tableListLink:hover {
+	color: #ff6600;
+	text-decoration: underline;
+}
+
 td.oddRowOddColumn {
 	background-color: white;
 }
