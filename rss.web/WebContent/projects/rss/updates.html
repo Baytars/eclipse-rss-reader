@@ -5,52 +5,12 @@
 	content="text/html; charset=ANSI_X3.4-1968">
 <META name="GENERATOR" content="IBM WebSphere Studio">
 <META http-equiv="Content-Style-Type" content="text/css">
+<SCRIPT language="JavaScript" src="/presence/theme/updates.js"></SCRIPT>
 <LINK href="/presence/theme/blue.css" rel="stylesheet" type="text/css">
 <LINK rel="shortcut icon" href="/presence/theme/icons/favicon.ico" type="image/x-icon">
-<!-- tpl:put name="head" --><TITLE>RSS</TITLE>
+<!-- tpl:put name="head" --><TITLE>Updates</TITLE>
 <SCRIPT LANGUAGE="JavaScript">
 <!--
-function getArgs() {
-   var args = new Object();
-   var query = location.search.substring(1);
-   var pairs = query.split("&");
-   for(var i = 0; i < pairs.length; ++i) {
-      var pos = pairs[i].indexOf('=');
-      if(pos == -1) 
-      	continue;
-
-      var argname = pairs[i].substring(0, pos);
-      var value = pairs[i].substring(pos + 1);
-      args[argname] = unescape(value);
-   }
-
-   return args;
-}
-
-function setCookie(name, value, expire) {
-	document.cookie = name + "=" + escape(value)
-		+ ((expire == null) ? "" : ("; expires=" + expire.toGMTString()));
-}
-
-function getCookie(Name) {
-	var search = Name + "=";
-	if(document.cookie.length > 0) { // if there are any cookies
-		offset = document.cookie.indexOf(search);
-		if(offset != -1) { // if cookie exists 
-			offset += search.length;
-		
-			// set index of beginning of value
-			end = document.cookie.indexOf(";", offset);
-			
-			// set index of end of cookie value
-			if(end == -1) 
-				end = document.cookie.length;
-			
-			return unescape(document.cookie.substring(offset, end));
-		}
-	}
-}
-
 function setMirror(mirror) {
 	setCookie("mirror", mirror);
 	var downloadDiv = document.getElementById("downloadDiv");
@@ -87,15 +47,7 @@ function download(feature) {
 }
 
 function body_onload() {
-	var mirror = null;
-	var args = getArgs();
-	if(args.mirror) {
-		mirror = args.mirror;
-		setCookie("mirror", mirror);
-	}
-	else
-		mirror = getCookie("mirror");
-		
+	var mirror = persistMirror();
 	if(mirror) {
 		var mirrorBtn = document.getElementById("mirror_" + mirror);
 		if(mirrorBtn)
@@ -104,14 +56,7 @@ function body_onload() {
 		setMirror(mirror);
 	}
 	
-	var updateURL = null;
-	if(args.updateURL) {
-		updateURL = args.updateURL;
-		setCookie("updateURL", updateURL);
-	}
-	else
-		updateURL = getCookie("updateURL");
-		
+	var updateURL = persistUpdateURL();
 	var activeUpdateDiv = document.getElementById("activeUpdateDiv");
 	if(activeUpdateDiv)
 		activeUpdateDiv.style.display = updateURL ? "block" : "none";
@@ -124,12 +69,11 @@ function body_onload() {
 	if(unknownUpdateDiv)
 		unknownUpdateDiv.style.display = "none";
 }
-
 //-->
 </SCRIPT>
 <!-- /tpl:put -->
 </HEAD>
-<BODY onload="return body_onload();">
+<BODY onload="javascript:if(window.body_onload) body_onload();">
 <DIV class="extLinkDiv"><SPAN style="vertical-align: bottom"><A class="extLink" href="http://pnehrer.freeshell.org/presence/projects/rss/index.html">pnehrer.com</A> | <A class="extLink" href="http://sourceforge.net/projects/morphine">SourceForge.net</A></SPAN></DIV>
 <DIV class="header"><A href="/presence/projects/rss/index.html"><IMG border="0"
 	src="/presence/theme/icons/rss-banner.png" width="500" height="64" alt="Eclipse RSS Reader"></A></DIV>
@@ -146,94 +90,93 @@ function body_onload() {
 <P>Please follow these steps to download and install a feature using the Update Manager:</P>
 <H2>1. Select Download Mirror</H2>
 <FORM name="mirrorForm" method="GET" action="updates.html">
-		<!-- tpl:insert page="/mirrors.html" --><TABLE border="0" cellpadding="2" cellspacing="2" width="90%" align="center"
-	style="border: 1px solid black">
-	<CAPTION>SourceForge Mirrors</CAPTION>
+		<!-- tpl:insert page="/mirrors.html" --><TABLE border="0" cellpadding="2" cellspacing="2" width="90%" align="center" class="tableList">
+	<CAPTION class="tableList">SourceForge Mirrors</CAPTION>
 	<TR>
-		<TH style="background-color: #c0c0c0">Mirror</TH>
-		<TH style="background-color: #c0c0c0">Location</TH>
-		<TH style="background-color: #c0c0c0">Continent</TH>
+		<TH class="tableList">Mirror</TH>
+		<TH class="tableList">Location</TH>
+		<TH class="tableList">Continent</TH>
 	</TR>
 	<TR>
-		<TD style="background-color: #e0e0e0"><INPUT id="mirror_keihanna"
+		<TD class="oddRowOddColumn"><INPUT id="mirror_keihanna"
 			name="mirror" type="radio" value="keihanna" onclick="setMirror(this.value)">
-			<A href="http://www.ksc.gr.jp/"><IMG
+			<A class="tableListLink" href="http://www.ksc.gr.jp/"><IMG
 			alt="keihanna" border="0"
 			src="http://images.sourceforge.net/prdownloads/keihanna_100x34.gif"></A></TD>
-		<TD style="background-color: white">Keihanna, Japan</TD>
-		<TD style="background-color: #e0e0e0">Asia</TD>
+		<TD class="oddRowEvenColumn">Keihanna, Japan</TD>
+		<TD class="oddRowOddColumn">Asia</TD>
 	</TR>
 	<TR>
-		<TD style="background-color: #c0c0c0"><INPUT id="mirror_heanet"
+		<TD class="evenRowOddColumn"><INPUT id="mirror_heanet"
 			name="mirror" type="radio" value="heanet" onclick="setMirror(this.value)">
-			<A href="http://www.heanet.ie/"><IMG
+			<A class="tableListLink" href="http://www.heanet.ie/"><IMG
 			alt="heanet" border="0"
 			src="http://images.sourceforge.net/prdownloads/heanet_100x34.gif"></A></TD>
-		<TD style="background-color: #e0e0e0">Dublin, Ireland</TD>
-		<TD style="background-color: #c0c0c0">Europe</TD>
+		<TD class="evenRowEvenColumn">Dublin, Ireland</TD>
+		<TD class="evenRowOddColumn">Europe</TD>
 	</TR>
 	<TR>
-		<TD style="background-color: #e0e0e0"><INPUT id="mirror_flow"
+		<TD class="oddRowOddColumn"><INPUT id="mirror_flow"
 			name="mirror" type="radio" value="flow" onclick="setMirror(this.value)">
-			<A
+			<A class="tableListLink" 
 			href="http://www.flow.com.au/"><IMG alt="flow" border="0"
 			src="http://images.sourceforge.net/prdownloads/flow_100x34.png"></A></TD>
-		<TD style="background-color: white">Sydney, Australia</TD>
-		<TD style="background-color: #e0e0e0">Australia</TD>
+		<TD class="oddRowEvenColumn">Sydney, Australia</TD>
+		<TD class="oddRowOddColumn">Australia</TD>
 	</TR>
 	<TR>
-		<TD style="background-color: #c0c0c0"><INPUT id="mirror_easynews"
+		<TD class="evenRowOddColumn"><INPUT id="mirror_easynews"
 			name="mirror" type="radio" value="easynews" onclick="setMirror(this.value)">
-			<A href="http://www.easynews.com/"><IMG
+			<A class="tableListLink" href="http://www.easynews.com/"><IMG
 			alt="easynews" border="0"
 			src="http://images.sourceforge.net/prdownloads/easynews_100x34.jpg"></A></TD>
-		<TD style="background-color: #e0e0e0">Phoenix, AZ</TD>
-		<TD style="background-color: #c0c0c0">North America</TD>
+		<TD class="evenRowEvenColumn">Phoenix, AZ</TD>
+		<TD class="evenRowOddColumn">North America</TD>
 	</TR>
 	<TR>
-		<TD style="background-color: #e0e0e0"><INPUT id="mirror_aleron"
+		<TD class="oddRowOddColumn"><INPUT id="mirror_aleron"
 			name="mirror" type="radio" value="aleron" onclick="setMirror(this.value)">
-			<A href="http://www.aleron.com/"><IMG
+			<A class="tableListLink" href="http://www.aleron.com/"><IMG
 			alt="aleron" border="0"
 			src="http://images.sourceforge.net/prdownloads/aleron_100x34.jpg"></A></TD>
-		<TD style="background-color: white">Reston, VA</TD>
-		<TD style="background-color: #e0e0e0">North America</TD>
+		<TD class="oddRowEvenColumn">Reston, VA</TD>
+		<TD class="oddRowOddColumn">North America</TD>
 	</TR>
 	<TR>
-		<TD style="background-color: #c0c0c0"><INPUT id="mirror_unc"
+		<TD class="evenRowOddColumn"><INPUT id="mirror_unc"
 			name="mirror" type="radio" value="unc" onclick="setMirror(this.value)">
-			<A href="http://www.ibiblio.org/"><IMG
+			<A class="tableListLink" href="http://www.ibiblio.org/"><IMG
 			alt="unc" border="0"
 			src="http://images.sourceforge.net/prdownloads/ibiblio_100x34.gif"></A></TD>
-		<TD style="background-color: #e0e0e0">Chapel Hill, NC</TD>
-		<TD style="background-color: #c0c0c0">North America</TD>
+		<TD class="evenRowEvenColumn">Chapel Hill, NC</TD>
+		<TD class="evenRowOddColumn">North America</TD>
 	</TR>
 	<TR>
-		<TD style="background-color: #e0e0e0"><INPUT id="mirror_cesnet"
+		<TD class="oddRowOddColumn"><INPUT id="mirror_cesnet"
 			name="mirror" type="radio" value="cesnet" onclick="setMirror(this.value)">
-			<A href="http://www.cesnet.cz/"><IMG
+			<A class="tableListLink" href="http://www.cesnet.cz/"><IMG
 			alt="cesnet" border="0"
 			src="http://images.sourceforge.net/prdownloads/cesnet_100x34.png"></A></TD>
-		<TD style="background-color: white">Prague, Czech Republic</TD>
-		<TD style="background-color: #e0e0e0">Europe</TD>
+		<TD class="oddRowEvenColumn">Prague, Czech Republic</TD>
+		<TD class="oddRowOddColumn">Europe</TD>
 	</TR>
 	<TR>
-		<TD style="background-color: #c0c0c0"><INPUT id="mirror_umn"
+		<TD class="evenRowOddColumn"><INPUT id="mirror_umn"
 			name="mirror" type="radio" value="umn" onclick="setMirror(this.value)">
-			<A href="http://www.umn.edu/"><IMG
+			<A class="tableListLink" href="http://www.umn.edu/"><IMG
 			alt="umn" border="0"
 			src="http://images.sourceforge.net/prdownloads/umn_100x34.gif"></A></TD>
-		<TD style="background-color: #e0e0e0">Minneapolis, MN</TD>
-		<TD style="background-color: #c0c0c0">North America</TD>
+		<TD class="evenRowEvenColumn">Minneapolis, MN</TD>
+		<TD class="evenRowOddColumn">North America</TD>
 	</TR>
 	<TR>
-		<TD style="background-color: #e0e0e0"><INPUT id="mirror_twtelecom"
+		<TD class="oddRowOddColumn"><INPUT id="mirror_twtelecom"
 			name="mirror" type="radio" value="twtelecom" onclick="setMirror(this.value)">
-			<A
+			<A class="tableListLink" 
 			href="http://www.twtelecom.com/"><IMG alt="twtelecom" border="0"
 			src="http://images.sourceforge.net/prdownloads/twtelecom_100x34.gif"></A></TD>
-		<TD style="background-color: white">Brookfield, WI</TD>
-		<TD style="background-color: #e0e0e0">North America</TD>
+		<TD class="oddRowEvenColumn">Brookfield, WI</TD>
+		<TD class="oddRowOddColumn">North America</TD>
 	</TR>
 	<TR>
 		<TD colspan="4" align="right"><HR noshade size="1"><INPUT type="submit" value="Select"></TD>
@@ -242,22 +185,23 @@ function body_onload() {
 <DIV id="downloadDiv" style="display: none">
 <DIV id="activeUpdateDiv" style="display: none">
 <H2>2. Choose Feature to Install</H2>
-<TABLE border="0" cellpadding="2" cellspacing="2" width="90%" align="center" style="border: 1px solid black">
-	<CAPTION>Available Features</CAPTION>
+<P>Click on the version number of the feature you wish to install:
+<TABLE border="0" cellpadding="2" cellspacing="2" width="90%" align="center" class="tableList">
+	<CAPTION class="tableList">Available Features</CAPTION>
 	<TR>
-		<TH style="background-color: #c0c0c0">Name</TH>
-		<TH style="background-color: #c0c0c0">Version</TH>
-		<TH style="background-color: #c0c0c0">Size</TH>
+		<TH class="tableList">Name</TH>
+		<TH class="tableList">Version</TH>
+		<TH class="tableList">Size</TH>
 	</TR>
 	<TR>
-		<TD style="background-color: #e0e0e0">Eclipse RSS Reader</TD>
-		<TD style="background-color: white"><A href="javascript:download('com.pnehrer.rss_1.0.0')">1.0.0</A></TD>
-		<TD style="background-color: #e0e0e0">40K</TD>
+		<TD class="oddRowOddColumn">Eclipse RSS Reader</TD>
+		<TD class="oddRowEvenColumn"><A class="tableListLink" href="javascript:download('com.pnehrer.rss_1.0.0')">1.0.0</A></TD>
+		<TD class="oddRowOddColumn">40K</TD>
 	</TR>
 	<TR>
-		<TD style="background-color: #c0c0c0">IBM WebSphere Studio Extension for the RSS Reader</TD>
-		<TD style="background-color: e0e0e0"><A href="javascript:download('com.pnehrer.rss.wsad_1.0.0')">1.0.0</A></TD>
-		<TD style="background-color: #c0c0c0">8K</TD>
+		<TD class="evenRowOddColumn">IBM WebSphere Studio Extension for the RSS Reader</TD>
+		<TD class="evenRowEvenColumn"><A class="tableListLink" href="javascript:download('com.pnehrer.rss.wsad_1.0.0')">1.0.0</A></TD>
+		<TD class="evenRowOddColumn">8K</TD>
 	</TR>
 </TABLE>
 </DIV>
@@ -266,7 +210,7 @@ function body_onload() {
 <P>The Web-triggered updates feature seems to be unavailable.
 Please ensure that it is enabled in your Workbench under Preferences -&gt; Install/Update -&gt; Web-triggered Updates.
 If you are not viewing this page from within the Update Manager, please do so.
-Otherwise, please point your Update Manager to this URL: <STRONG id="passiveURL">http://morphine.sourceforge.net/updates/</STRONG></P>
+Otherwise, please point your Update Manager to the following URL: <STRONG id="passiveURL">http://morphine.sourceforge.net/updates/</STRONG></P>
 </DIV>
 <DIV id="unknownUpdateDiv">
 <P>Please wait... Determining availability of Web-triggered updates.</P>

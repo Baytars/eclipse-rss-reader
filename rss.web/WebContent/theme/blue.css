@@ -113,3 +113,32 @@ a.leftNavLink:hover {
 	color: #ff6600;
 	text-decoration: underline;
 }
+
+td.oddRowOddColumn {
+	background-color: white;
+}
+
+td.oddRowEvenColumn {
+	background-color: #ffddaa;
+}
+
+td.evenRowOddColumn {
+	background-color: #ffddaa;
+}
+
+td.evenRowEvenColumn {
+	background-color: #ffbb77;
+}
+
+caption.tableList {
+	font-weight: bolder;
+}
+
+th.tableList {
+	background-color: #ff6600;
+	color: white;
+}
+
+table.tableList {
+	border: 1px solid #ff6600;
+}
