@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <website version="510">
 	<structure>
-		<page src="newpage" id="5" navigation="false" navroot="true">
+		<page src="newpage" id="5" navroot="true" navigation="false">
 			<title>Home</title>
 			<page src="/WebContent/projects/rss/index.html" template="/WebContent/theme/home.htpl" id="1" icon="/presence/theme/icons/detail_16.png">
 				<title>About</title>
-
-
-
 			</page>
 			<page src="/WebContent/projects/rss/news.html" id="2" template="/WebContent/theme/home.htpl" icon="/presence/theme/icons/item_new_16.gif">
 				<title>News</title>
@@ -18,7 +15,7 @@
 					<title>Updates</title>
 				</page>
 			</page>
-			<page src="/WebContent/projects/rss/features.html" template="/WebContent/theme/home.htpl" id="8" icon="/presence/theme/icons/navigator_16.png>
+			<page src="/WebContent/projects/rss/features.html" template="/WebContent/theme/home.htpl" id="8" icon="/presence/theme/icons/navigator_16.png">
 				<title>Features</title>
 			</page>
 			<page src="/WebContent/projects/rss/usage.html" id="4" template="/WebContent/theme/home.htpl" icon="/presence/theme/icons/browse_16.png">
@@ -28,7 +25,5 @@
 				<title>Screenshots</title>
 			</page>
 		</page>
-
-
 	</structure>
 </website>
