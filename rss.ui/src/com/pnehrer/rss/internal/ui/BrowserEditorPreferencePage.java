@@ -75,7 +75,9 @@ public class BrowserEditorPreferencePage
             topLevel, 
             SWT.BORDER | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL);
 
-        table.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+        gd.heightHint = 200;
+        table.setLayoutData(gd);
         
         editorTable = new TableViewer(table);
         editorTable.setUseHashlookup(true);
