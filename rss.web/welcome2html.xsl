@@ -36,7 +36,7 @@
 			<xsl:apply-templates select="node()"/>
 		</xsl:element>
 	</xsl:template>
-	<xsl:template match="b[parent::item][count(preceding-sibling::b)=0]">
+	<xsl:template match="b[parent::item][not(preceding-sibling::b)]">
 		<H2><xsl:apply-templates select="node()"/></H2>
 	</xsl:template>
 	<xsl:template match="@* | node()">
