@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<library>
-  <!--JBuilder Library Definition File-->
-  <fullname>Ant</fullname>
-  <class>
-    <path>[../../../../Ant/jakarta-ant-1.4.1/lib/ant.jar]</path>
-  </class>
-</library>
