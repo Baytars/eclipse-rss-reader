@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fragment
+   id="com.pnehrer.rss.ui.wsad"
+   name="RSS UI extensions for WSAD"
+   version="1.0.0"
+   provider-name="Peter Nehrer"
+   plugin-id="com.pnehrer.rss.ui"
+   plugin-version="1.0.0">
+
+   <runtime>
+      <library name="wsad.jar"/>
+   </runtime>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="com.ibm.etools.webbrowser"/>
+   </requires>
+
+
+   <extension
+         point="com.pnehrer.rss.ui.linkbrowser">
+      <linkbrowser
+            label="Web Browser Editor"
+            class="com.pnehrer.rss.internal.ui.WebBrowserEditor"
+            id="webbrowsereditor">
+      </linkbrowser>
+   </extension>
+</fragment>
