@@ -9,6 +9,7 @@ import java.net.URL;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPluginDescriptor;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Preferences;
 import org.w3c.dom.Document;
@@ -86,7 +87,8 @@ public class RSSCore extends Plugin {
         IRegisteredTranslator translator, 
         Document document,
         URL url,
-        Integer updateInterval) 
+        Integer updateInterval,
+        IProgressMonitor monitor) 
         throws CoreException {
 
         return channelManager.createChannel(
@@ -94,6 +96,15 @@ public class RSSCore extends Plugin {
             translator, 
             document,
             url,
-            updateInterval);
+            updateInterval,
+            monitor);
+    }
+
+    public void addChannelChangeListener(IChannelChangeListener listener) {
+        channelManager.addChannelChangeListener(listener);
+    }
+
+    public void removeChannelChangeListener(IChannelChangeListener listener) {
+        channelManager.removeChannelChangeListener(listener);
     }
 }

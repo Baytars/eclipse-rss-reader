@@ -6,10 +6,12 @@ package com.pnehrer.rss.ui.views;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.widgets.Control;
 
 import com.pnehrer.rss.core.ChannelChangeEvent;
 import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IChannelChangeListener;
+import com.pnehrer.rss.core.RSSCore;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
@@ -19,7 +21,7 @@ public class ChannelContentProvider
     IChannelChangeListener {
 
     private Viewer viewer;
-    private IChannel channel;
+    private Object input;
 
     /* (non-Javadoc)
      * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
@@ -33,29 +35,36 @@ public class ChannelContentProvider
      * @see org.eclipse.jface.viewers.IContentProvider#dispose()
      */
     public void dispose() {
-        if(channel != null)
-            channel.removeChannelChangeListener(this);
+        if(viewer != null)
+            RSSCore.getPlugin().removeChannelChangeListener(this);
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
      */
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+        if(this.viewer == null)
+            RSSCore.getPlugin().addChannelChangeListener(this);
+
         this.viewer = viewer;
-        
-        if(channel != null)
-            channel.removeChannelChangeListener(this);
-            
-        channel = (IChannel)newInput;
-            
-        if(channel != null)
-            channel.addChannelChangeListener(this);
+        this.input = newInput;
+
+        if(this.viewer == null)
+            RSSCore.getPlugin().removeChannelChangeListener(this);
     }
 
     /* (non-Javadoc)
      * @see com.pnehrer.rss.core.IChannelChangeListener#channelChanged(com.pnehrer.rss.core.ChannelChangeEvent)
      */
     public void channelChanged(ChannelChangeEvent event) {
-        viewer.refresh();
+        if(event.getChannel().equals(input)) {
+            Control control = viewer.getControl();
+            if(control != null && !control.isDisposed())
+                control.getDisplay().asyncExec(new Runnable() {
+                        public void run() {
+                            viewer.refresh();
+                        }
+                    });
+        }
     }
 }

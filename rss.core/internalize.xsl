@@ -6,9 +6,6 @@
 	exclude-result-prefixes="rdf rss"
     version="1.0">
     
-    <xsl:param name="channelURL"/>
-    <xsl:param name="updateInterval"/>
-    
     <xsl:template match="rss">
     	<xsl:apply-templates select="channel"/>
     </xsl:template>
@@ -19,10 +16,6 @@
     
     <xsl:template match="channel | rss:channel">
     	<xsl:element name="channel">
-    		<xsl:attribute name="url"><xsl:value-of select="$channelURL"/></xsl:attribute>
-    		<xsl:if test="string-length($updateInterval) &gt; 0">
-	    		<xsl:attribute name="updateInterval"><xsl:value-of select="$updateInterval"/></xsl:attribute>
-	    	</xsl:if>
     		<xsl:apply-templates select="title | rss:title | link | rss:link | description | rss:description | pubDate"/>
     		<xsl:apply-templates select="node()[not(self::title | self::rss:title | self::link | self::rss:link | self::description | self::rss:description | self::pubDate)]"/>
     	</xsl:element>

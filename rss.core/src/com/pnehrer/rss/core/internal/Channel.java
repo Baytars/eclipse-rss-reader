@@ -23,6 +23,7 @@ import java.util.TimerTask;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -37,18 +38,18 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.pnehrer.rss.core.ChannelChangeEvent;
 import com.pnehrer.rss.core.IChannel;
-import com.pnehrer.rss.core.IChannelChangeListener;
 import com.pnehrer.rss.core.IImage;
 import com.pnehrer.rss.core.IItem;
 import com.pnehrer.rss.core.IRegisteredTranslator;
@@ -75,8 +76,6 @@ public class Channel
     private static final String IMAGE = "image";
     private static final String ITEM = "item";
     private static final String TEXT_INPUT = "textInput";
-
-    private final Collection listeners = new HashSet();
 
     private UpdateTask updateTask;
     private final Object updateTaskLock = new Object();
@@ -127,6 +126,11 @@ public class Channel
         return translator;
     }
     
+    public synchronized void setTranslator(IRegisteredTranslator translator) {
+        this.translator = translator;
+        firePropertyChange();
+    }
+    
     /* (non-Javadoc)
      * @see com.pnehrer.rss.core.IChannel#getURL()
      */
@@ -134,7 +138,7 @@ public class Channel
         return url;
     }
     
-    public void setURL(URL url) {
+    public synchronized void setURL(URL url) {
         this.url = url;
         firePropertyChange();
     }
@@ -149,7 +153,7 @@ public class Channel
     /* (non-Javadoc)
      * @see com.pnehrer.rss.core.IChannel#setUpdateInterval(java.lang.Integer)
      */
-    public void setUpdateInterval(Integer updateInterval) {
+    public synchronized void setUpdateInterval(Integer updateInterval) {
         this.updateInterval = updateInterval;
         updateUpdateSchedule();
         firePropertyChange();
@@ -235,23 +239,31 @@ public class Channel
     private void firePropertyChange() {
         if(suppressChangeEvents)
             return;
-            
-        ChannelChangeEvent event = new ChannelChangeEvent(this);
-        for(Iterator i = listeners.iterator(); i.hasNext();) {
-            IChannelChangeListener listener = (IChannelChangeListener)i.next();
-            listener.channelChanged(event);
-        }
+
+        ChannelManager.getInstance().firePropertyChange(this);            
     }
     
-    public void update() throws CoreException {
+    public void update(IProgressMonitor monitor) throws CoreException {
         if(translator != null && url != null) {
             DocumentBuilderFactory factory = 
                 DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(true);
-            Document document;
+            
+            if(monitor != null)
+                monitor.beginTask("update", 2);
+            
             try {
                 DocumentBuilder builder = factory.newDocumentBuilder();
-                document = builder.parse(url.openStream());
+                Document document = builder.parse(url.openStream());
+                
+                if(monitor != null)
+                    monitor.worked(1);
+                
+                update(
+                    document, 
+                    monitor == null ?
+                        null :
+                        new SubProgressMonitor(monitor, 1));
             }
             catch(ParserConfigurationException ex) {
                 throw new CoreException(
@@ -280,29 +292,52 @@ public class Channel
                         "could not parse channel source",
                         ex));
             }
-            
-            update(document);
+            finally {
+                if(monitor != null)
+                    monitor.done();
+            }
         }
     }
     
-    private synchronized void update(Document sourceDocument) 
+    private synchronized void update(
+        Document sourceDocument, 
+        IProgressMonitor monitor) 
         throws CoreException {
             
-        Document document = translator.translate(sourceDocument);
-        Element channel = document.getDocumentElement();
-        if(CHANNEL.equals(channel.getTagName())) {
-            update(channel);
-            setLastUpdated(new Date());
-            save();
+        if(monitor != null)
+            monitor.beginTask("update", 3);
+
+        try {
+            Document document = translator.translate(sourceDocument);
+            
+            if(monitor != null)
+                monitor.worked(1);
+            
+            Element channel = document.getDocumentElement();
+            if(CHANNEL.equals(channel.getLocalName())) {
+                update(channel);
+                
+                if(monitor != null)
+                    monitor.worked(1);
+                
+                setLastUpdated(new Date());
+                save(monitor == null ?
+                    null :
+                    new SubProgressMonitor(monitor, 1));
+            }
+            else {
+                throw new CoreException(
+                    new Status(
+                        IStatus.ERROR,
+                        RSSCore.PLUGIN_ID,
+                        0,
+                        "invalid channel format",
+                        null));
+            }
         }
-        else {
-            throw new CoreException(
-                new Status(
-                    IStatus.ERROR,
-                    RSSCore.PLUGIN_ID,
-                    0,
-                    "invalid channel format",
-                    null));
+        finally {
+            if(monitor != null)
+                monitor.done();
         }
     }
     
@@ -343,31 +378,34 @@ public class Channel
         }
         
         Element channel = document.getDocumentElement();
-        if(CHANNEL.equals(channel.getTagName())) {
+        if(CHANNEL.equals(channel.getLocalName())) {
             do {
                 String str = channel.getAttribute(TRANSLATOR_ID);
                 if(str == null)
                     break;
                     
-                if(translator == null || !str.equals(translator.getId())) 
-                    translator = 
-                        TranslatorManager.getInstance().getTranslator(str); 
-
-                if(translator == null)
-                    throw new CoreException(
-                        new Status(
-                            IStatus.ERROR,
-                            RSSCore.PLUGIN_ID,
-                            0,
-                            "could not find source translator with id: " + str,
-                            null));
-
-                str = channel.getAttribute(URL);
-                if(str == null)
-                    break;
-    
                 suppressChangeEvents = true;
                 try {
+                    IRegisteredTranslator matchingTranslator = translator;
+                    if(translator == null || !str.equals(translator.getId())) 
+                        matchingTranslator = 
+                            TranslatorManager.getInstance().getTranslator(str); 
+    
+                    if(matchingTranslator == null)
+                        throw new CoreException(
+                            new Status(
+                                IStatus.ERROR,
+                                RSSCore.PLUGIN_ID,
+                                0,
+                                "could not find source translator with id: " + str,
+                                null));
+
+                    setTranslator(matchingTranslator);
+
+                    str = channel.getAttribute(URL);
+                    if(str == null)
+                        break;
+    
                     try {
                         setURL(new URL(str));
                     }
@@ -405,9 +443,7 @@ public class Channel
                 null));
     }
     
-    private void update(Element channel) 
-        throws CoreException {
-            
+    private void update(Element channel) throws CoreException {
         setTitle(channel.getAttribute(TITLE));
         setLink(channel.getAttribute(LINK));
         setDescription(channel.getAttribute(DESCRIPTION));
@@ -423,7 +459,7 @@ public class Channel
         for(int i = 0, n = children.getLength(); i < n; ++i) {
             Node node = children.item(i);
             if(node.getNodeType() == Node.ELEMENT_NODE) {
-                if(IMAGE.equals(node.getNodeName())) {
+                if(IMAGE.equals(node.getLocalName())) {
                     Object oldImage = image;
                     if(image == null)
                         image = new Image(this);
@@ -431,7 +467,7 @@ public class Channel
                     image.update((Element)node);
                     hasImage = true;
                 }
-                else if(ITEM.equals(node.getNodeName())) {
+                else if(ITEM.equals(node.getLocalName())) {
                     String itemLink = 
                         ((Element)node).getAttribute(Item.LINK);
                     Item item = (Item)items.get(itemLink);
@@ -443,7 +479,7 @@ public class Channel
                     liveItemLinks.add(itemLink);
                     item.update((Element)node);
                 }
-                else if(TEXT_INPUT.equals(node.getNodeName())) {
+                else if(TEXT_INPUT.equals(node.getLocalName())) {
                     Object oldTextInput = textInput;
                     if(textInput == null)
                         textInput = new TextInput(this);
@@ -457,12 +493,81 @@ public class Channel
         items.keySet().retainAll(liveItemLinks);
     }
     
-    private synchronized void save() throws CoreException {
+    public synchronized void save(IProgressMonitor monitor) 
+        throws CoreException {
+
         DocumentBuilderFactory df = DocumentBuilderFactory.newInstance();
         df.setNamespaceAware(true);
-        DocumentBuilder builder;
+        
+        if(monitor != null)
+            monitor.beginTask("save", 3);
+        
         try {
-            builder = df.newDocumentBuilder();
+            DocumentBuilder builder = df.newDocumentBuilder();
+            Document document = builder.newDocument();
+            
+            Element channel = document.createElement(CHANNEL);
+            document.appendChild(channel);
+            channel.setAttribute(TRANSLATOR_ID, translator.getId());
+            channel.setAttribute(URL, url.toExternalForm());
+            if(updateInterval != null)
+                channel.setAttribute(
+                    UPDATE_INTERVAL, 
+                    updateInterval.toString());
+                
+            channel.setAttribute(
+                LAST_UPDATED, 
+                DateFormat.getInstance().format(lastUpdated));
+                
+            channel.setAttribute(TITLE, title);
+            channel.setAttribute(LINK, link);
+            channel.setAttribute(DESCRIPTION, description);
+            if(date != null)
+                channel.setAttribute(
+                    DATE, 
+                    DateFormat.getInstance().format(date));
+    
+            if(image != null) {
+                Element imageElement = document.createElement(IMAGE);
+                channel.appendChild(imageElement);
+                image.save(imageElement);
+            }
+                
+            for(Iterator i = items.values().iterator(); i.hasNext();) {
+                Item item = (Item)i.next();
+                Element itemElement = document.createElement(ITEM);
+                channel.appendChild(itemElement);
+                item.save(itemElement);
+            }
+            
+            if(textInput != null) {
+                Element textInputElement = document.createElement(TEXT_INPUT);
+                channel.appendChild(textInputElement);
+                textInput.save(textInputElement);
+            }
+            
+            if(monitor != null)
+                monitor.worked(1);
+            
+            ByteArrayOutputStream out = new ByteArrayOutputStream();            
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer = tf.newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.transform(
+                new DOMSource(document), 
+                new StreamResult(out));
+
+            if(monitor != null)
+                monitor.worked(1);
+        
+            ignoreResourceChange = true;
+            file.setContents(
+                new ByteArrayInputStream(out.toByteArray()), 
+                true, 
+                true, 
+                monitor == null ?
+                    null :
+                    new SubProgressMonitor(monitor, 1));
         }
         catch(ParserConfigurationException ex) {
             throw new CoreException(
@@ -473,54 +578,6 @@ public class Channel
                     "could not save channel",
                     ex));
         }
-
-        Document document = builder.newDocument();
-        
-        Element channel = document.createElement(CHANNEL);
-        document.appendChild(channel);
-        channel.setAttribute(TRANSLATOR_ID, translator.getId());
-        channel.setAttribute(URL, url.toExternalForm());
-        if(updateInterval != null)
-            channel.setAttribute(UPDATE_INTERVAL, updateInterval.toString());
-            
-        channel.setAttribute(
-            LAST_UPDATED, 
-            DateFormat.getInstance().format(lastUpdated));
-            
-        channel.setAttribute(TITLE, title);
-        channel.setAttribute(LINK, link);
-        channel.setAttribute(DESCRIPTION, description);
-        if(date != null)
-            channel.setAttribute(DATE, DateFormat.getInstance().format(date));
-
-        if(image != null) {
-            Element imageElement = document.createElement(IMAGE);
-            channel.appendChild(imageElement);
-            image.save(imageElement);
-        }
-            
-        for(Iterator i = items.values().iterator(); i.hasNext();) {
-            Item item = (Item)i.next();
-            Element itemElement = document.createElement(ITEM);
-            channel.appendChild(itemElement);
-            item.save(itemElement);
-        }
-        
-        if(textInput != null) {
-            Element textInputElement = document.createElement(TEXT_INPUT);
-            channel.appendChild(textInputElement);
-            textInput.save(textInputElement);
-        }
-        
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        
-        TransformerFactory tf = TransformerFactory.newInstance();
-        try {
-            Transformer transformer = tf.newTransformer();
-            transformer.transform(
-                new DOMSource(document), 
-                new StreamResult(out));
-        }
         catch(TransformerException ex) {
             throw new CoreException(
                 new Status(
@@ -529,15 +586,6 @@ public class Channel
                     0,
                     "could not save channel",
                     ex));
-        }
-        
-        ignoreResourceChange = true;
-        try {
-            file.setContents(
-                new ByteArrayInputStream(out.toByteArray()), 
-                true, 
-                true, 
-                null);
         }
         finally {
             ignoreResourceChange = false;
@@ -556,20 +604,6 @@ public class Channel
                     updateInterval.intValue());
             }
         }
-    }
-
-    /* (non-Javadoc)
-     * @see com.pnehrer.rss.core.IChannel#addChannelChangeListener(com.pnehrer.rss.core.IChannelChangeListener)
-     */
-    public void addChannelChangeListener(IChannelChangeListener listener) {
-        listeners.add(listener);
-    }
-
-    /* (non-Javadoc)
-     * @see com.pnehrer.rss.core.IChannel#removeChannelChangeListener(com.pnehrer.rss.core.IChannelChangeListener)
-     */
-    public void removeChannelChangeListener(IChannelChangeListener listener) {
-        listeners.remove(listener);
     }
 
     /* (non-Javadoc)
@@ -642,13 +676,14 @@ public class Channel
         IRegisteredTranslator translator,
         Document document,
         URL url,
-        Integer updateInterval)
+        Integer updateInterval,
+        IProgressMonitor monitor)
         throws CoreException {
             
         Channel channel = new Channel(file, translator);
         channel.setURL(url);
         channel.setUpdateInterval(updateInterval);
-        channel.update(document);
+        channel.update(document, monitor);
         return channel;
     }
     
@@ -694,7 +729,7 @@ public class Channel
          */
         public void run() {
             try {
-                update();
+                update((IProgressMonitor)null);
             }
             catch(CoreException ex) {
                 RSSCore.getPlugin().getLog().log(

@@ -9,6 +9,7 @@ import java.util.Date;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
@@ -18,6 +19,8 @@ public interface IChannel {
     public IFile getFile();
     
     public IRegisteredTranslator getTranslator();
+    
+    public void setTranslator(IRegisteredTranslator translator);
     
     public URL getURL();
     
@@ -43,9 +46,7 @@ public interface IChannel {
     
     public ITextInput getTextInput();
     
-    public void update() throws CoreException;
+    public void update(IProgressMonitor monitor) throws CoreException;
     
-    public void addChannelChangeListener(IChannelChangeListener listener);
-    
-    public void removeChannelChangeListener(IChannelChangeListener listener);
+    public void save(IProgressMonitor monitor) throws CoreException;
 }

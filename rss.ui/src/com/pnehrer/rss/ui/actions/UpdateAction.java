@@ -72,10 +72,10 @@ public class UpdateAction implements IActionDelegate {
                 dlg.run(true, true, new WorkspaceModifyOperation() {
                         protected void execute(IProgressMonitor monitor) 
                             throws CoreException, 
-                            InvocationTargetException, 
-                            InterruptedException {
+                                InvocationTargetException, 
+                                InterruptedException {
 
-                            channel.update();                    
+                            channel.update(monitor);
                         }
                     });
             }

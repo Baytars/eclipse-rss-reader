@@ -54,10 +54,10 @@ public class DefaultTranslator implements ITranslator {
      */
     public boolean canTranslate(Document document) {
         Element element = document.getDocumentElement();
-        return (RSS_ELEMENT.equals(element.getTagName())
+        return (RSS_ELEMENT.equals(element.getLocalName())
                 && (RSS_URI == null ? element.getNamespaceURI() == null : RSS_URI.equals(element.getNamespaceURI()))
                 && RSS_VERSIONS.contains(element.getAttribute(VERSION_ATTR)))
-            || (RDF_ELEMENT.equals(element.getTagName())
+            || (RDF_ELEMENT.equals(element.getLocalName())
                 && RDF_URI.equals(element.getNamespaceURI())
                 && hasRSS10Channel(element));
     }
@@ -113,7 +113,7 @@ public class DefaultTranslator implements ITranslator {
         for(int i = 0, n = list.getLength(); i < n; ++i) {
             Node node = list.item(i);
             if(node.getNodeType() == Node.ELEMENT_NODE
-                && CHANNEL_ELEMENT.equals(node.getNodeName())
+                && CHANNEL_ELEMENT.equals(node.getLocalName())
                 && RSS10_URI.equals(node.getNamespaceURI()))
                 
                 return true;
@@ -124,14 +124,13 @@ public class DefaultTranslator implements ITranslator {
     
     private static synchronized void createTemplates() 
         throws TransformerConfigurationException, 
-        IOException {
+            IOException {
 
         if(templates == null) {
             TransformerFactory factory = TransformerFactory.newInstance();
             templates = factory.newTemplates(
                 new StreamSource(
-                    RSSCore.getPlugin().openStream(
-                        new Path(TEMPLATES))));
+                    RSSCore.getPlugin().openStream(new Path(TEMPLATES))));
         }
     }
 }

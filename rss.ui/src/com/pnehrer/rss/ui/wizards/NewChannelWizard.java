@@ -78,15 +78,16 @@ public class NewChannelWizard extends Wizard implements INewWizard {
             getContainer().run(false, true, new WorkspaceModifyOperation() {
                     protected void execute(IProgressMonitor monitor) 
                         throws CoreException, 
-                        InvocationTargetException, 
-                        InterruptedException {
+                            InvocationTargetException, 
+                            InterruptedException {
         
                         IChannel channel = RSSCore.getPlugin().createChannel(
                             file, 
                             translator, 
                             document,
                             url,
-                            updateInterval);
+                            updateInterval,
+                            monitor);
                             
                         IEditorRegistry registry = workbench.getEditorRegistry();
                         IEditorDescriptor editor = registry.getDefaultEditor(file);

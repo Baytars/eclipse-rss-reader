@@ -4,20 +4,26 @@
  */
 package com.pnehrer.rss.ui;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbenchPropertyPage;
+import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.PropertyPage;
 
 import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.RSSCore;
-import com.pnehrer.rss.ui.internal.*;
+import com.pnehrer.rss.ui.internal.ChannelPropertyGroup;
+import com.pnehrer.rss.ui.internal.UpdateIntervalGroup;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
@@ -100,11 +106,37 @@ public class RSSPropertyPage
      * @see org.eclipse.jface.preference.IPreferencePage#performOk()
      */
     public boolean performOk() {
-        IChannel channel = getChannel();
+        final IChannel channel = getChannel();
         if(channel == null) return false;
         else {
-            channel.setURL(channelProperties.getURL());
-            channel.setUpdateInterval(updateIntervalGroup.getUpdateInterval());
+            ProgressMonitorDialog dlg = new ProgressMonitorDialog(getShell());
+            try {
+                dlg.run(false, true, new WorkspaceModifyOperation() {
+                        protected void execute(IProgressMonitor monitor) 
+                            throws CoreException, 
+                                InvocationTargetException, 
+                                InterruptedException {
+                
+                            channel.setURL(channelProperties.getURL());
+                            channel.setUpdateInterval(
+                                updateIntervalGroup.getUpdateInterval());
+                
+                            channel.save(monitor);
+                        }
+                    });
+            }
+            catch(InvocationTargetException ex) {
+                MessageDialog.openError(
+                    getShell(), 
+                    "Channel Error", 
+                    "Could not save channel. Exception: " + ex);
+
+                return false;
+            }
+            catch(InterruptedException ex) {
+                // ignore
+            }
+
             return true;
         }
     }
