@@ -35,8 +35,6 @@ public class RSSCore extends Plugin {
     private TranslatorManager translatorManager;
     private ResourceAdapterFactory resourceAdapterFactory;
     private ChannelAdapterFactory channelAdapterFactory;
-    
-    private boolean prefInit;
 
     /**
      * @param descriptor
@@ -54,12 +52,9 @@ public class RSSCore extends Plugin {
      * @see org.eclipse.core.runtime.Plugin#initializeDefaultPluginPreferences()
      */
     protected void initializeDefaultPluginPreferences() {
-        if(!prefInit) {
-            prefInit = true;
-            Preferences prefs = getPluginPreferences();
-            prefs.setDefault(PREF_UPDATE_PERIODICALLY, true);
-            prefs.setDefault(PREF_UPDATE_INTERVAL, 30);
-        }
+        Preferences prefs = getPluginPreferences();
+        prefs.setDefault(PREF_UPDATE_PERIODICALLY, true);
+        prefs.setDefault(PREF_UPDATE_INTERVAL, 30);
     }
 
     /* (non-Javadoc)

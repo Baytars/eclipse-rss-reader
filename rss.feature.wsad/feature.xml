@@ -32,6 +32,8 @@ at http://www.eclipse.org/legal/cpl-v10.html.
 
    <plugin
          id="com.pnehrer.rss.ui.wsad"
+         os="win32"
+         ws="win32"
          download-size="0"
          install-size="0"
          version="1.0.0"
