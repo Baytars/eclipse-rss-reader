@@ -15,9 +15,7 @@
 	</target>
 
 	<target name="sfsite" depends="init">
-		<xslt style="etc/mksfsite.xsl" in="site.xml" out="dist/sfsite.xml">
-			<param name="featureMap" expression="etc/featureMap.xml"/>
-		</xslt>
+		<xslt style="etc/mksfsite.xsl" in="site.xml" out="dist/sfsite.xml"/>
 	</target>
 	
 	<target name="upload">
