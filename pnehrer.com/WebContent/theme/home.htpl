@@ -37,39 +37,7 @@ function search(what, event) {
 	cellpadding="0" 
 	cellspacing="0">
 	<tr>
-		<td valign="top" align="center" width="148"><!-- siteedit:navbar spec="/presence/theme/leftnav2.html" target="ancestor" -->
-<IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends"><TABLE width="100%" cellpadding="0" cellspacing="0">
-<TBODY><TR><TD>
-<DIV class="menuBox">
-<DIV class="menuAncestor"><A href="#"><IMG src="/presence/theme/icons/item_16.gif" alt="Ancestor" class="icon"> Ancestor</A></DIV>
-</DIV>
-</TD><TD width="8">
-</TD></TR>
-</TBODY></TABLE>
-<!-- /siteedit:navbar --><!-- siteedit:navbar spec="/presence/theme/leftnav.html" target="self,sibling" -->
-<IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends"><TABLE width="100%" cellpadding="0" cellspacing="0">
-<TBODY><TR><TD>
-<DIV class="menuBox">
-<DIV class="menu"><A href="#"><IMG src="/presence/theme/icons/item_16.gif" alt="Preceding Sibling" class="icon"> Preceding Sibling</A></DIV>
-<DIV class="menuSelf"><IMG src="/presence/theme/icons/item_16.gif" alt="Self" class="icon"> Self</DIV>
-<DIV class="menu"><A href="#"><IMG src="/presence/theme/icons/item_16.gif" alt="Following Sibling" class="icon"> Following Sibling</A></DIV>
-</DIV>
-</TD><TD width="8">
-<IMG src="/presence/theme/blackdot.gif" width="8" height="2" alt="aggregates">
-</TD></TR>
-</TBODY></TABLE>
-<!-- /siteedit:navbar --><!-- siteedit:navbar target="children" spec="/presence/theme/leftnav.html" -->
-<IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends"><TABLE width="100%" cellpadding="0" cellspacing="0">
-<TBODY><TR><TD>
-<DIV class="menuBox">
-<DIV class="menu"><A href="#"><IMG src="/presence/theme/icons/item_16.gif" alt="Child 1" class="icon"> Child 1</A></DIV>
-<DIV class="menu"><A href="#"><IMG src="/presence/theme/icons/item_16.gif" alt="Child 2" class="icon"> Child 2</A></DIV>
-<DIV class="menu"><A href="#"><IMG src="/presence/theme/icons/item_16.gif" alt="Child 3" class="icon"> Child 3</A></DIV>
-</DIV>
-</TD><TD width="8">
-</TD></TR>
-</TBODY></TABLE>
-<!-- /siteedit:navbar --></td>
+		<td valign="top" align="center" width="148"><!-- siteedit:sitemap spec="/presence/theme/sitemap_vertical.html" onlychilden="true" targetlevel="1-4" --><!-- /siteedit:sitemap --></td>
 		<td valign="top"><div class="content"><!-- tpl:insert attribute="body" -->This page is currently under construction.<!-- /tpl:insert --></div></td>
 	</tr>
 </table><div 
