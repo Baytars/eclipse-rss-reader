@@ -5,7 +5,9 @@
 	content="text/html; charset=ANSI_X3.4-1968">
 <meta name="GENERATOR" content="IBM WebSphere Studio">
 <link rel="stylesheet" href="/presence/theme/blue.css" type="text/css">
-<!-- tpl:put name="head" --><!-- /tpl:put -->
+<link rel="shortcut icon" href="/presence/theme/icons/favicon.ico" type="image/x-icon">
+<!-- tpl:put name="head" -->
+		<TITLE>My Projects</TITLE><!-- /tpl:put -->
 <script language="javascript">
 <!--
 function search(what, event) {
@@ -35,30 +37,28 @@ function search(what, event) {
 	src="/presence/theme/banner.png" 
 	width="320" 
 	height="32"
-	alt="pnehrer.com"></a></div><table 
+	alt="pnehrer.com"></a></div><table
 	width="100%" 
 	border="0" 
 	cellpadding="0" 
 	cellspacing="0">
 	<tr>
-		<td valign="top" align="center" width="148"><!-- siteedit:navbar spec="/presence/theme/leftnav2.html" target="ancestor" -->
-<!-- /siteedit:navbar --><!-- siteedit:navbar spec="/presence/theme/leftnav.html" target="self,sibling" -->
+		<td valign="top" align="center" width="150" rowspan="2"><!-- siteedit:sitemap spec="/presence/theme/leftnav.html" onlychilden="true" targetlevel="1-4" -->
 <IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends"><TABLE width="100%" cellpadding="0" cellspacing="0">
 <TBODY><TR><TD>
 <DIV class="menuBox">
-<DIV class="menu"><A href="/presence/home/index.html"><IMG src="/presence/theme/icons/folder_home.png" alt="Home" class="icon"> Home</A></DIV>
-<DIV class="menu"><A href="/presence/home/resume.html"><IMG src="/presence/theme/icons/document.png" alt="Resume" class="icon"> Resume</A></DIV>
-<DIV class="menuSelf"><IMG src="/presence/theme/icons/exec.png" alt="Projects" class="icon"> Projects</DIV>
+<DIV class="menu"><A href="/presence/home/index.html"><IMG src="/presence/theme/icons/home.png" alt="Home" class="icon"> Home</A></DIV>
+<DIV class="menu"><A href="/presence/home/resume.html"><IMG src="/presence/theme/icons/resume.png" alt="Resume" class="icon"> Resume</A></DIV>
+<DIV class="menuSelf"><IMG src="/presence/theme/icons/projects.png" alt="Projects" class="icon"> Projects</DIV>
 </DIV>
 </TD><TD width="8">
 <IMG src="/presence/theme/blackdot.gif" width="8" height="2" alt="aggregates">
 </TD></TR>
 </TBODY></TABLE>
-<!-- /siteedit:navbar --><!-- siteedit:navbar target="children" spec="/presence/theme/leftnav.html" -->
 <IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends"><TABLE width="100%" cellpadding="0" cellspacing="0">
 <TBODY><TR><TD>
 <DIV class="menuBox">
-<DIV class="menu"><A href="/presence/home/about.html"><IMG src="/presence/theme/icons/info.png" alt="Presence" class="icon"> Presence</A></DIV>
+<DIV class="menu"><A href="/presence/home/about.html"><IMG src="/presence/theme/icons/about.png" alt="Presence" class="icon"> Presence</A></DIV>
 <DIV class="menu"><A href="/presence/projects/cep/index.html"><IMG src="/presence/theme/icons/folder_blue_open.png" alt="Castor Plug-in" class="icon"> Castor Plug-in</A></DIV>
 <DIV class="menu"><A href="/presence/projects/rss/index.html"><IMG src="/presence/theme/icons/xml_16.gif" alt="RSS Reader" class="icon"> RSS Reader</A></DIV>
 <DIV class="menu"><A href="/presence/projects/jelly4eclipse/index.html"><IMG src="/presence/theme/icons/folder_blue_open.png" alt="Eclipse Scripting" class="icon"> Eclipse Scripting</A></DIV>
@@ -66,15 +66,17 @@ function search(what, event) {
 </TD><TD width="8">
 </TD></TR>
 </TBODY></TABLE>
-<!-- /siteedit:navbar --></td>
-		<td valign="top"><div class="content"><!-- tpl:put name="body" -->
+<!-- /siteedit:sitemap --></td>
+		<td height="8"></td>
+	</tr>
+	<tr>
+		<td valign="top" class="content"><!-- tpl:put name="body" -->
 		<H1>Projects</H1>
 		<P>This section of the web site aggregates home pages of some of the open-source projects I have been involved with. Most of them are plug-ins for the <A
 			href="http://www.eclipse.org">Eclipse</A> platform, which is my favorite.</P>
 		<P>Most projects' development is hosted and managed on <A
-			href="http://sourceforge.net">SourceForge</A>.</P><!-- /tpl:put --></div></td>
+			href="http://sourceforge.net">SourceForge</A>.</P><!-- /tpl:put --></td>
 	</tr>
-</table><div 
-	class="footer">Copyright &copy; 2003 <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>.<br>Version $Id$.</div></body>
+</table><div class="footer">Copyright &copy; 2003 <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>.<br>Version $Id$.</div></body>
 </html>
 <!-- /tpl:insert -->

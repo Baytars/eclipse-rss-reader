@@ -5,6 +5,7 @@
 	content="text/html; charset=ANSI_X3.4-1968">
 <meta name="GENERATOR" content="IBM WebSphere Studio">
 <link rel="stylesheet" href="/presence/theme/blue.css" type="text/css">
+<link rel="shortcut icon" href="/presence/theme/icons/favicon.ico" type="image/x-icon">
 <!-- tpl:insert attribute="head" --><title>pnehrer.com</title><!-- /tpl:insert -->
 <script language="javascript">
 <!--
@@ -31,14 +32,17 @@ function search(what, event) {
 	src="/presence/theme/banner.png" 
 	width="320" 
 	height="32"
-	alt="pnehrer.com"></a></div><table 
+	alt="pnehrer.com"></a></div><table
 	width="100%" 
 	border="0" 
 	cellpadding="0" 
 	cellspacing="0">
 	<tr>
-		<td valign="top" align="center" width="148"><!-- siteedit:sitemap spec="/presence/theme/leftnav.html" onlychilden="true" targetlevel="1-4" --><!-- /siteedit:sitemap --></td>
-		<td valign="top"><div class="content"><!-- tpl:insert attribute="body" -->This page is currently under construction.<!-- /tpl:insert --></div></td>
+		<td valign="top" align="center" width="150" rowspan="2"><!-- siteedit:sitemap spec="/presence/theme/leftnav.html" onlychilden="true" targetlevel="1-4" --><!-- /siteedit:sitemap --></td>
+		<td height="8"></td>
+	</tr>
+	<tr>
+		<td valign="top" class="content"><!-- tpl:insert attribute="body" -->This page is currently under construction.<!-- /tpl:insert --></td>
 	</tr>
 </table><div class="footer">Copyright &copy; 2003 <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>.<br>Version $Id$.</div></body>
 </html>

@@ -1,7 +1,7 @@
 .menuBox {
 	border: 2px solid;
-	margin-left: 4px;
 	font-size: smaller;
+	background-color: white;
 }
 
 .menu {
@@ -38,24 +38,23 @@
 .header {
 	padding: 2px;
 	background-color: black;
-	margin: 4px 4px 0px 4px;
 }
 
 .content {
-	border: 2px solid;
-	margin: 4px 4px 0px 0px;
+	border: 2px solid black;
 	padding: 4px;
+	background-color: white;
 }
 
 .footer {
 	padding: 4px;
 	text-align: center;
-	clear: left;
+	clear: both;
 	font-size: smaller;
 }
 
 .icon {
-	border-style: none;
+	border: 1px solid black;
 	vertical-align: text-bottom;
 }
 
@@ -89,7 +88,7 @@ a.extLink:hover {
 }
 
 body {
-	margin: 0px;
+	margin: 4px;
 	font-family: sans-serif;
 }
 

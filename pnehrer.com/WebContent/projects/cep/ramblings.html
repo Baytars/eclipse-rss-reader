@@ -5,7 +5,9 @@
 	content="text/html; charset=ANSI_X3.4-1968">
 <meta name="GENERATOR" content="IBM WebSphere Studio">
 <link rel="stylesheet" href="/presence/theme/blue.css" type="text/css">
-<!-- tpl:put name="head" --><!-- /tpl:put -->
+<link rel="shortcut icon" href="/presence/theme/icons/favicon.ico" type="image/x-icon">
+<!-- tpl:put name="head" -->
+		<TITLE>Castor Plug-in Ramblings</TITLE><!-- /tpl:put -->
 <script language="javascript">
 <!--
 function search(what, event) {
@@ -35,17 +37,19 @@ function search(what, event) {
 	src="/presence/theme/banner.png" 
 	width="320" 
 	height="32"
-	alt="pnehrer.com"></a></div><table 
+	alt="pnehrer.com"></a></div><table
 	width="100%" 
 	border="0" 
 	cellpadding="0" 
 	cellspacing="0">
 	<tr>
-		<td valign="top" align="center" width="148"><!-- siteedit:navbar spec="/presence/theme/leftnav2.html" target="ancestor" -->
+		<td valign="top" align="center" width="150" rowspan="2"><!-- siteedit:sitemap spec="/presence/theme/leftnav.html" onlychilden="true" targetlevel="1-4" -->
 <IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends"><TABLE width="100%" cellpadding="0" cellspacing="0">
 <TBODY><TR><TD>
 <DIV class="menuBox">
-<DIV class="menuAncestor"><A href="/presence/projects/index.html"><IMG src="/presence/theme/icons/exec.png" alt="Projects" class="icon"> Projects</A></DIV>
+<DIV class="menu"><A href="/presence/home/index.html"><IMG src="/presence/theme/icons/home.png" alt="Home" class="icon"> Home</A></DIV>
+<DIV class="menu"><A href="/presence/home/resume.html"><IMG src="/presence/theme/icons/resume.png" alt="Resume" class="icon"> Resume</A></DIV>
+<DIV class="menuAncestor"><A href="/presence/projects/index.html"><IMG src="/presence/theme/icons/projects.png" alt="Projects" class="icon"> Projects</A></DIV>
 </DIV>
 </TD><TD width="8">
 </TD></TR>
@@ -53,12 +57,14 @@ function search(what, event) {
 <IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends"><TABLE width="100%" cellpadding="0" cellspacing="0">
 <TBODY><TR><TD>
 <DIV class="menuBox">
+<DIV class="menu"><A href="/presence/home/about.html"><IMG src="/presence/theme/icons/about.png" alt="Presence" class="icon"> Presence</A></DIV>
 <DIV class="menuAncestor"><A href="/presence/projects/cep/index.html"><IMG src="/presence/theme/icons/folder_blue_open.png" alt="Castor Plug-in" class="icon"> Castor Plug-in</A></DIV>
+<DIV class="menu"><A href="/presence/projects/rss/index.html"><IMG src="/presence/theme/icons/xml_16.gif" alt="RSS Reader" class="icon"> RSS Reader</A></DIV>
+<DIV class="menu"><A href="/presence/projects/jelly4eclipse/index.html"><IMG src="/presence/theme/icons/folder_blue_open.png" alt="Eclipse Scripting" class="icon"> Eclipse Scripting</A></DIV>
 </DIV>
 </TD><TD width="8">
 </TD></TR>
 </TBODY></TABLE>
-<!-- /siteedit:navbar --><!-- siteedit:navbar spec="/presence/theme/leftnav.html" target="self,sibling" -->
 <IMG src="/presence/theme/blackdot.gif" width="2" height="16" alt="extends"><TABLE width="100%" cellpadding="0" cellspacing="0">
 <TBODY><TR><TD>
 <DIV class="menuBox">
@@ -72,9 +78,11 @@ function search(what, event) {
 <IMG src="/presence/theme/blackdot.gif" width="8" height="2" alt="aggregates">
 </TD></TR>
 </TBODY></TABLE>
-<!-- /siteedit:navbar --><!-- siteedit:navbar target="children" spec="/presence/theme/leftnav.html" -->
-<!-- /siteedit:navbar --></td>
-		<td valign="top"><div class="content"><!-- tpl:put name="body" --><h1>What I still don't get</h1><p>I learned a great deal
+<!-- /siteedit:sitemap --></td>
+		<td height="8"></td>
+	</tr>
+	<tr>
+		<td valign="top" class="content"><!-- tpl:put name="body" --><h1>What I still don't get</h1><p>I learned a great deal
 about Eclipse while working on this small project. However, here some
 of
 the things I still don't get:</p>
@@ -99,9 +107,8 @@ resources? Should always use <span style="font-style: italic;">instanceof</span>
 first, then use IAdaptable? Why not always IAdaptable?</li>
             </ul>
 <p>I'm sure there are more. Maybe I'll add them when I remember. If anyone
-can provide any clarification, please feel free.</p><!-- /tpl:put --></div></td>
+can provide any clarification, please feel free.</p><!-- /tpl:put --></td>
 	</tr>
-</table><div 
-	class="footer">Copyright &copy; 2003 <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>.<br>Version $Id$.</div></body>
+</table><div class="footer">Copyright &copy; 2003 <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>.<br>Version $Id$.</div></body>
 </html>
 <!-- /tpl:insert -->
