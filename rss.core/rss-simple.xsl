@@ -5,7 +5,11 @@
 	Author: <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
 	Version $Id$
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+<xsl:stylesheet 
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+	version="1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	exclude-result-prefixes="dc">
 
     <xsl:template match="rss">
     	<xsl:apply-templates select="channel"/>
@@ -14,8 +18,11 @@
     <xsl:template match="channel">
     	<xsl:element name="channel">
     		<xsl:apply-templates select="title | link | description | pubDate"/>
+    		<xsl:if test="not(pubDate)">
+    			<xsl:apply-templates select="dc:date"/>
+    		</xsl:if>
     		<xsl:apply-templates select="@*"/>
-    		<xsl:apply-templates select="node()[not(self::title | self::link | self::description | self::pubDate)]"/>
+    		<xsl:apply-templates select="node()[not(self::title | self::link | self::description | self::pubDate | self::dc:date)]"/>
     	</xsl:element>
     </xsl:template>
     
@@ -30,8 +37,11 @@
     <xsl:template match="item">
     	<xsl:element name="item">
     		<xsl:apply-templates select="title | link | description | pubDate"/>
+    		<xsl:if test="not(pubDate)">
+    			<xsl:apply-templates select="dc:date"/>
+    		</xsl:if>
     		<xsl:apply-templates select="@*"/>
-    		<xsl:apply-templates select="node()[not(self::title | self::link | self::description | self::pubDate)]"/>
+    		<xsl:apply-templates select="node()[not(self::title | self::link | self::description | self::pubDate | self::dc:date)]"/>
     	</xsl:element>
     </xsl:template>
 
@@ -59,7 +69,7 @@
     	<xsl:attribute name="{local-name()}"><xsl:value-of select="."/></xsl:attribute>
     </xsl:template>
 
-    <xsl:template match="pubDate[parent::channel | parent::item]">
+    <xsl:template match="node()[parent::channel | parent::item][self::pubDate | self::dc:date]">
     	<xsl:attribute name="date"><xsl:value-of select="."/></xsl:attribute>
     </xsl:template>
     

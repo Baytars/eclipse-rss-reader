@@ -10,7 +10,8 @@
 	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 	xmlns:rss09="http://my.netscape.com/rdf/simple/0.9/"
 	xmlns:rss10="http://purl.org/rss/1.0/"
-	exclude-result-prefixes="rdf rss09 rss10"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	exclude-result-prefixes="rdf rss09 rss10 dc"
     version="1.0">
     
     <xsl:template match="rdf:RDF">
@@ -20,9 +21,9 @@
     
     <xsl:template match="rss09:channel | rss10:channel">
     	<xsl:element name="channel">
-    		<xsl:apply-templates select="rss09:title | rss10:title | rss09:link | rss10:link | rss09:description | rss10:description"/>
+    		<xsl:apply-templates select="rss09:title | rss10:title | rss09:link | rss10:link | rss09:description | rss10:description | dc:date"/>
     		<xsl:apply-templates select="@*"/>
-    		<xsl:apply-templates select="node()[not(self::rss09:title | self::rss10:title | self::rss09:link | self::rss10:link | self::rss09:description | self::rss10:description)]"/>
+    		<xsl:apply-templates select="node()[not(self::rss09:title | self::rss10:title | self::rss09:link | self::rss10:link | self::rss09:description | self::rss10:description | self::dc:date)]"/>
 			<xsl:apply-templates select="following-sibling::rss09:image | following-sibling::rss09:item | following-sibling::rss09:textinput"/>
     	</xsl:element>
     </xsl:template>
@@ -49,9 +50,9 @@
     
     <xsl:template match="rss09:item | rss10:item">
     	<xsl:element name="item">
-    		<xsl:apply-templates select="rss09:title | rss10:title | rss09:link | rss10:link | rss10:description"/>
+    		<xsl:apply-templates select="rss09:title | rss10:title | rss09:link | rss10:link | rss10:description | dc:date"/>
     		<xsl:apply-templates select="@*"/>
-    		<xsl:apply-templates select="node()[not(self::rss09:title | self::rss10:title | self::rss09:link | self::rss10:link | self::rss10:description)]"/>
+    		<xsl:apply-templates select="node()[not(self::rss09:title | self::rss10:title | self::rss09:link | self::rss10:link | self::rss10:description | self::dc:date)]"/>
     	</xsl:element>
     </xsl:template>
 
@@ -67,10 +68,10 @@
     	</xsl:element>
     </xsl:template>
 
-    <xsl:template match="rss09:title | rss09:link | rss09:description | rss09:url | rss09:name | rss10:title | rss10:link | rss10:description | rss10:url | rss10:name">
+    <xsl:template match="rss09:title | rss09:link | rss09:description | rss09:url | rss09:name | rss10:title | rss10:link | rss10:description | rss10:url | rss10:name | dc:date">
     	<xsl:attribute name="{local-name()}"><xsl:value-of select="."/></xsl:attribute>
     </xsl:template>
-    
+
     <xsl:template match="text()[parent::rss09:channel | parent::rss09:image | parent::rss09:item | parent::rss09:textinput | parent::rss10:channel | parent::rss10:image | parent::rss10:item | parent::rss10:textinput]"/>
 
     <xsl:template match="rdf:* | rss09:* | rss10:* | @rdf:* | @rss09:* | @rss10:*"/>

@@ -4,7 +4,11 @@
 	Author: <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
 	Version $Id$
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0" xmlns:atom="http://purl.org/atom/ns#">
+<xsl:stylesheet 
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+	version="1.0" 
+	xmlns:atom="http://purl.org/atom/ns#"
+	exclude-result-prefixes="atom">
 
     <xsl:template match="atom:feed">
     	<xsl:element name="channel">
@@ -47,7 +51,7 @@
     </xsl:template>
 
     <xsl:template match="atom:modified[parent::atom:feed | parent::atom:entry]">
-    	<xsl:attribute name="date"><xsl:choose><xsl:when test="substring(., string-length(.)) = 'Z'"><xsl:value-of select="substring(., 1, string-length(.) - 1)"/>-0000</xsl:when><xsl:otherwise><xsl:value-of select="."/></xsl:otherwise></xsl:choose></xsl:attribute>
+    	<xsl:attribute name="date"><xsl:value-of select="."/></xsl:attribute>
     </xsl:template>
     
     <xsl:template match="text()[parent::atom:feed | parent::atom:entry]"/>

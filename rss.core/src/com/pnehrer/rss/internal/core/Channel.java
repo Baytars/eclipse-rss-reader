@@ -796,7 +796,17 @@ public class Channel
 				return format.parse(str);
 			} 
         	catch(ParseException ex2) {
-        		format = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ");
+        		int len = str.length();
+        		if (str.endsWith("Z"))
+        			str = str.substring(0, len - 1) + "GMT";
+        		else if (len >= 6)
+        			switch (str.charAt(len - 6)) {
+						case '+':
+						case '-':
+							str = str.substring(0, len - 6) + "GMT" + str.substring(len - 6);
+	        		}
+        		
+        		format = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssz");
         		try {
 					return format.parse(str);
 				} 
