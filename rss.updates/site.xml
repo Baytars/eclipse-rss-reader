@@ -4,12 +4,8 @@
    <description url="http://morphine.sourceforge.net">
       Eclipse RSS Reader.
    </description>
-   <feature url="features/com.pnehrer.rss_1.1.0.jar" id="com.pnehrer.rss" version="1.1.0">
-      <category name="default"/>
-   </feature>
-   <feature url="features/com.pnehrer.rss.wsad_1.1.0.jar" id="com.pnehrer.rss.wsad" version="1.1.0">
-      <category name="default"/>
-   </feature>
+   <feature url="features/com.pnehrer.rss_1.2.0.jar" id="com.pnehrer.rss" version="1.2.0"/>
+   <feature url="features/com.pnehrer.rss.wsad_1.2.0.jar" id="com.pnehrer.rss.wsad" version="1.2.0"/>
    <category-def name="default" label="Eclipse RSS Reader">
       <description>
          Eclipse RSS Reader features.

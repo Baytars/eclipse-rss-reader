@@ -2,7 +2,7 @@
 <fragment
    id="com.pnehrer.rss.ui.wsad"
    name="RSS UI extensions for WSAD"
-   version="1.1.0"
+   version="1.2.0"
    provider-name="Peter Nehrer"
    plugin-id="com.pnehrer.rss.ui"
    plugin-version="1.0.0">
