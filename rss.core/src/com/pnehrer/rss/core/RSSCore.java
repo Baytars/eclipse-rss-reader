@@ -4,66 +4,46 @@
  */
 package com.pnehrer.rss.core;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.text.DateFormat;
-import java.util.Date;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.Templates;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceDeltaVisitor;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IPluginDescriptor;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Preferences;
-import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubProgressMonitor;
-import org.xml.sax.SAXException;
+import org.w3c.dom.Document;
 
 import com.pnehrer.rss.core.internal.Channel;
 import com.pnehrer.rss.core.internal.ChannelManager;
-import com.pnehrer.rss.core.internal.ChannelBuilder;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
-public class RSSCore extends Plugin implements IResourceChangeListener {
+public class RSSCore extends Plugin {
 
     public static final String PLUGIN_ID = "com.pnehrer.rss.core";
-    private static final String PREPROCESSOR = "internalize.xsl";
-    private static final String CHANNEL_URL = "channelURL";
+    private static final String TRANSLATOR_EXTENSION = "translator";
+    private static final String TRANSLATOR_ELEMENT = "translator";
+    private static final String CLASS_ATTR = "class";
+    private static final String ID_ATTR = "id";
+    private static final String DESCRIPTION_ATTR = "description";
     
     public static final String PREF_UPDATE_INTERVAL = "updateInterval";
-    public static final QualifiedName PROP_LAST_UPDATED = 
-        new QualifiedName(PLUGIN_ID, "lastUpdated");
 
     private static RSSCore instance;
     
     private final ChannelManager channelManager = new ChannelManager();
-    private Templates preprocessor;
+    private final Map translators = new HashMap();
+    private volatile boolean translatorsLoaded;
     private boolean prefInit;
 
     /**
@@ -78,49 +58,68 @@ public class RSSCore extends Plugin implements IResourceChangeListener {
         return instance;
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.core.runtime.Plugin#startup()
-     */
-    public void startup() throws CoreException {
-        super.startup();
-
-        TransformerFactory factory = TransformerFactory.newInstance();
-        try {
-            preprocessor = factory.newTemplates(
-                new StreamSource(
-                    RSSCore.getPlugin().openStream(
-                        new Path(PREPROCESSOR))));
+    private synchronized void loadTranslators() throws CoreException {
+        if(!translatorsLoaded) { 
+            IPluginDescriptor pd = getDescriptor();
+            IExtensionPoint ep = pd.getExtensionPoint(TRANSLATOR_EXTENSION);
+            if(ep != null) {
+                IExtension[] extensions = ep.getExtensions();
+                for(int i = 0, n = extensions.length; i < n; ++i) {
+                    IConfigurationElement[] elements =
+                        extensions[i].getConfigurationElements();
+                    for(int j = 0, m = elements.length; j < m; ++j) {
+                        if(!TRANSLATOR_ELEMENT.equals(elements[i].getName()))
+                            continue;
+                            
+                        Object translator = 
+                            elements[i].createExecutableExtension(CLASS_ATTR);
+                        if(translator instanceof ISourceTranslator) {
+                            String id = elements[i].getAttribute(ID_ATTR);
+                            String description = 
+                                elements[i].getAttribute(DESCRIPTION_ATTR);
+                            SourceTranslatorDelegate delegate =
+                                new SourceTranslatorDelegate(
+                                    id,
+                                    description == null ? id : description,
+                                    (ISourceTranslator)translator);
+                                    
+                            translators.put(id, delegate);
+                        }
+                    }
+                }
+            }
+            
+            translatorsLoaded = true;
         }
-        catch(TransformerConfigurationException ex) {
-            throw new CoreException(
-                new Status(
-                    IStatus.ERROR,
-                    PLUGIN_ID,
-                    0,
-                    "could not initialize preprocessor",
-                    ex));
-        }
-        catch(IOException ex) {
-            throw new CoreException(
-                new Status(
-                    IStatus.ERROR,
-                    PLUGIN_ID,
-                    0,
-                    "could not initialize preprocessor",
-                    ex));
-        }
-        
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.core.runtime.Plugin#shutdown()
-     */
-    public void shutdown() throws CoreException {
-        ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
-        super.shutdown();
-    }
+    public SourceTranslatorDelegate[] getTranslators(Document document)
+        throws CoreException {
 
+        if(!translatorsLoaded)
+            loadTranslators();
+
+        Collection result = new HashSet();
+        for(Iterator i = translators.values().iterator(); i.hasNext();) {
+            SourceTranslatorDelegate delegate = 
+                (SourceTranslatorDelegate)i.next();
+            if(delegate.getTranslator().canTranslate(document))
+                result.add(delegate);
+        }
+        
+        return (SourceTranslatorDelegate[])result.toArray(
+            new SourceTranslatorDelegate[result.size()]);
+    }
+    
+    public SourceTranslatorDelegate getTranslator(String id) 
+        throws CoreException {
+            
+        if(!translatorsLoaded)
+            loadTranslators();
+
+        return (SourceTranslatorDelegate)translators.get(id);
+    }
+    
     /* (non-Javadoc)
      * @see org.eclipse.core.runtime.Plugin#initializeDefaultPluginPreferences()
      */
@@ -131,177 +130,33 @@ public class RSSCore extends Plugin implements IResourceChangeListener {
             prefs.setDefault(PREF_UPDATE_INTERVAL, 30);
         }
     }
-
-    public void download(
-        URL url, 
-        IFile file, 
-        IProgressMonitor monitor) 
-        throws CoreException {
-        
-        if(monitor != null)
-            monitor.beginTask("download", 2);
-                
-        try {        
-            InputStream input = url.openStream();
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-            
-            Transformer transformer = preprocessor.newTransformer();
-            transformer.setParameter(CHANNEL_URL, url.toExternalForm());
-            Channel channel = channelManager.get(file);
-            Integer updateInterval = channel == null ?
-                new Integer(getPluginPreferences().getInt(PREF_UPDATE_INTERVAL)) :
-                channel.getUpdateInterval();
-            transformer.setParameter(PREF_UPDATE_INTERVAL, updateInterval);
-            transformer.transform(
-                new StreamSource(input),
-                new StreamResult(output));
-
-            if(monitor != null) 
-                monitor.worked(1);
-
-            input = new ByteArrayInputStream(output.toByteArray());        
-            SubProgressMonitor subMonitor = monitor == null ?
-                null :
-                new SubProgressMonitor(monitor, 1);
-                
-            if(file.exists()) file.setContents(input,true, true, subMonitor);
-            else file.create(input, true, subMonitor);
-
-            file.setPersistentProperty(
-                PROP_LAST_UPDATED, 
-                DateFormat.getInstance().format(new Date()));
-        }
-        catch(TransformerException ex) {
-            throw new CoreException(
-                new Status(
-                    IStatus.ERROR,
-                    PLUGIN_ID,
-                    0,
-                    "could not parse external channel source",
-                    ex));
-        }
-        catch(IOException ex) {
-            throw new CoreException(
-                new Status(
-                    IStatus.ERROR,
-                    PLUGIN_ID,
-                    0,
-                    "could not parse external channel source",
-                    ex));
-        }
-        finally {
-            if(monitor != null)
-                monitor.done();
-        }
-    }
-    
-    private void parse(InputStream input, ChannelBuilder builder) 
-        throws CoreException {
-            
-        SAXParserFactory factory = SAXParserFactory.newInstance();
-        factory.setNamespaceAware(true);
-        try {
-            SAXParser parser = factory.newSAXParser();
-            parser.parse(input, builder);
-        }
-        catch(ParserConfigurationException ex) {
-            throw new CoreException(
-                new Status(
-                    IStatus.ERROR,
-                    PLUGIN_ID,
-                    0,
-                    "could not parse internal channel source",
-                    ex));
-        }
-        catch(SAXException ex) {
-            throw new CoreException(
-                new Status(
-                    IStatus.ERROR,
-                    PLUGIN_ID,
-                    0,
-                    "could not parse internal channel source",
-                    ex));
-        } 
-        catch(IOException ex) {
-            throw new CoreException(
-                new Status(
-                    IStatus.ERROR,
-                    PLUGIN_ID,
-                    0,
-                    "could not parse internal channel source",
-                    ex));
-        }
-    }
     
     public IChannel create(IFile file) throws CoreException {
         Channel channel = channelManager.get(file);
         if(channel == null) {
-            ChannelBuilder builder = new ChannelBuilder(file);
-            parse(file.getContents(), builder);
-            channel = builder.getResult();
+            channel = Channel.load(file);
             channelManager.add(channel);
         }
         
         return channel;
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
-     */
-    public void resourceChanged(IResourceChangeEvent event) {
-        IResource resource = event.getResource();
-        if(event.getType() == IResourceChangeEvent.POST_CHANGE) {
-            try {
-                if(event.getDelta() == null) {
-                    if(resource instanceof IFile)
-                        channelSourceChanged((IFile)resource);
-                }
-                else {
-                    event.getDelta().accept(new ResourceDeltaVisitor());
-                }
-            }
-            catch(CoreException ex) {
-                getLog().log(
-                    new Status(
-                        IStatus.ERROR,
-                        PLUGIN_ID,
-                        0,
-                        "could not process resource changes",
-                        ex));
-            }
+    public IChannel newChannel(IFile file, Document document) 
+        throws CoreException {
+            
+        if(channelManager.get(file) != null) {
+            throw new CoreException(
+                new Status(
+                    IStatus.ERROR,
+                    PLUGIN_ID,
+                    0,
+                    "channel already exists",
+                    null));
         }
         else {
-            channelManager.remove((IProject)event.getResource());
-        }
-    }
-    
-    private void channelSourceChanged(IFile file) throws CoreException {
-        Channel channel = channelManager.get(file);
-        if(channel != null) {
-            parse(file.getContents(), new ChannelBuilder(channel));
-            channel.firePropertyChange();
-        }
-    }
-    
-    private class ResourceDeltaVisitor implements IResourceDeltaVisitor {
-
-        /* (non-Javadoc)
-         * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse.core.resources.IResourceDelta)
-         */
-        public boolean visit(IResourceDelta delta) throws CoreException {
-            IResource resource = delta.getResource();
-            if(resource instanceof IFile) {
-                IFile file = (IFile)resource;
-                if(delta.getKind() == IResourceDelta.REMOVED) {
-                    channelManager.remove(file);
-                }
-                else if(delta.getKind() == IResourceDelta.CHANGED) {
-                    channelSourceChanged(file);
-                }
-                
-                return false;
-            }            
-            else return true;
+            Channel channel = Channel.create(file, document);
+            channelManager.add(channel);
+            return channel;
         }
     }
 }

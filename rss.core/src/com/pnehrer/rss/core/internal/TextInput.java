@@ -4,7 +4,10 @@
  */
 package com.pnehrer.rss.core.internal;
 
+import java.beans.PropertyChangeSupport;
+
 import org.eclipse.core.runtime.PlatformObject;
+import org.w3c.dom.Element;
 
 import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.ITextInput;
@@ -14,24 +17,22 @@ import com.pnehrer.rss.core.ITextInput;
  */
 public class TextInput extends PlatformObject implements ITextInput {
 
-    private Channel channel;
+    private static final String TITLE = "title";
+    private static final String DESCRIPTION = "description";
+    private static final String NAME = "name";
+    private static final String LINK = "link";
+
+    private final PropertyChangeSupport propertyChangeSupport = 
+        new PropertyChangeSupport(this);
+    
+    private final Channel channel;
     private String title;
     private String description;
     private String name;
     private String link;
     
-    TextInput(
-        Channel channel, 
-        String title, 
-        String description, 
-        String name, 
-        String link) {
-            
+    TextInput(Channel channel) {
         this.channel = channel;
-        this.title = title;
-        this.description = description;
-        this.name = name;
-        this.link = link;
     }
 
     /* (non-Javadoc)
@@ -47,6 +48,12 @@ public class TextInput extends PlatformObject implements ITextInput {
     public String getTitle() {
         return title;
     }
+    
+    private void setTitle(String title) {
+        Object oldValue = this.title;
+        this.title = title;
+        firePropertyChange(TITLE, oldValue, title);
+    }
 
     /* (non-Javadoc)
      * @see com.pnehrer.rss.core.ITextInput#getDescription()
@@ -55,17 +62,75 @@ public class TextInput extends PlatformObject implements ITextInput {
         return description;
     }
 
+    private void setDescription(String description) {
+        Object oldValue = this.description;
+        this.description = description;
+        firePropertyChange(DESCRIPTION, oldValue, description);
+    }
+
     /* (non-Javadoc)
      * @see com.pnehrer.rss.core.ITextInput#getName()
      */
     public String getName() {
         return name;
     }
+    
+    private void setName(String name) {
+        Object oldValue = this.name;
+        this.name = name;
+        firePropertyChange(NAME, oldValue, name);
+    }
 
     /* (non-Javadoc)
      * @see com.pnehrer.rss.core.ITextInput#getLink()
      */
     public String getLink() {
+        return link;
+    }
+    
+    private void setLink(String link) {
+        Object oldValue = this.link;
+        this.link = link;
+        firePropertyChange(LINK, oldValue, link);
+    }
+    
+    private void firePropertyChange(
+        String propertyName, 
+        Object oldValue, 
+        Object newValue) {
+            
+        propertyChangeSupport.firePropertyChange(
+            propertyName, 
+            oldValue, 
+            newValue);
+    }
+    
+    void update(Element textInput) {
+        setTitle(textInput.getAttribute(TITLE));
+        setDescription(textInput.getAttribute(DESCRIPTION));
+        setName(textInput.getAttribute(NAME));
+        setLink(textInput.getAttribute(LINK));
+    }
+    
+    void save(Element textInput) {
+        textInput.setAttribute(TITLE, title);
+        textInput.setAttribute(DESCRIPTION, description);
+        textInput.setAttribute(NAME, name);
+        textInput.setAttribute(LINK, link);
+    }
+    
+    public boolean equals(Object other) {
+        if(other instanceof TextInput)
+            return link.equals(((TextInput)other).link);
+        else
+            return false;
+    }
+    
+    public int hashCode() {
+        return link.hashCode();
+    }
+    
+    public String toString() {
         return link;
     }
 }

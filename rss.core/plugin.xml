@@ -14,4 +14,15 @@
    </requires>
 
 
+   <extension-point id="translator" name="Source Translator" schema="schema/translator.exsd"/>
+
+   <extension
+         point="com.pnehrer.rss.core.translator">
+      <translator
+            description="Default translator."
+            class="com.pnehrer.rss.core.internal.SourceTranslator"
+            id="default">
+      </translator>
+   </extension>
+
 </plugin>
