@@ -37,6 +37,11 @@ public class ChannelPropertySource implements IPropertySource {
         new PropertyDescriptor(new Integer(LINK), "link"),
         new PropertyDescriptor(new Integer(DATE), "date"),
         new PropertyDescriptor(new Integer(ITEM_COUNT), "items")};
+    
+    static {
+    	for (int i = 0; i < PROPERTY_DESCRIPTORS.length; ++i)
+    		((PropertyDescriptor)PROPERTY_DESCRIPTORS[i]).setCategory("Channel");
+    }
         
     private final IChannel channel;
     

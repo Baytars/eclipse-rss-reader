@@ -24,6 +24,11 @@ public class ItemPropertySource implements IPropertySource {
         new PropertyDescriptor(new Integer(LINK), "link"),
         new PropertyDescriptor(new Integer(DATE), "date")};
 
+    static {
+    	for (int i = 0; i < PROPERTY_DESCRIPTORS.length; ++i)
+    		((PropertyDescriptor)PROPERTY_DESCRIPTORS[i]).setCategory("Item");
+    }
+
     private final IItem item;
     
     ItemPropertySource(IItem item) {

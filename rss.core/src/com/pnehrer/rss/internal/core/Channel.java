@@ -15,6 +15,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -789,7 +790,20 @@ public class Channel
             return DateFormat.getInstance().parse(str);
         }
         catch(ParseException ex) {
-            return null;
+        	SimpleDateFormat format = 
+        		new SimpleDateFormat("EEE, d MMM yy hh:mm:ss zzz");
+        	try {
+				return format.parse(str);
+			} 
+        	catch(ParseException ex2) {
+        		format = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ");
+        		try {
+					return format.parse(str);
+				} 
+        		catch(ParseException ex3) {
+        			return null;
+				}
+			}
         }
     }
     
