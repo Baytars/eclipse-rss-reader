@@ -1,0 +1,38 @@
+<!-- tpl:insert page="/theme/master.htpl" --><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<META name="GENERATOR" content="IBM WebSphere Studio">
+<META http-equiv="Content-Style-Type" content="text/css">
+<LINK href="/help/topic/com.pnehrer.rss.doc.user/doc/theme/Master.css"
+	rel="stylesheet" type="text/css">
+
+<!-- tpl:put name="head" --><TITLE>Bugzilla RSS Plugin</TITLE><!-- /tpl:put -->
+</HEAD>
+<BODY>
+<!-- tpl:put name="content" --><H1>Bugzilla RSS Plugins</H1>
+<P>This plugin provides simple translators for <A href="http://www.bugzilla.org">Bugzilla</A> 
+query result and bug detail pages. This is useful if you want to keep track of any new
+bugs that may match certain query criteria, as well as any additional comments added to a specific bug report.
+It works with Bugzilla versions that support XML-based query results and bug details.</P>
+<H2>Query Results</H2>
+<P>To set up a channel based on Bugzilla query results, start with the results page's URL,
+then append "&amp;ctype=rdf" to the end of it. This will cause the results page to be returned
+in the RDF format, which is recognized by this plugin. If you want to provide a custom title
+for the channel (the query results don't come with any descriptive titles by default), 
+append <CODE>"&amp;title=&lt;YOUR+TITLE&gt;&amp;ctype=rdf"</CODE>
+to the end of the URL instead. Be careful to properly URL-encode the title parameter.</P>
+<P>E.g., <CODE>https://bugs.eclipse.org/bugs/buglist.cgi?query_format=specific&amp;order=relevance+desc&amp;bug_status=__open__&amp;product=&amp;content=rss&amp;title=All+rss&amp;ctype=rdf</CODE></P>
+<H2>Bug Detail</H2>
+<P>To set up a channel based on a Bugzilla bug detail page, start with the page's URL,
+then replace the file part (<CODE>show_bug.cgi</CODE>) with <CODE>xml.cgi</CODE>. This will
+cause the URL to return the bug detail data in XML format, which is recognized by this plugin.</P>
+<P>E.g., <CODE>https://bugs.eclipse.org/bugs/xml.cgi?id=83885</CODE></P>
+<!-- /tpl:put -->
+<HR size="1" noshade>
+<P align="center" style="font-size: smaller">Copyright &copy; 2005
+<A href="mailto:pnehrer@users.sourceforge.net">Peter Nehrer</A>. All rights reserved.<BR>
+Version: <!-- tpl:insert attribute="version" -->$Id$<!-- /tpl:insert --></P>
+</BODY>
+</HTML>
+<!-- /tpl:insert -->

@@ -14,6 +14,7 @@
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="com.pnehrer.rss.core"/>
+      <import plugin="org.eclipse.help"/>
    </requires>
    <extension
          point="com.pnehrer.rss.core.translator">
@@ -25,6 +26,12 @@
             class="com.pnehrer.rss.bugzilla.BugListTranslator"
             description="Bugzilla XML bug list translator."
             id="buglist"/>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="false"/>
    </extension>
 
 </plugin>
