@@ -33,9 +33,9 @@
 	</target>
 	
 	<target name="clean">
-		<delete failonerror="false">
-			<fileset dir="src/base/eclipse" includes="plugins,features"/>
-			<fileset dir="src/source/eclipse" includes="plugins,features"/>
+		<delete failonerror="false" includeemptydirs="true">
+			<fileset dir="src/base/eclipse" includes="plugins/**,features/**"/>
+			<fileset dir="src/source/eclipse" includes="plugins/**,features/**"/>
 			<fileset dir="dist/standard" includes="*.jar"/>
 			<fileset dir="dist/web" includes="*.jar"/>
 			<fileset dir="." includes="install.xml"/>
@@ -64,7 +64,7 @@
 		<eclipse.convertPath property="compiler.jar" resourcePath="/rss.install/compiler.jar"/>
 		<taskdef name="izpack" classpath="${compiler.jar}" classname="com.izforge.izpack.ant.IzPackTask"/>
 		<izpack input="${basedir}/install.xml"
-		        output="${basedir}/dist/${install.type}/install-${feature.id}.jar"
+		        output="${basedir}/dist/${install.type}/install-${feature.id}_${feature.version}.jar"
 		        installerType="${install.type}-kunststoff"
 		        basedir="${basedir}"
 		        izPackDir="${user.home}/IzPack/"/>
