@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
 
-   <description url="http://morphine.sourceforge.net">
-      Eclipse RSS Reader.
+   <description url="http://morphine.sourceforge.net/updates">
+      Eclipse RSS Reader for Eclipse 3.0.
    </description>
-   <feature url="features/com.pnehrer.rss_1.3.0.jar" id="com.pnehrer.rss" version="1.3.0">
-      <category name="default"/>
-   </feature>
-   <feature url="features/com.pnehrer.rss.source_1.3.0.jar" id="com.pnehrer.rss.source" version="1.3.0">
-      <category name="default"/>
-   </feature>
-   <feature url="features/com.pnehrer.rss.wsad_1.3.0.jar" id="com.pnehrer.rss.wsad" version="1.3.0">
-      <category name="default"/>
-   </feature>
-   <category-def name="default" label="Eclipse RSS Reader">
-      <description>
-         Eclipse RSS Reader features.
-      </description>
-   </category-def>
 </site>

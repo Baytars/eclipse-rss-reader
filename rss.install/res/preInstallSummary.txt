@@ -1,0 +1,18 @@
+Ready to install:
+
+Application:
+  $APP_NAME
+	
+Version:
+  $APP_VER
+
+Installation path:
+  $INSTALL_PATH
+	
+Eclipse installation:
+  $ECLIPSE_HOME
+	
+Uninstaller:
+  $INSTALL_PATH_FWD/Uninstaller/uninstaller.jar
+  
+Press "Next" to proceed...

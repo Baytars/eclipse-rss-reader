@@ -53,6 +53,9 @@ import org.htmlparser.util.SimpleNodeIterator;
 public class WizardAutoDiscoveryPage extends WizardPage {
 
 	private static final String RSS_TYPE = "application/rss+xml";
+	private static final String RDF_TYPE = "application/rdf+xml";
+	private static final String APP_TYPE = "application/xml";
+	private static final String XML_TYPE = "text/xml";
 	private static final String ATOM_TYPE = "application/atom+xml";
 	private static final String[] RSS_RELS = {"alternate"};
 	private static final String[] ATOM_RELS = {"alternate", "service.feed"};
@@ -125,7 +128,11 @@ public class WizardAutoDiscoveryPage extends WizardPage {
 					for (SimpleNodeIterator i = nodes.elements(); i.hasMoreNodes();) {
 						Tag tag = (Tag)i.nextNode();
 						String type = tag.getAttribute("type");
-						if (RSS_TYPE.equalsIgnoreCase(type)) {
+						if (RSS_TYPE.equalsIgnoreCase(type) 
+							|| RDF_TYPE.equalsIgnoreCase(type)
+							|| APP_TYPE.equalsIgnoreCase(type)
+							|| XML_TYPE.equalsIgnoreCase(type)) {
+
 							if (!containsKeyword(tag.getAttribute("rel"), RSS_RELS))
 								continue;
 						}
@@ -170,7 +177,7 @@ public class WizardAutoDiscoveryPage extends WizardPage {
 		});
         
         label = new Label(topLevel, SWT.LEFT);
-        label.setText("Auto-detected feeds:");
+        label.setText("Auto-discovered feeds:");
         gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_CENTER);
         gd.horizontalSpan = 3;
         label.setLayoutData(gd);

@@ -3,7 +3,7 @@
 <plugin
    id="com.pnehrer.rss.doc.user"
    name="Eclipse RSS Reader User Documentation"
-   version="2.0.0"
+   version="2.0.1"
    provider-name="Peter Nehrer">
 
    <requires>

@@ -1,19 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site-build
-      feature-location="features"
-      plugin-location="plugins"
       autobuild="false"
       scrub-output="true"
       use-console="true">
-   <feature id="com.pnehrer.rss" version="1.0.0"/>
-   <feature id="com.pnehrer.rss.wsad" version="1.0.0"/>
-   <feature id="com.pnehrer.rss" version="1.1.0"/>
-   <feature id="com.pnehrer.rss.wsad" version="1.1.0"/>
-   <feature id="com.pnehrer.rss" version="1.2.0"/>
-   <feature id="com.pnehrer.rss.wsad" version="1.2.0"/>
-   <feature id="com.pnehrer.rss" version="1.2.1"/>
-   <feature id="com.pnehrer.rss.wsad" version="1.2.1"/>
-   <feature id="com.pnehrer.rss" version="1.3.0"/>
-   <feature id="com.pnehrer.rss.source" version="1.3.0"/>
-   <feature id="com.pnehrer.rss.wsad" version="1.3.0"/>
+   <feature id="com.pnehrer.rss" version="2.0.1"/>
+   <feature id="com.pnehrer.rss.source" version="2.0.1"/>
 </site-build>

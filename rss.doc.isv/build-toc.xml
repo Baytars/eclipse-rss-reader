@@ -2,9 +2,9 @@
 <project name="rss.doc.isv toc.xml" default="generate">
 
 <target name="generate">
-	<eclipse.convertPath property="docRoot" fileSystemPath="${basedir}/doc"/>
+	<basename property="project" file="${basedir}"/>
 	<xslt style="website2toc.xsl" in=".website-config" out="toc.xml">
-		<param name="docRoot" expression="${docRoot}"/>
+		<param name="project" expression="${project}"/>
 		<param name="link_to" expression="../com.pnehrer.rss.doc.user/toc-book.xml#additional"/>
 	</xslt>
 </target>

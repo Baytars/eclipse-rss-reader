@@ -1,14 +1,18 @@
 <?xml version="1.0"?>
 <installation version="1.0">
     <info>
-        <appname>@APP_NAME@</appname>
-        <appversion>@APP_VER@</appversion>
+        <appname>@FEATURE_LABEL@</appname>
+        <appversion>@FEATURE_VERSION@</appversion>
         <authors>
             <author name="Peter Nehrer" email="pnehrer@users.sourceforge.net"/>
         </authors>
-        <url>http://morphine.sourceforge.net</url>
+        <url>@FEATURE_URL@</url>
     </info>
     
+	<variables>
+		<variable name="FEATURE_ID" value="@FEATURE_ID@"/>
+	</variables>
+
     <guiprefs width="640" height="440" resizable="yes"/>
     
     <locale>
@@ -17,9 +21,11 @@
     
     <resources>
         <res id="Installer.image" src="res/rss-about.png"/>
-        <res id="HTMLInfoPanel.info" src="res/readme-rss.feature.html" parse="yes"/>
-        <res id="HTMLLicencePanel.licence" src="res/license.html"/>
+        <res id="HTMLInfoPanel.info" src="res/readme.html" parse="yes"/>
+        <res id="HTMLLicencePanel.licence" src="src/eclipse/features/@FEATURE_ID@_@FEATURE_VERSION@/license.html"/>
+		<res id="shortcutSpec.xml" src="res/shortcutSpec.xml"/>
         <res id="userInputSpec.xml" src="res/userInputSpec.xml"/>
+		<res id="XInfoPanel.info" src="res/preInstallSummary.txt" parse="yes"/>
     </resources>
     
     <panels>
@@ -28,7 +34,9 @@
         <panel classname="HTMLLicencePanel"/>
         <panel classname="PacksPanel"/>
         <panel classname="TargetPanel"/> 
+        <panel classname="ShortcutPanel"/> 
         <panel classname="UserInputPanel"/>
+        <panel classname="XInfoPanel"/>
         <panel classname="InstallPanel"/>
         <panel classname="FinishPanel"/>
     </panels>
@@ -37,9 +45,10 @@
         <pack name="Base" required="yes">
             <description>Eclipse RSS Reader base plug-ins, including user documentation.</description>
             <file src="src/base/eclipse" targetdir="$INSTALL_PATH"/>
-            <file src="src/com.pnehrer.rss.link" targetdir="$ECLIPSE_HOME/links"/>
+            <file src="src/@FEATURE_ID@.link" targetdir="$ECLIPSE_HOME/links"/>
+            <file src="src/readme.html" targetdir="$INSTALL_PATH"/>
             <parsable targetfile="$INSTALL_PATH/eclipse/.eclipseextension"/>
-            <parsable targetfile="$ECLIPSE_HOME/links/com.pnehrer.rss.link"/>
+            <parsable targetfile="$ECLIPSE_HOME/links/@FEATURE_ID@.link"/>
         </pack>
         <pack name="Sources" required="no" preselected="no">
             <description>Source code and documentation for the Eclipse RSS Reader. Useful for developers who wish to extend the application.</description>
@@ -47,4 +56,5 @@
         </pack>
     </packs>
     
+	<native type="izpack" name="ShellLink.dll"/>
 </installation>

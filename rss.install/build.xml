@@ -1,77 +1,51 @@
 <project name="Installer for Eclipse RSS Reader" default="standard">
 
-	<property name="feature.project" value="rss.feature"/>
-
 	<target name="_init">
-		<eclipse.convertPath property="rss.feature.dir" resourcePath="${feature.project}"/>
-		<xmlproperty file="${rss.feature.dir}/feature.xml" collapseattributes="true"/>
-		<eclipse.convertPath property="rss.source.feature.dir" resourcePath="rss.source.feature"/>
-		<xmlproperty file="${rss.source.feature.dir}/feature.xml" collapseattributes="true" prefix="source"/>
+		<eclipse.convertPath property="feature.dir" resourcePath="/rss.feature"/>
+		<xmlproperty file="${feature.dir}/feature.xml" collapseattributes="true"/>
+		<eclipse.convertPath property="source.feature.dir" resourcePath="/rss.source.feature"/>
+		<xmlproperty file="${source.feature.dir}/feature.xml" collapseattributes="true" prefix="source"/>
 	</target>
 	
 	<target name="_prepare">
 		<unzip dest="src/base/eclipse">
-			<fileset dir="${rss.feature.dir}" includes="${feature.id}_${feature.version}.bin.dist.zip"/>
+			<fileset dir="${feature.dir}" includes="${feature.id}_${feature.version}.bin.dist.zip"/>
 		</unzip>
 		<unzip dest="src/source/eclipse">
-			<fileset dir="${rss.source.feature.dir}" includes="${source.feature.id}_${source.feature.version}.bin.dist.zip"/>
-			<fileset dir="${rss.feature.dir}" includes="${feature.id}_${feature.version}.src.zip"/>
+			<fileset dir="${source.feature.dir}" includes="${source.feature.id}_${source.feature.version}.bin.dist.zip"/>
+			<fileset dir="${feature.dir}" includes="${feature.id}_${feature.version}.src.zip"/>
 		</unzip>
-	</target>
-	
-	<target name="build" depends="_init">
-		<eclipse.buildScript
-			elements="feature@${feature.project}" 
-			install="${basedir}/../.."/>
-		<ant dir="${rss.feature.dir}" target="build.jars"/>
-		<ant dir="${rss.feature.dir}" target="build.sources"/>
-		<ant dir="${rss.feature.dir}" target="build.zips"/>
-		<ant dir="${rss.feature.dir}" target="zip.distribution"/>
-		<ant dir="${rss.feature.dir}" target="zip.sources"/>
-		<ant dir="${rss.source.feature.dir}" target="build.zips"/>
-		<ant dir="${rss.source.feature.dir}" target="zip.distribution"/>
 	</target>
 	
 	<target name="clean">
 		<delete failonerror="false" includeemptydirs="true">
 			<fileset dir="src/base/eclipse" includes="plugins/**,features/**"/>
 			<fileset dir="src/source/eclipse" includes="plugins/**,features/**"/>
-			<fileset dir="dist/standard" includes="*.jar"/>
-			<fileset dir="dist/web" includes="*.jar"/>
+			<fileset dir="dist" includes="*.jar"/>
 			<fileset dir="." includes="install.xml"/>
 		</delete>
 	</target>
 	
-	<target name="standard">
-		<antcall target="_izpack">
-			<param name="install.type" value="standard"/>
-		</antcall>
-	</target>
-	
-	<target name="web">
-		<antcall target="_izpack">
-			<param name="install.type" value="web"/>
-		</antcall>
-	</target>
-
-	<target name="_izpack" depends="_init,_prepare">
-		<copy file="install-${feature.project}.xml" tofile="install.xml">
+	<target name="izpack" depends="_init,_prepare">
+		<copy file="install-template.xml" tofile="install.xml">
 			<filterset>
-				<filter token="APP_NAME" value="${feature.label}"/>
-				<filter token="APP_VER" value="${feature.version}"/>
+				<filter token="FEATURE_LABEL" value="${feature.label}"/>
+				<filter token="FEATURE_VERSION" value="${feature.version}"/>
+				<filter token="FEATURE_ID" value="${feature.id}"/>
+				<filter token="FEATURE_URL" value="${feature.url.discovery.url}"/>
 			</filterset>
 		</copy>
-		<eclipse.convertPath property="compiler.jar" resourcePath="/rss.install/compiler.jar"/>
+		<eclipse.convertPath property="compiler.jar" resourcePath="/castor.install/IzPack/lib/compiler.jar"/>
+		<eclipse.convertPath property="izpack.dir" resourcePath="/castor.install/IzPack"/>
 		<taskdef name="izpack" classpath="${compiler.jar}" classname="com.izforge.izpack.ant.IzPackTask"/>
 		<izpack input="${basedir}/install.xml"
-		        output="${basedir}/dist/${install.type}/install-${feature.id}_${feature.version}.jar"
-		        installerType="${install.type}-kunststoff"
+		        output="${basedir}/dist/install-${feature.id}_${feature.version}.jar"
 		        basedir="${basedir}"
-		        izPackDir="${user.home}/IzPack/"/>
+		        izPackDir="${izpack.dir}"/>
 	</target>
 	
 	<target name="refresh">
-		<eclipse.refreshLocal resource="rss.install/src"/>
-		<eclipse.refreshLocal resource="rss.install/dist"/>
+		<eclipse.refreshLocal resource="/rss.install/src"/>
+		<eclipse.refreshLocal resource="/rss.install/dist"/>
 	</target>
 </project>

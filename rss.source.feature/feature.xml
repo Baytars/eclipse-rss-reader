@@ -2,7 +2,7 @@
 <feature
       id="com.pnehrer.rss.source"
       label="Eclipse RSS Reader Developer Resources"
-      version="2.0.0"
+      version="2.0.1"
       provider-name="Peter Nehrer">
 
    <description>
@@ -20,7 +20,7 @@ at http://www.eclipse.org/legal/cpl-v10.html.
    </license>
 
    <url>
-      <update label="Eclipse RSS Reader Updates" url="http://morphine.sourceforge.net/updates" type="web"/>
+      <update label="Eclipse RSS Reader Updates" url="http://morphine.sourceforge.net/updates"/>
       <discovery label="Eclipse RSS Reader Home" url="http://morphine.sourceforge.net" type="web"/>
    </url>
 
@@ -31,11 +31,11 @@ at http://www.eclipse.org/legal/cpl-v10.html.
 
    <plugin
          id="com.pnehrer.rss.source"
-         version="2.0.0"/>
+         version="2.0.1"/>
 
    <plugin
          id="com.pnehrer.rss.doc.isv"
-         version="2.0.0"
+         version="2.0.1"
          unpack="false"/>
 
 </feature>

@@ -8,16 +8,12 @@
 	
 <xsl:output method="xml" indent="yes"/>
 
-<xsl:param name="docRoot"/>
+<xsl:param name="project"/>
 <xsl:param name="label" select="document('plugin.xml')/plugin/@name"/>
 <xsl:param name="link_to"/>
 <xsl:variable name="_workspace" select="resources:ResourcesPlugin.getWorkspace()"/>
 <xsl:variable name="_workspaceRoot" select="resources:getRoot($_workspace)"/>
-<xsl:variable name="_docRootPath" select="runtime:Path.new($docRoot)"/>
-<xsl:variable name="_docRootFolder" select="resources:getFolder($_workspaceRoot, $_docRootPath)"/>
-<xsl:variable name="_project" select="resources:getProject($_docRootFolder)"/>
-<xsl:variable name="_docRootFolderPath" select="resources:getProjectRelativePath($_docRootFolder)"/>
-<xsl:variable name="_docRootSegmentCount" select="runtime:segmentCount($_docRootFolderPath)"/>
+<xsl:variable name="_project" select="resources:getProject($_workspaceRoot, $project)"/>
 
 <xsl:template match="website[@version='510']">
 	<xsl:element name="toc">
@@ -35,7 +31,7 @@
 		<xsl:variable name="path" select="runtime:Path.new(@src)"/>
 		<xsl:variable name="file" select="resources:getFile($_project, $path)"/>
 		<xsl:if test="resources:exists($file)">
-			<xsl:attribute name="href"><xsl:value-of select="runtime:removeFirstSegments($path, $_docRootSegmentCount)"/></xsl:attribute>
+			<xsl:attribute name="href"><xsl:value-of select="runtime:makeRelative($path)"/></xsl:attribute>
 		</xsl:if>
 		<xsl:apply-templates select="page"/>
 	</xsl:element>

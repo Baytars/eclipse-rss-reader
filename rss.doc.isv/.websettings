@@ -13,5 +13,5 @@
             <feature-id>com.ibm.etools.siteedit.wizards.projectfeature.WebSiteFeature</feature-id>
         </feature>
     </features>
-    <context-root>/help/topic/com.pnehrer.rss.doc.isv</context-root>
+    <context-root>/help/topic/com.pnehrer.rss.doc.isv/doc</context-root>
 </websettings>
