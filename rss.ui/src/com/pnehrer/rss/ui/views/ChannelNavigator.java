@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -28,6 +29,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.ISetSelectionTarget;
@@ -36,6 +40,8 @@ import org.eclipse.ui.part.IShowInTarget;
 import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
 
+import com.pnehrer.rss.core.IChannel;
+import com.pnehrer.rss.core.IItem;
 import com.pnehrer.rss.core.IRSSElement;
 
 /**
@@ -45,6 +51,13 @@ public class ChannelNavigator
     extends ViewPart 
     implements ISetSelectionTarget, IShowInSource, IShowInTarget {
 
+    private static final String TAG_SELECTION = "selection";
+    private static final String TAG_EXPANDED = "expanded";
+    private static final String TAG_ELEMENT = "element";
+    private static final String TAG_PATH = "path";
+    private static final String TAG_LINK = "link";
+
+    private IMemento memento;
     private TreeViewer viewer;
     private ChannelNavigatorActionGroup actionGroup;
 
@@ -154,6 +167,11 @@ public class ChannelNavigator
         updateActionBars((IStructuredSelection) viewer.getSelection());
 
         getSite().setSelectionProvider(viewer);
+
+        if(memento != null) {
+            restoreState(memento);
+            memento = null;
+        }
     }
 
     /* (non-Javadoc)
@@ -176,10 +194,18 @@ public class ChannelNavigator
             for(Iterator i = ((IStructuredSelection)selection).iterator();
                 i.hasNext();) {
     
+                Object o = i.next();
                 IRSSElement rssElement = (IRSSElement)
-                    ((IAdaptable)i.next()).getAdapter(IRSSElement.class);
-                if(rssElement != null)
+                    ((IAdaptable)o).getAdapter(IRSSElement.class);
+                if(rssElement != null) {
                     list.add(rssElement);
+                }
+                else {                    
+                    IResource res = (IResource)
+                        ((IAdaptable)o).getAdapter(IResource.class);
+                    if(res != null && res.getType() != IResource.ROOT)
+                        list.add(res);
+                }
             }
 
             viewer.setSelection(new StructuredSelection(list), true);
@@ -203,27 +229,17 @@ public class ChannelNavigator
             IStructuredSelection ssel = (IStructuredSelection)sel;
             for(Iterator i = ssel.iterator(); i.hasNext();) {
                 Object o = i.next();
-                if(o instanceof IResource) {
-                    toSelect.add(o);
-                }
-                else if(o instanceof IMarker) {
-                    IResource r = ((IMarker)o).getResource();
-                    if (r.getType() != IResource.ROOT)
-                        toSelect.add(r);
-                }
-                else if (o instanceof IAdaptable) {
-                    IAdaptable adaptable = (IAdaptable)o;
-                    o = adaptable.getAdapter(IResource.class);
-                    if(o instanceof IResource) {
-                        toSelect.add(o);
+                if(o instanceof IAdaptable) {
+                    IRSSElement rssElement = (IRSSElement)
+                        ((IAdaptable)o).getAdapter(IRSSElement.class);
+                    if(rssElement != null) {
+                        toSelect.add(rssElement);
                     }
-                    else {
-                        o = adaptable.getAdapter(IMarker.class);
-                        if(o instanceof IMarker) {
-                            IResource r = ((IMarker)o).getResource();
-                            if(r.getType() != IResource.ROOT)
-                                toSelect.add(r);
-                        }
+                    else {                    
+                        IResource res = (IResource)
+                            ((IAdaptable)o).getAdapter(IResource.class);
+                        if(res != null && res.getType() != IResource.ROOT)
+                            toSelect.add(res);
                     }
                 }
             }
@@ -232,10 +248,16 @@ public class ChannelNavigator
         if(toSelect.isEmpty()) {
             Object input = context.getInput();
             if(input instanceof IAdaptable) {
-                IAdaptable adaptable = (IAdaptable) input;
-                Object o = adaptable.getAdapter(IResource.class);
-                if(o instanceof IResource) {
-                    toSelect.add(o);
+                IRSSElement rssElement = (IRSSElement)
+                    ((IAdaptable)input).getAdapter(IRSSElement.class);
+                if(rssElement != null) {
+                    toSelect.add(rssElement);
+                }
+                else {                    
+                    IResource res = (IResource)
+                        ((IAdaptable)input).getAdapter(IResource.class);
+                    if(res != null && res.getType() != IResource.ROOT)
+                        toSelect.add(res);
                 }
             }
         }
@@ -245,6 +267,124 @@ public class ChannelNavigator
         else {
             selectReveal(new StructuredSelection(toSelect));
             return true;
+        }
+    }
+    
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IViewPart#init(org.eclipse.ui.IViewSite, org.eclipse.ui.IMemento)
+     */
+    public void init(IViewSite site, IMemento memento)
+        throws PartInitException {
+
+        super.init(site, memento);
+        this.memento = memento;
+    }
+
+    private void restoreState(IMemento memento) {
+        IContainer container = ResourcesPlugin.getWorkspace().getRoot();
+        IMemento childMem = memento.getChild(TAG_EXPANDED);
+        if(childMem != null) {
+            ArrayList elements = new ArrayList();
+            IMemento[] elementMem = childMem.getChildren(TAG_ELEMENT);
+            for(int i = 0; i < elementMem.length; ++i) {
+                IResource res = container.findMember(
+                    elementMem[i].getString(TAG_PATH));
+                if(res != null)
+                    elements.add(res);
+            }
+
+            viewer.setExpandedElements(elements.toArray());
+        }
+        
+        childMem = memento.getChild(TAG_SELECTION);
+        if(childMem != null) {
+            ArrayList elements = new ArrayList();
+            IMemento[] elementMem = childMem.getChildren(TAG_ELEMENT);
+            for(int i = 0; i < elementMem.length; ++i) {
+                IResource res = container.findMember(
+                    elementMem[i].getString(TAG_PATH));
+                if(res != null) {
+                    String link = elementMem[i].getString(TAG_LINK);
+                    if(link == null) {
+                        elements.add(res);
+                    }
+                    else {
+                        IRSSElement rssElement = 
+                            (IRSSElement)res.getAdapter(IRSSElement.class);
+                        if(rssElement == null) {
+                            elements.add(res);
+                        }
+                        else {
+                            IItem[] items = rssElement.getChannel().getItems();
+                            boolean found = false;
+                            for(int j = 0; j < items.length; ++j) {
+                                if(link.equals(items[j].getLink())) {
+                                    elements.add(items[j]);
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            
+                            if(!found)
+                                elements.add(rssElement);
+                        }
+                    }
+                }
+            }
+
+            viewer.setSelection(new StructuredSelection(elements));
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IViewPart#saveState(org.eclipse.ui.IMemento)
+     */
+    public void saveState(IMemento memento) {
+        if(viewer == null) {
+            if(this.memento != null) 
+                memento.putMemento(this.memento);
+        }
+        else {
+            Object expandedElements[] = viewer.getVisibleExpandedElements();
+            if(expandedElements.length > 0) {
+                IMemento expandedMem = memento.createChild(TAG_EXPANDED);
+                for(int i = 0; i < expandedElements.length; ++i) {
+                    IAdaptable adaptable = (IAdaptable)expandedElements[i];
+                    IMemento elementMem = expandedMem.createChild(TAG_ELEMENT);
+                    IResource res = (IResource)
+                        ((IAdaptable)adaptable).getAdapter(IResource.class);
+                    if(res != null && res.getType() != IResource.ROOT) {
+                        elementMem.putString(
+                            TAG_PATH,
+                            res.getFullPath().toString());
+                    }
+                }
+            }
+
+            IStructuredSelection sel = 
+                (IStructuredSelection)viewer.getSelection(); 
+            if(!sel.isEmpty()) {
+                IMemento selectionMem = memento.createChild(TAG_SELECTION);
+                for(Iterator i = sel.iterator(); i.hasNext();) {
+                    IAdaptable adaptable = (IAdaptable)i.next();
+                    IMemento elementMem = selectionMem.createChild(TAG_ELEMENT);
+                    IResource res = (IResource)
+                        ((IAdaptable)adaptable).getAdapter(IResource.class);
+                    if(res != null && res.getType() != IResource.ROOT) {
+                        elementMem.putString(
+                            TAG_PATH,
+                            res.getFullPath().toString());
+                    }
+
+                    IRSSElement rssElement = (IRSSElement)
+                        ((IAdaptable)adaptable).getAdapter(IRSSElement.class);
+                    if(rssElement instanceof IItem) {
+                        elementMem.putString(
+                            TAG_LINK,
+                            rssElement.getLink());
+                    }
+                }
+            }
         }
     }
 }

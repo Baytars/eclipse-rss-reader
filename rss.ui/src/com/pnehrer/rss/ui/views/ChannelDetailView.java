@@ -4,6 +4,13 @@
  */
 package com.pnehrer.rss.ui.views;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -26,8 +33,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.IMemento;
 import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.part.ViewPart;
 
@@ -49,6 +59,12 @@ public class ChannelDetailView extends ViewPart implements ISelectionListener {
         "Link", 
         "Date"};
 
+    private static final String TAG_SELECTION = "selection";
+    private static final String TAG_ELEMENT = "element";
+    private static final String TAG_PATH = "path";
+    private static final String TAG_LINK = "link";
+
+    private IMemento memento;
     private TableViewer viewer;
     private ChannelActionGroup actionGroup;
 
@@ -173,17 +189,14 @@ public class ChannelDetailView extends ViewPart implements ISelectionListener {
         actionGroup = new ChannelActionGroup(this);
         actionGroup.fillActionBars(getViewSite().getActionBars());
 
-        selectionChanged(this, getSite().getPage().getSelection());
-
-        getSite().getPage().addSelectionListener(
-            "org.eclipse.ui.views.ResourceNavigator", 
-            this);
-
-        getSite().getPage().addSelectionListener(
-            "com.pnehrer.rss.ui.views.ChannelNavigator", 
-            this);
-
         getSite().setSelectionProvider(viewer);
+        selectionChanged(null, getSite().getPage().getSelection());
+        getSite().getPage().addSelectionListener(this);
+        
+        if(memento != null) {
+            restoreState(memento);
+            memento = null;
+        }
 	}
 
 	/**
@@ -197,6 +210,8 @@ public class ChannelDetailView extends ViewPart implements ISelectionListener {
      * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
      */
     public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+        if(equals(part)) return;
+        
         IRSSElement rssElement;
         if(!(selection instanceof IStructuredSelection) || selection.isEmpty())
             rssElement = null;
@@ -210,18 +225,7 @@ public class ChannelDetailView extends ViewPart implements ISelectionListener {
                 rssElement = null;
         }
         
-        if(rssElement == null) {
-            viewer.setInput(null);
-            setTitle("No channel selected");
-            setTitleImage(
-                RSSUI.getDefault().getImageRegistry().get(RSSUI.DETAIL_ICON));
-            setTitleToolTip("Please select a channel.");
-
-            IStructuredSelection sel = new StructuredSelection();
-            updateStatusLine(sel);
-            updateActionBars(sel);
-        }
-        else {
+        if(rssElement != null) {
             IChannel channel = rssElement.getChannel();
             viewer.setInput(channel);
             viewer.setSelection(selection, true);
@@ -236,6 +240,88 @@ public class ChannelDetailView extends ViewPart implements ISelectionListener {
             setTitleToolTip(channel.getLink());
             updateStatusLine((IStructuredSelection)selection);
             updateActionBars((IStructuredSelection)selection);
+        }
+    }
+    
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IViewPart#init(org.eclipse.ui.IViewSite, org.eclipse.ui.IMemento)
+     */
+    public void init(IViewSite site, IMemento memento)
+        throws PartInitException {
+
+        super.init(site, memento);
+        this.memento = memento;
+    }
+    
+    private void restoreState(IMemento memento) {
+        String path = memento.getString(TAG_PATH);
+        if(path == null) return;
+        
+        IContainer container = ResourcesPlugin.getWorkspace().getRoot();
+        IResource res = container.findMember(path);
+        if(res != null) {
+            IRSSElement rssElement = 
+                (IRSSElement)res.getAdapter(IRSSElement.class);
+            if(rssElement != null) {
+                IChannel channel = rssElement.getChannel();
+                boolean found = false;                
+                IMemento childMem = memento.getChild(TAG_SELECTION);
+                if(childMem != null) {
+                    HashSet links = new HashSet(); 
+                    IMemento[] elementMem = childMem.getChildren(TAG_ELEMENT);
+                    for(int i = 0; i < elementMem.length; ++i) {
+                        links.add(elementMem[i].getString(TAG_LINK));
+                    }
+                    
+                    ArrayList elements = new ArrayList();
+                    IItem[] items = channel.getItems();
+                    for(int i = 0; i < items.length; ++i) {
+                        if(links.contains(items[i].getLink()))
+                            elements.add(items[i]);
+                    }
+                    
+                    if(!elements.isEmpty()) {
+                        selectionChanged(null, new StructuredSelection(elements));
+                        found = true;
+                    }
+                }
+
+                if(!found)
+                    selectionChanged(null, new StructuredSelection(channel));
+            }
+        }        
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IViewPart#saveState(org.eclipse.ui.IMemento)
+     */
+    public void saveState(IMemento memento) {
+        if(viewer == null) {
+            if(this.memento != null) 
+                memento.putMemento(this.memento);
+        }
+        else {
+            Object input = viewer.getInput();
+            if(input instanceof IChannel) {
+                IChannel channel = (IChannel)input;
+                memento.putString(
+                    TAG_PATH, 
+                    channel.getFile().getFullPath().toString());
+
+                IStructuredSelection sel = 
+                    (IStructuredSelection)viewer.getSelection(); 
+                if(!sel.isEmpty()) {
+                    IMemento selectionMem = memento.createChild(TAG_SELECTION);
+                    for(Iterator i = sel.iterator(); i.hasNext();) {
+                        IItem item = (IItem)i.next();
+                        IMemento elementMem = 
+                            selectionMem.createChild(TAG_ELEMENT);
+                        elementMem.putString(
+                            TAG_LINK,
+                            item.getLink());
+                    }
+                }
+            }
         }
     }
     

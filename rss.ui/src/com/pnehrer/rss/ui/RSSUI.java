@@ -67,8 +67,6 @@ public class RSSUI extends AbstractUIPlugin {
     private final Map browserMap = new HashMap();
 
     private ImageManager imageManager;
-
-    private boolean prefsInit;
 	
 	/**
 	 * The constructor.
@@ -231,19 +229,46 @@ public class RSSUI extends AbstractUIPlugin {
      * @see org.eclipse.core.runtime.Plugin#initializeDefaultPluginPreferences()
      */
     protected void initializeDefaultPluginPreferences() {
-        if(!prefsInit) {
-            prefsInit = true;
-            Preferences prefs = getPluginPreferences();
-            prefs.setDefault(
-                PREF_LINK_BROWSER, 
-                PLUGIN_ID + ".helpbrowser");
-            prefs.setDefault(
-                HelpBrowser.PREF_HELP_BROWSER,
-                HelpPlugin.getDefault().getPluginPreferences().getString(
-                    "default_browser"));
-            prefs.setDefault(
-                BrowserEditor.PREF_BROWSER_EDITOR,
-                getWorkbench().getEditorRegistry().getDefaultEditor().getId());
+        Preferences prefs = getPluginPreferences();
+        prefs.setDefault(
+            PREF_LINK_BROWSER, 
+            PLUGIN_ID + ".helpbrowser");
+        prefs.setDefault(
+            HelpBrowser.PREF_HELP_BROWSER,
+            getDefaultBrowserId());
+        prefs.setDefault(
+            BrowserEditor.PREF_BROWSER_EDITOR,
+            getWorkbench().getEditorRegistry().getDefaultEditor().getId());
+    }
+    
+    private String getDefaultBrowserId() {
+        // Ugly, but we don't have a choice...
+        // get default browser from preferences
+        String defBrowserID =
+            HelpPlugin.getDefault().getPluginPreferences().getString(
+                "default_browser");
+        if (defBrowserID != null && (!"".equals(defBrowserID)))
+            return defBrowserID;
+        // Set default browser to prefered implementation
+        if (System.getProperty("os.name").startsWith("Win")) {
+            if (Platform
+                .getPluginRegistry()
+                .getPluginDescriptor("org.eclipse.help.ui")
+                != null)
+                return "org.eclipse.help.ui.iexplorer";
+            else
+                return "org.eclipse.help.custombrowser";
+        } else if (System.getProperty("os.name").startsWith("Linux")) {
+            return "org.eclipse.help.mozillaLinux";
+        } else if (System.getProperty("os.name").startsWith("SunOS")) {
+            return "org.eclipse.help.netscapeSolaris";
+        } else if (System.getProperty("os.name").startsWith("AIX")) {
+            return "org.eclipse.help.netscapeAIX";
+        } else if (
+            System.getProperty("os.name").toLowerCase().startsWith("hp")) {
+            return "org.eclipse.help.netscapeHPUX";
+        } else {
+            return "org.eclipse.help.mozillaLinux";
         }
     }
 }

@@ -66,6 +66,15 @@ them.</p>
 
 <p><b>7. Channel Detail view</b></p>
 <p>Allows users to view details of selected channel.</p>
+
+<p><b>8. Pluggable News Article Browsers</b></p>
+<p>Users may choose how to view the contents of news articles. By default,
+two methods are available: 1). Using the configured Help Browser, or 2).
+Using a file editor that understands the article format (e.g., HTML).
+In addition, users of WSAD running under MS-Windows have an option to use 
+its Web Browser Editor. This option is specifiable on a per-channel basis.
+3rd-party provides may offer additional methods via the provided extension 
+point.</p>
 </item>
 
 <item><b>Learn more </b>

@@ -156,12 +156,53 @@
       <perspectiveExtension
             targetID="org.eclipse.ui.resourcePerspective">
          <view
-               ratio="0.5"
                relative="org.eclipse.ui.views.ResourceNavigator"
-               visible="true"
                relationship="stack"
                id="com.pnehrer.rss.ui.views.ChannelNavigator">
          </view>
+         <viewShortcut
+               id="com.pnehrer.rss.ui.views.ChannelNavigator">
+         </viewShortcut>
+         <newWizardShortcut
+               id="com.pnehrer.rss.ui.wizards.NewChannelWizard">
+         </newWizardShortcut>
+         <showInPart
+               id="com.pnehrer.rss.ui.views.ChannelDetail">
+         </showInPart>
+         <showInPart
+               id="com.pnehrer.rss.ui.views.ChannelNavigator">
+         </showInPart>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <view
+               relative="org.eclipse.jdt.ui.PackagesView"
+               relationship="stack"
+               id="com.pnehrer.rss.ui.views.ChannelNavigator">
+         </view>
+         <viewShortcut
+               id="com.pnehrer.rss.ui.views.ChannelNavigator">
+         </viewShortcut>
+         <newWizardShortcut
+               id="com.pnehrer.rss.ui.wizards.NewChannelWizard">
+         </newWizardShortcut>
+         <showInPart
+               id="com.pnehrer.rss.ui.views.ChannelDetail">
+         </showInPart>
+         <showInPart
+               id="com.pnehrer.rss.ui.views.ChannelNavigator">
+         </showInPart>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.eclipse.pde.ui.PDEPerspective">
+         <view
+               relative="org.eclipse.jdt.ui.PackagesView"
+               relationship="stack"
+               id="com.pnehrer.rss.ui.views.ChannelNavigator">
+         </view>
+         <viewShortcut
+               id="com.pnehrer.rss.ui.views.ChannelNavigator">
+         </viewShortcut>
          <newWizardShortcut
                id="com.pnehrer.rss.ui.wizards.NewChannelWizard">
          </newWizardShortcut>
