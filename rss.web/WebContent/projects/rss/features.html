@@ -23,76 +23,32 @@
 <!-- /siteedit:navbar -->
 <DIV class="content"><!-- tpl:put name="body" --><H1>Features</H1>
 		<P>At the moment, the Eclipse RSS Reader provides the following functionality:</P>
-		<H2>1. Uniform channel model</H2>
-
-		<P>RSS Feeds of various versions are coerced into a uniform channel
-		model, which is persisted in the workspace. Third-party plug-ins may
-		contribute "translators" for various channel formats. The default
-		implementation handles RSS 0.90, 0.91, 0.92, 1.0, and 2.0. In case
-		more than one registered translator understands a format, the user is
-		given a choice to select one they wish to use. In the future,
-		annonymous elements external to the model will be exposed via untyped
-		property interface (map), thus making them available to third-party
-		plug-ins that may understand and use them in a specific way.</P>
-
-
-		<H2>2. Periodic updates</H2>
-
-		<P>Based on user specification, channels are periodically updated from
-		the source. All viewers are refreshed to display up-to-date
-		information. In the future, markers will be used to identify changes
-		and allow viewers to highlight them.</P>
-
-
-		<H2>3. Property page</H2>
-
-		<P>Individual channel files have a property page with RSS-specific
-		options, such as update interval, source translator, and link browser.</P>
-
-
-		<H2>4. Preference page</H2>
-
-		<P>Preference page allows the user to specify default values for
-		update interval and link browser. In addition, default link browsers
-		(help and editor) have their own category; the former allows the user
-		to select which configured help browser to use, and the latter which
-		editor to use to browse articles.</P>
-
-
-		<H2>5. New Channel wizard</H2>
-
-		<P>Allows users to create new channels from an external RSS feed.</P>
-
-
-		<H2>6. Channel Navigator</H2>
-
-		<P>Allows users to navigate channels in a project/folder hierarchy.</P>
-
-
-		<H2>7. Channel Detail view</H2>
-
-		<P>Allows users to view details of selected channel, such as title and
-		description. Supports sorting by column.</P>
-
-
-		<H2>8. Pluggable Link Browsers</H2>
-
-		<P>Users may choose how to view the contents of news articles. By
-		default, two methods are available: 1). Using the configured Help
-		Browser, or 2). Using a file editor that understands the article
-		format (e.g., HTML). In addition, users of WSAD running under
-		MS-Windows have an option to use its Web Browser Editor. This option
-		is specifiable on a per-channel basis. 3rd-party provides may offer
-		additional methods via the provided extension point.</P>
+		<H2>1. New Channel wizard</H2>
+		<P>This wizard allows you to create a new channel from an external RSS feed and save it as a file in the workspace.</P>
+		<H2>2. Channel Navigator</H2>
+		<P>The Channel Navigator provides a hierarchical view of the workspace, similar to the Resource Navigator, with projects, folders, and RSS channels. Each channel can be expanded to display its items. The channels as well as their items can be browsed with the configured link browser. In addition, the Channel Navigator allows you to view only new, unread channels.</P>
+		<H2>3. Channel Detail view</H2>
+		<P>This view displays a list of items belonging to the selected channel. To select a channel, click on the channel node in the Channel Navigator, or the channel file in the Resource Navigator. The channel as well as its items can be browsed using the configured link browser. The list can be sorted by column (click on the column header). Also, the view has an option to show only new, unread items.</P>
+		<H2>4. Link Browsers</H2>
+		<P>You may choose, using the Channel Properties dialog, how to view the contents of channel and item links. By default, two methods are available: 1). Using the configured Help Browser, or 2). Using a file editor that understands the article format (e.g., HTML). In addition, users of WSAD running under MS-Windows have an option to use its embedded web browser. 3rd-party providers may offer additional link browsers.</P>
+		<H2>5. Preference page</H2>
+		<P>The included preference page allows you to specify the default channel update interval and select the default link browser, which are used when creating new channels. In addition, the included link browsers (help and editor) have their own preference pages; the former allows you to select a configured help browser, and the latter an editor to use for browsing channel items.</P>
+		<H2>6. Property page</H2>
+		<P>Each channel file has a property page with RSS-specific options, such as the update interval, source translator, and link browser. These can be modified even after the channel has been created.</P>
+		<H2>7. RSS feed translators</H2>
+		<P>RSS feeds based on various formats and versions are translated into a uniform channel model, which allows the various RSS views to present their contents in a uniform fashion. The default translator understands RSS versions 0.90, 0.91, 0.92, 1.0, and 2.0. 3rd-party providers may offer translators for new RSS versions, or entirely different formats.</P>
+		<H2>8. Periodic updates</H2>
+		<P>For each channel you may specify an interval, in minutes, which dictates how often the channel's contents are updated from its source feed. After an update, any new items are flagged and displayed with different icons and colors in the various RSS views, until they are read (i.e., opened using a link browser).</P>
+		<H2>9. Channel content caching</H2>
+		<P>RSS channels are represented in the workspace as files, which contain information on where to get the updates, how often, etc. The channel content, after an update, is cached in a temporary location outside of workspace. Thus it is possible to share the channel files using a Version Control System (e.g., CVS); each user then gets its own copy of the channel contents.</P>
 		<H2>Future Plans</H2>
-		<P>The following items are currently on my to-do list:</P>
+		<P>Over the next couple of releases, I'm planning to do the following:</P>
 		<UL>
-			<LI>Highlight items that were modified after an update until they are
-			read.</LI>
+			<LI>Provide support for searching through the channels and items in the workspace.</LI>
 			<LI>Filter HTML tags from title and description fields.</LI>
 			<LI>Expose data external to the core model via mapped properties so
 			other plug-ins may consume them.</LI>
-			<LI>Allow user to select channel image.</LI>
+			<LI>Allow user to select their own channel image.</LI>
 			<LI>Provide migration path for users of other RSS Readers (e.g.,
 			listen on port 8888 and process AmphetaDesk-compatible URL requests
 			to subscribe to channels).</LI>
