@@ -21,7 +21,7 @@
 <DIV class="tabi1"><a href="#"><img src="/presence/theme/icons/update_16.png" alt="Download" border="0" class="icon">&nbsp;Download</a></DIV>
 </DIV>
 <!-- /siteedit:navbar -->
-<DIV class="content"><!-- tpl:insert attribute="body" -->This page is under construction.<!-- /tpl:insert --></DIV>
+<DIV class="content"><!-- tpl:insert attribute="body" --><H1>RSS</H1><P>This page is under construction.</P><!-- /tpl:insert --></DIV>
 <DIV class="footer">Copyright &copy; 2003 <a href="mailto:pnehrer@users.sourceforge.net">Peter Nehrer</a>.<br>Version $Id$.</DIV>
 </BODY>
 </HTML>

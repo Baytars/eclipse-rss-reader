@@ -21,6 +21,9 @@
 			<page src="/WebContent/projects/rss/usage.html" id="4" template="/WebContent/theme/home.htpl" icon="/presence/theme/icons/browse_16.png">
 				<title>Usage</title>
 			</page>
+			<page src="/WebContent/projects/rss/screenshots.html" id="7" template="/WebContent/theme/home.htpl" icon="/presence/theme/icons/view_16.png">
+				<title>Screenshots</title>
+			</page>
 		</page>
 
 
