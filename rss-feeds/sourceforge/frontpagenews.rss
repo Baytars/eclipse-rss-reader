@@ -1,0 +1,5 @@
+#Eclipse RSS Reader v1.2.0
+#Wed Mar 17 21:26:32 EST 2004
+translatorId=com.pnehrer.rss.core.default
+url=http\://sourceforge.net/export/rss2_sfnews.php?feed
+updateInterval=30
