@@ -2,7 +2,7 @@
  * Created on Nov 13, 2003
  * Version $Id$
  */
-package com.pnehrer.rss.core.internal;
+package com.pnehrer.rss.internal.core;
 
 import java.net.URL;
 import java.util.Calendar;

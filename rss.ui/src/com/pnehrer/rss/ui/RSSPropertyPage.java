@@ -23,8 +23,8 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IRSSElement;
 import com.pnehrer.rss.core.RSSCore;
-import com.pnehrer.rss.ui.internal.ChannelPropertyGroup;
-import com.pnehrer.rss.ui.internal.UpdateIntervalGroup;
+import com.pnehrer.rss.internal.ui.ChannelPropertyGroup;
+import com.pnehrer.rss.internal.ui.UpdateIntervalGroup;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>

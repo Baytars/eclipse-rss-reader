@@ -18,8 +18,8 @@ import org.w3c.dom.Document;
 import com.pnehrer.rss.core.IRegisteredTranslator;
 import com.pnehrer.rss.core.RSSCore;
 import com.pnehrer.rss.ui.IPageContainer;
-import com.pnehrer.rss.ui.internal.ChannelPropertyGroup;
-import com.pnehrer.rss.ui.internal.UpdateIntervalGroup;
+import com.pnehrer.rss.internal.ui.ChannelPropertyGroup;
+import com.pnehrer.rss.internal.ui.UpdateIntervalGroup;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>

@@ -2,7 +2,7 @@
  * Created on Nov 11, 2003
  * Version $Id$
  */
-package com.pnehrer.rss.core.internal;
+package com.pnehrer.rss.internal.core;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -36,7 +36,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -63,8 +62,7 @@ import com.pnehrer.rss.core.RSSCore;
  */
 public class Channel 
     extends PlatformObject 
-    implements IChannel,
-        IResourceChangeListener {
+    implements IChannel, IResourceChangeListener {
 
     private static final String CHANNEL = "channel";
     private static final String TRANSLATOR_ID = "translatorId";
@@ -100,21 +98,26 @@ public class Channel
 
     private Channel(IFile file) {
         this.file = file;
-        startListening();
+        activate();
     }
     
     private Channel(IFile file, IRegisteredTranslator translator) {
         this.file = file;
         this.translator = translator;
-        startListening();
+        activate();
     }
     
-    private void startListening() {
+    private void activate() {
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
     }
     
-    private void stopListening() {
+    private void passivate() {
+        if(updateTask != null)
+            updateTask.cancel();
+            
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+        ChannelManager.getInstance().removeChannel(this);
+        firePropertyChange(ChannelChangeEvent.REMOVED);
     }
 
     /* (non-Javadoc)
@@ -659,27 +662,43 @@ public class Channel
         switch(event.getType()) {
             case IResourceChangeEvent.PRE_CLOSE:
             case IResourceChangeEvent.PRE_DELETE:
-                if(file.getProject().equals(resource.getProject())) {
-                    stopListening();
-                    ChannelManager.getInstance().removeChannel(this);
-                    firePropertyChange(ChannelChangeEvent.REMOVED);
-                }
+                if(file.getProject().equals(resource.getProject()))
+                    passivate();
 
                 break;
                 
             case IResourceChangeEvent.POST_CHANGE:
-            try {
-                if(event.getDelta() == null) {
-                    if(file.equals(resource))
-                        load();
+                IResourceDelta delta = event.getDelta();
+                try {
+                    if(delta == null) {
+                        if(file.equals(resource))
+                            load();
+                    }
+                    else if((delta = delta.findMember(file.getFullPath())) != null) {
+                        switch(delta.getKind()) {
+                            case IResourceDelta.CHANGED:
+                                if((delta.getFlags() & IResourceDelta.CONTENT) != 0)
+                                    load();
+                                            
+                                break;
+                        
+                            case IResourceDelta.REMOVED:
+                                if((delta.getFlags() & IResourceDelta.MOVED_TO) == 0)
+                                    passivate();
+                        
+                                break;
+                        }
+                    }
                 }
-                else {
-                    event.getDelta().accept(new ResourceDeltaVisitor());
+                catch(CoreException ex) {
+                    RSSCore.getPlugin().getLog().log(
+                        new Status(
+                            IStatus.ERROR,
+                            RSSCore.PLUGIN_ID,
+                            0,
+                            "could not reload channel",
+                            ex));
                 }
-            }
-            catch(CoreException ex) {
-                // TODO Log me!
-            }
         }
     }
 
@@ -731,45 +750,6 @@ public class Channel
         Channel channel = new Channel(file);
         channel.load();
         return channel;
-    }
-    
-    private class ResourceDeltaVisitor implements IResourceDeltaVisitor {
-
-        /* (non-Javadoc)
-         * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse.core.resources.IResourceDelta)
-         */
-        public boolean visit(IResourceDelta delta) throws CoreException {
-            IResource resource = delta.getResource();
-            if(file.equals(resource)) {
-                switch(delta.getKind()) {
-                    case IResourceDelta.CHANGED:
-                        if((delta.getFlags() & IResourceDelta.CONTENT) != 0)
-                            load();
-                                            
-                        break;
-                                    
-                    case IResourceDelta.ADDED:
-                        if((delta.getFlags() & IResourceDelta.MOVED_FROM) == 0) {
-                            load();
-                            firePropertyChange(ChannelChangeEvent.ADDED);
-                        }
-
-                        break;
-                        
-                    case IResourceDelta.REMOVED:
-                        if((delta.getFlags() & IResourceDelta.MOVED_TO) == 0) {
-                            ChannelManager.getInstance().removeChannel(Channel.this);
-                            firePropertyChange(ChannelChangeEvent.REMOVED);
-                        }
-                        
-                        break;
-                }
-                                    
-                return false;
-            }
-            else
-                return resource.getType() != IResource.FILE;
-        }
     }
     
     private class UpdateTask extends TimerTask {

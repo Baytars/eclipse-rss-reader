@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
@@ -31,6 +32,7 @@ import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.ISetSelectionTarget;
 import org.eclipse.ui.part.IShowInSource;
+import org.eclipse.ui.part.IShowInTarget;
 import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
 
@@ -41,7 +43,7 @@ import com.pnehrer.rss.core.IRSSElement;
  */
 public class ChannelNavigator 
     extends ViewPart 
-    implements ISetSelectionTarget, IShowInSource {
+    implements ISetSelectionTarget, IShowInSource, IShowInTarget {
 
     private TreeViewer viewer;
     private ChannelNavigatorActionGroup actionGroup;
@@ -189,5 +191,60 @@ public class ChannelNavigator
      */
     public ShowInContext getShowInContext() {
         return new ShowInContext(viewer.getInput(), viewer.getSelection());
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.part.IShowInTarget#show(org.eclipse.ui.part.ShowInContext)
+     */
+    public boolean show(ShowInContext context) {
+        ArrayList toSelect = new ArrayList();
+        ISelection sel = context.getSelection();
+        if(sel instanceof IStructuredSelection) {
+            IStructuredSelection ssel = (IStructuredSelection)sel;
+            for(Iterator i = ssel.iterator(); i.hasNext();) {
+                Object o = i.next();
+                if(o instanceof IResource) {
+                    toSelect.add(o);
+                }
+                else if(o instanceof IMarker) {
+                    IResource r = ((IMarker)o).getResource();
+                    if (r.getType() != IResource.ROOT)
+                        toSelect.add(r);
+                }
+                else if (o instanceof IAdaptable) {
+                    IAdaptable adaptable = (IAdaptable)o;
+                    o = adaptable.getAdapter(IResource.class);
+                    if(o instanceof IResource) {
+                        toSelect.add(o);
+                    }
+                    else {
+                        o = adaptable.getAdapter(IMarker.class);
+                        if(o instanceof IMarker) {
+                            IResource r = ((IMarker)o).getResource();
+                            if(r.getType() != IResource.ROOT)
+                                toSelect.add(r);
+                        }
+                    }
+                }
+            }
+        }
+
+        if(toSelect.isEmpty()) {
+            Object input = context.getInput();
+            if(input instanceof IAdaptable) {
+                IAdaptable adaptable = (IAdaptable) input;
+                Object o = adaptable.getAdapter(IResource.class);
+                if(o instanceof IResource) {
+                    toSelect.add(o);
+                }
+            }
+        }
+
+        if(toSelect.isEmpty())
+            return false;
+        else {
+            selectReveal(new StructuredSelection(toSelect));
+            return true;
+        }
     }
 }

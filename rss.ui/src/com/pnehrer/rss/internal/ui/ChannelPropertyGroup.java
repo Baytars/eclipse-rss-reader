@@ -2,7 +2,7 @@
  * Created on Nov 16, 2003
  * Version $Id$
  */
-package com.pnehrer.rss.ui.internal;
+package com.pnehrer.rss.internal.ui;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

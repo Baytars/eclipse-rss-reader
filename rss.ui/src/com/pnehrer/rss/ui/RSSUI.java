@@ -23,8 +23,8 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IRSSElement;
-import com.pnehrer.rss.ui.internal.ImageManager;
-import com.pnehrer.rss.ui.internal.WorkbenchAdapterFactory;
+import com.pnehrer.rss.internal.ui.ImageManager;
+import com.pnehrer.rss.internal.ui.WorkbenchAdapterFactory;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -34,7 +34,7 @@ public class RSSUI extends AbstractUIPlugin {
     
     public static final String PLUGIN_ID = "com.pnehrer.rss.ui";
 
-    public static final String XML_ICON = "xml_16.png";
+    public static final String XML_ICON = "xml_16.gif";
     public static final String BROWSE_ICON = "browse_16.png";
     public static final String DETAIL_ICON = "detail_16.png";
     public static final String NAVIGATOR_ICON = "navigator_16.png";

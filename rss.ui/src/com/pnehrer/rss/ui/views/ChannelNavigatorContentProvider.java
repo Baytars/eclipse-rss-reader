@@ -10,6 +10,8 @@ import java.util.Collection;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.model.WorkbenchContentProvider;
@@ -19,6 +21,7 @@ import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IChannelChangeListener;
 import com.pnehrer.rss.core.IRSSElement;
 import com.pnehrer.rss.core.RSSCore;
+import com.pnehrer.rss.ui.RSSUI;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
@@ -66,7 +69,13 @@ public class ChannelNavigatorContentProvider
                                 newChildren.add(channel);
                         }
                         catch(CoreException ex) {
-                            // TODO Log me!
+                            RSSUI.getDefault().getLog().log(
+                                new Status(
+                                    IStatus.ERROR,
+                                    RSSUI.PLUGIN_ID,
+                                    0,
+                                    "could not load channel from file " + file,
+                                    ex));
                         }
                     }
                 }

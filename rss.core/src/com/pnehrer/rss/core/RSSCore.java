@@ -16,10 +16,10 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Preferences;
 import org.w3c.dom.Document;
 
-import com.pnehrer.rss.core.internal.ChannelAdapterFactory;
-import com.pnehrer.rss.core.internal.ChannelManager;
-import com.pnehrer.rss.core.internal.ResourceAdapterFactory;
-import com.pnehrer.rss.core.internal.TranslatorManager;
+import com.pnehrer.rss.internal.core.ChannelAdapterFactory;
+import com.pnehrer.rss.internal.core.ChannelManager;
+import com.pnehrer.rss.internal.core.ResourceAdapterFactory;
+import com.pnehrer.rss.internal.core.TranslatorManager;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>

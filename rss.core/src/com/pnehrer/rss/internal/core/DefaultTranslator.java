@@ -2,7 +2,7 @@
  * Created on Nov 18, 2003
  * Version $Id$
  */
-package com.pnehrer.rss.core.internal;
+package com.pnehrer.rss.internal.core;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -36,6 +36,7 @@ public class DefaultTranslator implements ITranslator {
     
     private static final String RSS_URI = null;
     private static final String RDF_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+    private static final String RSS09_URI = "http://my.netscape.com/rdf/simple/0.9/";
     private static final String RSS10_URI = "http://purl.org/rss/1.0/";
 
     private static final String RSS_ELEMENT = "rss";
@@ -59,7 +60,7 @@ public class DefaultTranslator implements ITranslator {
                 && RSS_VERSIONS.contains(element.getAttribute(VERSION_ATTR)))
             || (RDF_ELEMENT.equals(element.getLocalName())
                 && RDF_URI.equals(element.getNamespaceURI())
-                && hasRSS10Channel(element));
+                && (hasRSS09Channel(element) || hasRSS10Channel(element)));
     }
 
     /* (non-Javadoc)
@@ -106,6 +107,20 @@ public class DefaultTranslator implements ITranslator {
         }
         
         return (Document)result.getNode();
+    }
+
+    private boolean hasRSS09Channel(Element element) {
+        NodeList list = element.getChildNodes();
+        for(int i = 0, n = list.getLength(); i < n; ++i) {
+            Node node = list.item(i);
+            if(node.getNodeType() == Node.ELEMENT_NODE
+                && CHANNEL_ELEMENT.equals(node.getLocalName())
+                && RSS09_URI.equals(node.getNamespaceURI()))
+                
+                return true;
+        }
+        
+        return false;
     }
     
     private boolean hasRSS10Channel(Element element) {

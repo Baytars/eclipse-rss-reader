@@ -2,7 +2,7 @@
  * Created on Nov 23, 2003
  * Version $Id$
  */
-package com.pnehrer.rss.core.internal;
+package com.pnehrer.rss.internal.core;
 
 import java.util.Collection;
 import java.util.HashMap;

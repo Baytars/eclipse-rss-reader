@@ -9,7 +9,7 @@
    <runtime>
       <library name="ui.jar">
          <export name="*"/>
-         <packages prefixes="com.pnehrer.rss.ui"/>
+         <packages prefixes="com.pnehrer.rss.ui,com.pnehrer.rss.internal.ui"/>
       </library>
    </runtime>
    <requires>
@@ -66,7 +66,6 @@
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             objectClass="org.eclipse.core.resources.IFile"
-            adaptable="false"
             nameFilter="*.rss"
             id="rss.ui.objectContribution1">
          <menu
@@ -102,9 +101,17 @@
             objectClass="com.pnehrer.rss.core.IRSSElement"
             adaptable="true"
             name="RSS"
-            icon="xml_16.png"
+            icon="xml_16.gif"
             class="com.pnehrer.rss.ui.RSSPropertyPage"
             id="rss.ui.page1">
+      </page>
+      <page
+            objectClass="org.eclipse.core.resources.IFile"
+            name="RSS"
+            icon="xml_16.gif"
+            nameFilter="*.rss"
+            class="com.pnehrer.rss.ui.RSSPropertyPage"
+            id="rss.ui.page2">
       </page>
    </extension>
    <extension

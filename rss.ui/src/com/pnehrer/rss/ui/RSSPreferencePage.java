@@ -15,7 +15,7 @@ import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import com.pnehrer.rss.core.RSSCore;
-import com.pnehrer.rss.ui.internal.*;
+import com.pnehrer.rss.internal.ui.*;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>

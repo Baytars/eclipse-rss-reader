@@ -2,7 +2,7 @@
  * Created on Nov 24, 2003
  * Version $Id$
  */
-package com.pnehrer.rss.ui.internal;
+package com.pnehrer.rss.internal.ui;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;

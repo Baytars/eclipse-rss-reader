@@ -2,7 +2,7 @@
  * Created on Nov 17, 2003
  * Version $Id$
  */
-package com.pnehrer.rss.ui.internal;
+package com.pnehrer.rss.internal.ui;
 
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.model.IWorkbenchAdapter;

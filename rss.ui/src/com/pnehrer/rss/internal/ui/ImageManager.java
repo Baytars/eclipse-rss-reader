@@ -2,7 +2,7 @@
  * Created on Nov 30, 2003
  * Version $Id$
  */
-package com.pnehrer.rss.ui.internal;
+package com.pnehrer.rss.internal.ui;
 
 import java.io.File;
 import java.util.HashMap;

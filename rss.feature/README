@@ -6,15 +6,16 @@ Publishing web-based news of all kinds via a summary format (RSS) is becoming in
 3. Resource and UI model provides opportunities for integration with other Eclipse-based tools.
 
 Pre-requisites
-============
-1. Eclipse 2.1
-2. JDK 1.4 (dependency on JAXP/Xalan)
-3. Internet connection
+==============
+1. Eclipse 2.1 with JDK 1.4
+	-OR-
+	WSAD 5.1
+2. Web browser and Internet connection
 
 Developed and tested on Slackware Linux 9.1 w/ GTK, and MS Windows 2000.
 
 Installation
-========
+============
 Unzip the feature archive into your Eclipse installation directory.
 
 Getting Started
@@ -51,7 +52,7 @@ Allows users to navigate channels in container hierarchy.
 Allows users to view details of selected channel.
 
 TODO
-=====
+====
 1. User documentation (plug-in), context help, javadoc.
 2. Internationalization (externalize strings into resource bundles).
 3. Improve channel change delta; mark changed items with resource markers; extend views to highlight changed items until user reads them.

@@ -44,7 +44,10 @@ public class ChannelDetailLabelProvider
                 return "";
                 
             case 1: return item.getTitle();
-            case 2: return item.getDescription();
+            case 2:
+                String description = item.getDescription();
+                return description == null ? "" : description;
+                
             case 3: return item.getLink();
             case 4: 
                 Date date = item.getDate();

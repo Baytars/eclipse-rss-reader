@@ -9,7 +9,7 @@
    <runtime>
       <library name="core.jar">
          <export name="*"/>
-         <packages prefixes="com.pnehrer.rss.core"/>
+         <packages prefixes="com.pnehrer.rss.core,com.pnehrer.rss.internal.core"/>
       </library>
    </runtime>
    <requires>
@@ -22,8 +22,8 @@
    <extension
          point="com.pnehrer.rss.core.translator">
       <translator
-            description="Default translator for RSS versions 0.91, 0.92, 1.0, and 2.0."
-            class="com.pnehrer.rss.core.internal.DefaultTranslator"
+            description="Default translator for RSS versions 0.90, 0.91, 0.92, 1.0, and 2.0."
+            class="com.pnehrer.rss.internal.core.DefaultTranslator"
             id="default">
       </translator>
    </extension>

@@ -2,7 +2,7 @@
  * Created on Nov 26, 2003
  * Version $Id$
  */
-package com.pnehrer.rss.core.internal;
+package com.pnehrer.rss.internal.core;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
