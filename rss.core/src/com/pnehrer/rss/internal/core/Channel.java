@@ -325,7 +325,7 @@ public class Channel
 	        Transformer serializer = factory.newTransformer();
 	        serializer.transform(
 	        		new DOMSource(document),
-	        		new StreamResult(getCache()));
+	        		new StreamResult(cache));
 		} 
         catch(TransformerException ex) {
             throw new CoreException(
@@ -475,6 +475,7 @@ public class Channel
         File cache = getCache();
         if(cache.isFile()) {
             Document document = null;
+            Exception exception = null;
             try {
                 FileInputStream in = new FileInputStream(cache);
                 DocumentBuilderFactory factory = 
@@ -485,31 +486,33 @@ public class Channel
                     document = builder.parse(in);
                 }
                 catch(ParserConfigurationException ex) {
-                    throwCouldNotParseChannelSourceException(ex);
+                    exception = ex;
                 }
                 catch(SAXException ex) {
-                    throwCouldNotParseChannelSourceException(ex);
+                    exception = ex;
                 }
                 finally {
                     in.close();
                 }
             }
             catch(IOException ex) {
+            	exception = ex;
+            }
+            
+            if (exception != null)
                 RSSCore.getPlugin().getLog().log(
                     new Status(
-                        IStatus.ERROR,
+                        IStatus.WARNING,
                         RSSCore.PLUGIN_ID,
                         0,
-                        "Could not parse channel source. File: " + file,
-                        ex));
-            }
-
-            Element channel;
-            if(document != null && 
-                CHANNEL.equals((channel = document.getDocumentElement()).getLocalName())) {
-                
-                update(channel, false);
-                return true;
+                        "Could not parse cached channel. File: " + file,
+                        exception));
+            else {
+	            Element channel;
+	            if(CHANNEL.equals((channel = document.getDocumentElement()).getLocalName())) {
+	                update(channel, false);
+	                return true;
+	            }
             }
         }
         
@@ -738,8 +741,12 @@ public class Channel
                                 break;
                         
                             case IResourceDelta.REMOVED:
-                                if((delta.getFlags() & IResourceDelta.MOVED_TO) == 0)
+                                if((delta.getFlags() & IResourceDelta.MOVED_TO) == 0) {
                                 	passivate();
+                                	File cache = getCache();
+                                	if (cache.exists())
+                                		cache.delete();
+                                }
                                 else if (!"rss".equals(delta.getMovedToPath().getFileExtension())) {
                                     file = 
                                         ResourcesPlugin
@@ -747,6 +754,9 @@ public class Channel
                                             .getRoot()
                                             .getFile(delta.getMovedToPath());
                                 	passivate();
+                                	File cache = getCache();
+                                	if (cache.exists())
+                                		cache.delete();
                                 }
                                 else {
                                     File oldCache = getCache();
