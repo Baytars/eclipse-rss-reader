@@ -41,6 +41,7 @@ public class WizardChannelOptionsPage extends WizardPage {
     private final UpdateIntervalGroup updateIntervalGroup;
     private final BrowserGroup browserGroup;
     private short pageComplete;
+    private URL url;
 
     /**
      * @param pageName
@@ -114,6 +115,7 @@ public class WizardChannelOptionsPage extends WizardPage {
             } 
         });
 
+        channelProperties.setURL(url);
         channelProperties.createContents(topLevel);
         updateIntervalGroup.createContents(topLevel);
         Integer updateInterval;
@@ -137,6 +139,12 @@ public class WizardChannelOptionsPage extends WizardPage {
     
     public URL getURL() {
         return channelProperties.getURL();
+    }
+    
+    public void setURL(URL url) {
+    	this.url = url;
+    	if (channelProperties != null)
+    		channelProperties.setURL(url);
     }
     
     public Document getDocument() {

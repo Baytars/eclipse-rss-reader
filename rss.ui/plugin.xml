@@ -15,6 +15,9 @@
          <export name="com.pnehrer.rss.ui.wizards.*"/>
          <packages prefixes="com.pnehrer.rss.ui,com.pnehrer.rss.internal.ui"/>
       </library>
+      <library name="htmlparser.jar">
+         <export name="*"/>
+      </library>
    </runtime>
 
    <requires>
@@ -69,7 +72,20 @@
                class="org.eclipse.core.resources.IContainer">
          </selection>
          <description>
-            Create new channel from RSS feed.
+            Create new channel from syndicated feed.
+         </description>
+      </wizard>
+      <wizard
+            name="RSS Channel using Auto-discovery"
+            icon="new_16.png"
+            category="rss.ui.category1"
+            class="com.pnehrer.rss.ui.wizards.NewChannelAutoWizard"
+            id="com.pnehrer.rss.ui.wizards.NewChannelAutoWizard">
+         <selection
+               class="org.eclipse.core.resources.IContainer">
+         </selection>
+         <description>
+            Create new channel from a feed auto-discovered in HTML page.
          </description>
       </wizard>
    </extension>
@@ -185,6 +201,9 @@
          <newWizardShortcut
                id="com.pnehrer.rss.ui.wizards.NewChannelWizard">
          </newWizardShortcut>
+         <newWizardShortcut
+               id="com.pnehrer.rss.ui.wizards.NewChannelAutoWizard">
+         </newWizardShortcut>
          <showInPart
                id="com.pnehrer.rss.ui.views.ChannelDetail">
          </showInPart>
@@ -209,6 +228,9 @@
          <newWizardShortcut
                id="com.pnehrer.rss.ui.wizards.NewChannelWizard">
          </newWizardShortcut>
+         <newWizardShortcut
+               id="com.pnehrer.rss.ui.wizards.NewChannelAutoWizard">
+         </newWizardShortcut>
          <showInPart
                id="com.pnehrer.rss.ui.views.ChannelDetail">
          </showInPart>
@@ -232,6 +254,9 @@
          </viewShortcut>
          <newWizardShortcut
                id="com.pnehrer.rss.ui.wizards.NewChannelWizard">
+         </newWizardShortcut>
+         <newWizardShortcut
+               id="com.pnehrer.rss.ui.wizards.NewChannelAutoWizard">
          </newWizardShortcut>
          <showInPart
                id="com.pnehrer.rss.ui.views.ChannelDetail">
