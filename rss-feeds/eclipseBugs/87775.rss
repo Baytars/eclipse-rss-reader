@@ -1,0 +1,5 @@
+#Eclipse RSS Reader v1.2.0
+#Wed Mar 16 13:48:03 EST 2005
+translatorId=com.pnehrer.rss.bugzilla.bugdetail
+url=https\://bugs.eclipse.org/bugs/xml.cgi?id\=87775
+updateInterval=30
