@@ -1,11 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<channel translatorId="com.pnehrer.rss.core.default" url="http://sourceforge.net/export/rss2_projnews.php?group_id=75380" updateInterval="1440" lastUpdated="12/14/03 3:05 PM" title="SourceForge.net: SF.net Project News: acx100 - Wireless chipset Linux driver" link="http://sourceforge.net/projects/acx100/" description="SF.net Project News: acx100 - Wireless chipset Linux driver (acx100 project) - Open Source Linux driver for wireless network cards (DWL-520+ PCI, DWL-650+ CardBus, GL-2422MP mini-PCI etc.) that are based on the entirely undocumented Texas Instruments ACX100 chip, for modern kernel versions (2.4.x - 2.6.x). BSD support planned.">
-<image title="SourceForge.net logo" url="http://images.sourceforge.net/images/sflogo-88-1.png" link="http://sourceforge.net/"/>
-<item title="version 0.2.0pre6 released" description="Hi all,&lt;br&gt;&lt;br&gt;I just committed version 0.2.0pre6 of the driver. (&lt;a href=&quot;http://sourceforge.net/forum/forum.php?forum_id=328963&quot;&gt;0 comments&lt;/a&gt;)" link="http://sourceforge.net/forum/forum.php?forum_id=328963"/>
-<item title="version 0.2.0pre5 released" description="Hi all,&lt;br&gt;&lt;br&gt;I just committed version 0.2.0pre5 of the driver. (&lt;a href=&quot;http://sourceforge.net/forum/forum.php?forum_id=326701&quot;&gt;0 comments&lt;/a&gt;)" link="http://sourceforge.net/forum/forum.php?forum_id=326701"/>
-<item title="version 0.2.0pre4 released" description="UPDATE: (&lt;a href=&quot;http://sourceforge.net/forum/forum.php?forum_id=317254&quot;&gt;0 comments&lt;/a&gt;)" link="http://sourceforge.net/forum/forum.php?forum_id=317254"/>
-<item title="version 0.2.0pre3 released" description="Hi all,&lt;br&gt;&lt;br&gt;I just committed version 0.2.0pre3 of the driver. (&lt;a href=&quot;http://sourceforge.net/forum/forum.php?forum_id=315236&quot;&gt;0 comments&lt;/a&gt;)" link="http://sourceforge.net/forum/forum.php?forum_id=315236"/>
-<item title="acx100 driver version 0.2.0pre2" description="Open Source Linux driver for wireless network cards (DWL-520+ PCI, DWL-650+ CardBus, GL-2422MP mini-PCI etc.) that are based on the entirely undocumented Texas Instruments ACX100 chip, for modern kernel versions (2.4.x - 2.6.x). BSD support planned. (&lt;a href=&quot;http://sourceforge.net/forum/forum.php?forum_id=312160&quot;&gt;0 comments&lt;/a&gt;)" link="http://sourceforge.net/forum/forum.php?forum_id=312160"/>
-<item title="version 0.2.0pre1 released" description="Hi all,&lt;br&gt;&lt;br&gt;I just committed version 0.2.0pre1 of the driver. (&lt;a href=&quot;http://sourceforge.net/forum/forum.php?forum_id=310363&quot;&gt;1 comments&lt;/a&gt;)" link="http://sourceforge.net/forum/forum.php?forum_id=310363"/>
-<item title="version 0.1h released" description="Hi all,&lt;br&gt;&lt;br&gt;I just committed version 0.1h of the driver. (&lt;a href=&quot;http://sourceforge.net/forum/forum.php?forum_id=304193&quot;&gt;0 comments&lt;/a&gt;)" link="http://sourceforge.net/forum/forum.php?forum_id=304193"/>
-</channel>
+#Eclipse RSS Reader v1.2.0
+#Fri Mar 05 10:42:11 EST 2004
+translatorId=com.pnehrer.rss.core.default
+url=http\://sourceforge.net/export/rss2_projnews.php?group_id\=75380
+updateInterval=1440
