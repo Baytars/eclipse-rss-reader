@@ -1,0 +1,5 @@
+#Eclipse RSS Reader v1.2.0
+#Tue Nov 09 08:23:57 EST 2004
+translatorId=com.pnehrer.rss.core.default
+url=http\://www.joelonsoftware.com/rss.xml
+updateInterval=30
