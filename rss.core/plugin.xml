@@ -11,6 +11,7 @@
       <library name="core.jar">
          <export name="com.pnehrer.rss.core.*"/>
          <packages prefixes="com.pnehrer.rss.core,com.pnehrer.rss.internal.core"/>
+         <export name="com.pnehrer.rss.core.util.*"/>
       </library>
    </runtime>
 

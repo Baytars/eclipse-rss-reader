@@ -2,7 +2,7 @@
  * Created on Mar 15, 2004
  * Version $Id$
  */
-package com.pnehrer.rss.internal.core;
+package com.pnehrer.rss.core.util;
 
 import java.io.IOException;
 import java.io.StringReader;

@@ -5,18 +5,12 @@
 package com.pnehrer.rss.internal.core;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collection;
 
 import javax.xml.transform.Templates;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.eclipse.core.runtime.CoreException;
@@ -28,13 +22,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.pnehrer.rss.core.ITranslator;
 import com.pnehrer.rss.core.RSSCore;
+import com.pnehrer.rss.core.util.XSLBasedTranslator;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer </a>
  */
-public class DefaultTranslator implements ITranslator {
+public class DefaultTranslator extends XSLBasedTranslator {
 
 	private static final String RSS_URI = null;
 
@@ -67,11 +61,11 @@ public class DefaultTranslator implements ITranslator {
 
 	private static final String ATOM_TEMPLATES = "atom.xsl";
 
-	private static Templates simpleTemplates;
+	private Templates simpleTemplates;
 
-	private static Templates rdfTemplates;
+	private Templates rdfTemplates;
 
-	private static Templates atomTemplates;
+	private Templates atomTemplates;
 
 	/*
 	 * (non-Javadoc)
@@ -91,12 +85,7 @@ public class DefaultTranslator implements ITranslator {
 						.equals(element.getAttribute(VERSION_ATTR)));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.pnehrer.rss.core.ITranslator#translate(org.w3c.dom.Document)
-	 */
-	public Document translate(Document document) throws CoreException {
+	protected Templates getTemplates(Document document) throws CoreException {
 		Element element = document.getDocumentElement();
 		Templates templates;
 		if (RSS_ELEMENT.equals(element.getLocalName())
@@ -123,72 +112,7 @@ public class DefaultTranslator implements ITranslator {
 			templates = rdfTemplates;
 		}
 
-		DOMResult result = new DOMResult();
-		try {
-			Transformer transformer = templates.newTransformer();
-			transformer.transform(new DOMSource(document), result);
-		} catch (TransformerException ex) {
-			throw new CoreException(new Status(IStatus.ERROR,
-					RSSCore.PLUGIN_ID, 0, "could not translate channel source",
-					ex));
-		}
-
-		return stripHTML((Document) result.getNode());
-	}
-
-	private Document stripHTML(Document document) {
-		Element channel = document.getDocumentElement();
-		if (channel.hasAttribute("title"))
-			stripHTML(channel, "title");
-
-		if (channel.hasAttribute("description"))
-			stripHTML(channel, "description");
-
-		URI baseUri;
-		if (channel.hasAttribute("link"))
-			try {
-				baseUri = new URI(channel.getAttribute("link"));
-			} catch (URISyntaxException e) {
-				baseUri = null;
-			}
-		else
-			baseUri = null;
-		
-		NodeList list = channel.getElementsByTagName("item");
-		for (int i = 0, n = list.getLength(); i < n; ++i) {
-			Element element = (Element) list.item(i);
-			if (element.hasAttribute("title"))
-				stripHTML(element, "title");
-
-			if (element.hasAttribute("description"))
-				stripHTML(element, "description");
-			
-			if (baseUri != null && element.hasAttribute("link")) {
-				String link = element.getAttribute("link");
-				URI itemUri;
-				try {
-					itemUri = new URI(link);
-				} catch (URISyntaxException e) {
-					element.setAttribute("link", link);
-					continue;
-				}
-
-				URI resolvedUri = baseUri.resolve(itemUri);
-				element.setAttribute("link", resolvedUri.toString());
-			}
-		}
-
-		return document;
-	}
-
-	private void stripHTML(Element element, String attribute) {
-		String text = element.getAttribute(attribute);
-		try {
-			String result = HTMLHelper.stripHTML(text);
-			element.setAttribute(attribute, result);
-		} catch (IOException e) {
-			// ignore
-		}
+		return templates;
 	}
 
 	private boolean hasRSS09Channel(Element element) {
@@ -219,8 +143,7 @@ public class DefaultTranslator implements ITranslator {
 		return false;
 	}
 
-	private static synchronized void createSimpleTemplates()
-			throws CoreException {
+	private synchronized void createSimpleTemplates() throws CoreException {
 		if (simpleTemplates == null) {
 			try {
 				TransformerFactory factory = TransformerFactory.newInstance();
@@ -240,7 +163,7 @@ public class DefaultTranslator implements ITranslator {
 		}
 	}
 
-	private static synchronized void createRDFTemplates() throws CoreException {
+	private synchronized void createRDFTemplates() throws CoreException {
 		if (rdfTemplates == null) {
 			try {
 				TransformerFactory factory = TransformerFactory.newInstance();
@@ -260,7 +183,7 @@ public class DefaultTranslator implements ITranslator {
 		}
 	}
 
-	private static synchronized void createAtomTemplates() throws CoreException {
+	private synchronized void createAtomTemplates() throws CoreException {
 		if (atomTemplates == null) {
 			try {
 				TransformerFactory factory = TransformerFactory.newInstance();

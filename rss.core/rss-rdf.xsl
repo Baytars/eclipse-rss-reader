@@ -24,12 +24,8 @@
     		<xsl:apply-templates select="rss09:title | rss10:title | rss09:link | rss10:link | rss09:description | rss10:description | dc:date"/>
     		<xsl:apply-templates select="@*"/>
     		<xsl:apply-templates select="node()[not(self::rss09:title | self::rss10:title | self::rss09:link | self::rss10:link | self::rss09:description | self::rss10:description | self::dc:date)]"/>
-			<xsl:apply-templates select="following-sibling::rss09:image | following-sibling::rss09:item | following-sibling::rss09:textinput"/>
+			<xsl:apply-templates select="following-sibling::rss09:image | following-sibling::rss10:image | following-sibling::rss09:item | following-sibling::rss10:item | following-sibling::rss09:textinput | following-sibling::rss10:textinput"/>
     	</xsl:element>
-    </xsl:template>
-    
-    <xsl:template match="rss10:image[@rdf:resource]">
-    	<xsl:apply-templates select="/rdf:RDF/rss10:image[@rdf:about=current()/@rdf:resource]"/>
     </xsl:template>
     
     <xsl:template match="rss09:image | rss10:image[@rdf:about]">
@@ -38,14 +34,6 @@
     		<xsl:apply-templates select="@*"/>
     		<xsl:apply-templates select="node()[not(self::rss09:title | self::rss10:title | self::rss09:link | self::rss10:link | self::rss09:url | self::rss10:url)]"/>
     	</xsl:element>
-    </xsl:template>
-
-	<xsl:template match="rss10:items">
-		<xsl:apply-templates select="rdf:Seq/rdf:li"/>
-	</xsl:template>
-    
-    <xsl:template match="rdf:li">
-    	<xsl:apply-templates select="/rdf:RDF/rss10:item[@rdf:about=current()/@rdf:resource]"/>
     </xsl:template>
     
     <xsl:template match="rss09:item | rss10:item">
@@ -56,10 +44,6 @@
     	</xsl:element>
     </xsl:template>
 
-    <xsl:template match="rss10:textinput[@rdf:resource]">
-    	<xsl:apply-templates select="/rdf:RDF/rss10:textinput[@rdf:about=current()/@rdf:resource]"/>
-    </xsl:template>
-    
     <xsl:template match="rss09:textinput | rss10:textinput[@rdf:about]">
     	<xsl:element name="textInput">
     		<xsl:apply-templates select="rss09:title | rss10:title | rss09:link | rss10:link | rss09:description | rss10:description | rss09:name | rss10:name"/>

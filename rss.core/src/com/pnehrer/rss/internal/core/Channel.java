@@ -14,7 +14,8 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
-import java.text.ParseException;
+import java.text.Format;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -85,6 +86,11 @@ public class Channel
     private static final String IMAGE = "image";
     private static final String ITEM = "item";
     private static final String TEXT_INPUT = "textInput";
+	
+	private static final Format[] dateFormats = new Format[] {
+		DateFormat.getInstance(),
+		new SimpleDateFormat("EEE, d MMM yy HH:mm:ss zzz"),
+		new W3CDateFormat()}; 
 
     private UpdateTask updateTask;
 
@@ -817,36 +823,15 @@ public class Channel
     }
 
     static Date parseDate(String str) {
-        try {
-            return DateFormat.getInstance().parse(str);
-        }
-        catch(ParseException ex) {
-        	SimpleDateFormat format = 
-        		new SimpleDateFormat("EEE, d MMM yy HH:mm:ss zzz");
-        	try {
-				return format.parse(str);
-			} 
-        	catch(ParseException ex2) {
-        		int len = str.length();
-        		if (str.endsWith("Z"))
-        			str = str.substring(0, len - 1) + "GMT";
-        		else if (len >= 6)
-        			switch (str.charAt(len - 6)) {
-						case '+':
-						case '-':
-							str = str.substring(0, len - 6) + "GMT" + str.substring(len - 6);
-	        		}
-        		
-        		format = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssz");
-        		try {
-					return format.parse(str);
-				} 
-        		catch(ParseException ex3) {
-        			return null;
-				}
-			}
-        }
-    }
+		for (int i = 0; i < dateFormats.length; ++i) {
+			Date date = (Date) dateFormats[i].parseObject(str,
+					new ParsePosition(0));
+			if (date != null)
+				return date;
+		}
+
+		return null;
+	}
     
     static Channel create(
         IFile file, 

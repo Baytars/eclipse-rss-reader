@@ -18,9 +18,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IAdapterManager;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 import org.w3c.dom.Document;
 
@@ -231,4 +233,18 @@ public class RSSCore extends Plugin {
 			return conn.getInputStream();
     	}
     }
+
+	public void log(Object entry) {
+		IStatus status;
+		if (entry instanceof IStatus)
+			status = (IStatus) entry;
+		else if (entry instanceof Throwable)
+			status = new Status(Status.ERROR, getBundle().getSymbolicName(), 0,
+					"Unexpected error occurred.", (Throwable) entry);
+		else
+			status = new Status(Status.INFO, getBundle().getSymbolicName(), 0,
+					String.valueOf(entry), null);
+
+		getLog().log(status);
+	}
 }
