@@ -24,6 +24,8 @@ public class RSSUI extends AbstractUIPlugin {
 	private static RSSUI plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
+    
+    private WorkbenchAdapterFactory workbenchAdapterFactory;
 	
 	/**
 	 * The constructor.
@@ -70,9 +72,18 @@ public class RSSUI extends AbstractUIPlugin {
      */
     public void startup() throws CoreException {
         super.startup();
-        WorkbenchAdapterFactory factory = new WorkbenchAdapterFactory();
+        workbenchAdapterFactory = new WorkbenchAdapterFactory();
         IAdapterManager mgr = Platform.getAdapterManager();        
-        mgr.registerAdapters(factory, IChannel.class);
-        mgr.registerAdapters(factory, IItem.class);
+        mgr.registerAdapters(workbenchAdapterFactory, IChannel.class);
+        mgr.registerAdapters(workbenchAdapterFactory, IItem.class);
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.core.runtime.Plugin#shutdown()
+     */
+    public void shutdown() throws CoreException {
+        IAdapterManager mgr = Platform.getAdapterManager();
+        mgr.unregisterAdapters(workbenchAdapterFactory);        
+        super.shutdown();
     }
 }

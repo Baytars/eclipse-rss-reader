@@ -27,7 +27,7 @@ import com.pnehrer.rss.core.RSSCore;
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  * @see ViewPart
  */
-public class SimpleViewPart extends ViewPart implements ISelectionListener {
+public class ItemTableView extends ViewPart implements ISelectionListener {
 
     private static final String[] COLUMNS = {"Title", "Description"};
     private TableViewer viewer;

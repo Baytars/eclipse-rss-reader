@@ -23,10 +23,10 @@
             id="rss.ui.category1">
       </category>
       <view
-            name="Simple"
+            name="Item Table"
             category="rss.ui.category1"
-            class="com.pnehrer.rss.ui.views.SimpleViewPart"
-            id="com.pnehrer.rss.ui.simple">
+            class="com.pnehrer.rss.ui.views.ItemTableView"
+            id="com.pnehrer.rss.ui.itemTable">
       </view>
       <view
             name="Navigator"

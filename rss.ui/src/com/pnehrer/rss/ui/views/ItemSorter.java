@@ -21,9 +21,15 @@ public class ItemSorter extends ViewerSorter {
     public static final int DATE = 4;
     
     private final int sortBy;
+    private final ViewerSorter oldSorter;
+    
+    public ItemSorter(int sortBy, ViewerSorter oldSorter) {
+        this.sortBy = sortBy;
+        this.oldSorter = oldSorter;
+    }
     
     public ItemSorter(int sortBy) {
-        this.sortBy = sortBy;
+        this(sortBy, null);
     }
 
     /* (non-Javadoc)
@@ -36,12 +42,25 @@ public class ItemSorter extends ViewerSorter {
             case TITLE:
                 if(item1.getTitle() == null) return 1;
                 else if(item2.getTitle() == null) return -1;
-                else return item1.getTitle().compareTo(item2.getTitle());
+                else {
+                    int result = item1.getTitle().compareTo(item2.getTitle());
+                    if(result == 0 && oldSorter != null)
+                        return oldSorter.compare(viewer, e1, e2);
+                    else
+                        return result;
+                }
                 
             case DESCRIPTION:
                 if(item1.getDescription() == null) return 1;
                 else if(item2.getDescription() == null) return -1;
-                else return item1.getDescription().compareTo(item2.getDescription());
+                else {
+                    int result = item1.getDescription().compareTo(
+                        item2.getDescription());
+                    if(result == 0 && oldSorter != null)
+                        return oldSorter.compare(viewer, e1, e2);
+                    else
+                        return result;
+                }
                 
             case LINK:
                 if(item1.getLink() == null) return 1;
