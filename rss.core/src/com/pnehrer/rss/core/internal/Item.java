@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 
+import org.eclipse.core.runtime.PlatformObject;
 import org.w3c.dom.Element;
 
 import com.pnehrer.rss.core.IChannel;
@@ -16,7 +17,7 @@ import com.pnehrer.rss.core.IItem;
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  */
-public class Item implements IItem {
+public class Item extends PlatformObject implements IItem {
 
     private static final String TITLE = "title";
     private static final String DESCRIPTION = "description";

@@ -17,6 +17,7 @@ import org.eclipse.ui.dialogs.PropertyPage;
 
 import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.RSSCore;
+import com.pnehrer.rss.ui.internal.*;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
@@ -26,7 +27,25 @@ public class RSSPropertyPage
     extends PropertyPage 
     implements IWorkbenchPropertyPage {
 
-    private CorePropertyGroup coreProperties;
+    private ChannelPropertyGroup channelProperties;
+    private final UpdateIntervalGroup updateIntervalGroup;
+
+    public RSSPropertyPage() {
+        updateIntervalGroup = new UpdateIntervalGroup(new IPageContainer() {
+
+                public void setMessage(String message) {
+                    RSSPropertyPage.this.setMessage(message);
+                }
+    
+                public void setErrorMessage(String message) {
+                    RSSPropertyPage.this.setErrorMessage(message);
+                }
+    
+                public void setComplete(boolean complete) {
+                    setValid(complete);
+                }
+            });
+    }
 
 	/**
 	 * @see PropertyPage#createContents
@@ -34,16 +53,31 @@ public class RSSPropertyPage
 	protected Control createContents(Composite parent) {
         initializeDialogUnits(parent);
         Composite topLevel = new Composite(parent,SWT.NONE);
-        topLevel.setLayout(new GridLayout());
+        topLevel.setLayout(new GridLayout(3, false));
         topLevel.setLayoutData(new GridData(
             GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
         topLevel.setFont(parent.getFont());
 
-        coreProperties = new CorePropertyGroup(this, topLevel, SWT.SHADOW_NONE);
-        coreProperties.setLayoutData(new GridData(GridData.FILL_BOTH));
         IChannel channel = getChannel();
-        if(channel != null)
-            coreProperties.setUpdateInterval(channel.getUpdateInterval());
+        channelProperties = new ChannelPropertyGroup(new IPageContainer() {
+
+                public void setMessage(String message) {
+                    RSSPropertyPage.this.setMessage(message);
+                }
+    
+                public void setErrorMessage(String message) {
+                    RSSPropertyPage.this.setErrorMessage(message);
+                }
+    
+                public void setComplete(boolean complete) {
+                    setValid(complete);
+                } 
+            },
+            channel);
+
+        channelProperties.createContents(topLevel);
+        updateIntervalGroup.setUpdateInterval(channel.getUpdateInterval());
+        updateIntervalGroup.createContents(topLevel);
         
         setErrorMessage(null);
         setMessage(null);
@@ -56,7 +90,7 @@ public class RSSPropertyPage
      */
     protected void performDefaults() {
         super.performDefaults();
-        coreProperties.setUpdateInterval(
+        updateIntervalGroup.setUpdateInterval(
             new Integer(
                 RSSCore.getPlugin().getPluginPreferences().getInt(
                     RSSCore.PREF_UPDATE_INTERVAL)));
@@ -69,7 +103,8 @@ public class RSSPropertyPage
         IChannel channel = getChannel();
         if(channel == null) return false;
         else {
-            channel.setUpdateInterval(coreProperties.getUpdateInterval());
+            channel.setURL(channelProperties.getURL());
+            channel.setUpdateInterval(updateIntervalGroup.getUpdateInterval());
             return true;
         }
     }

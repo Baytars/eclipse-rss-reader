@@ -123,6 +123,10 @@ public class Channel
         return file;
     }
     
+    public IRegisteredTranslator getTranslator() {
+        return translator;
+    }
+    
     /* (non-Javadoc)
      * @see com.pnehrer.rss.core.IChannel#getURL()
      */

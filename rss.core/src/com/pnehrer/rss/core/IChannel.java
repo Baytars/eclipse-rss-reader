@@ -17,6 +17,8 @@ public interface IChannel {
 
     public IFile getFile();
     
+    public IRegisteredTranslator getTranslator();
+    
     public URL getURL();
     
     public void setURL(URL url);

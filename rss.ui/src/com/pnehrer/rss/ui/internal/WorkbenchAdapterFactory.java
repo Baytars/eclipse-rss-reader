@@ -6,6 +6,7 @@ package com.pnehrer.rss.ui.internal;
 
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.model.IWorkbenchAdapter;
+import org.eclipse.ui.views.properties.IPropertySource;
 
 import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IItem;
@@ -15,7 +16,9 @@ import com.pnehrer.rss.core.IItem;
  */
 public class WorkbenchAdapterFactory implements IAdapterFactory {
 
-    private static final Class[] ADAPTER_LIST = { IWorkbenchAdapter.class };
+    private static final Class[] ADAPTER_LIST = { 
+            IWorkbenchAdapter.class,
+            IPropertySource.class };
     private static final WorkbenchChannelAdapter channelAdapter =
         new WorkbenchChannelAdapter();
     private static final WorkbenchItemAdapter itemAdapter =
@@ -30,6 +33,12 @@ public class WorkbenchAdapterFactory implements IAdapterFactory {
                 return channelAdapter;
             else if(adaptableObject instanceof IItem)
                 return itemAdapter;
+        }
+        else if(IPropertySource.class.equals(adapterType)) {
+            if(adaptableObject instanceof IChannel)
+                return new ChannelPropertySource((IChannel)adaptableObject);
+            else if(adaptableObject instanceof IItem)
+                return new ItemPropertySource((IItem)adaptableObject);
         }
 
         return null;

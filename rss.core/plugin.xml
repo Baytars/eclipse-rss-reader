@@ -20,7 +20,7 @@
          point="com.pnehrer.rss.core.translator">
       <translator
             description="Default translator."
-            class="com.pnehrer.rss.core.internal.SourceTranslator"
+            class="com.pnehrer.rss.core.internal.DefaultTranslator"
             id="default">
       </translator>
    </extension>
