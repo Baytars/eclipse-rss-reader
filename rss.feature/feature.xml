@@ -7,21 +7,7 @@
       image="xml_120.png">
 
    <description>
-      Publishing web-based news of all kinds via a summary format (RSS)
-is becoming increasingly popular. The applications include regular
-headline news (Yahoo! News), web logs (Slashdot.org), professional
-bulletins (IBM developerWorks), and project updates (SourceForge.net).
-A variety of RSS formats currently exist, which increases application
-complexity. Often, a reader capable of understanding one format
-cannot handle another. The solution presented herein takes advantage
-of Eclipse platform in the following ways:
-1. Extension points and plug-in based architecture support addition
-of new channel formats.
-2. Workbench provides user interface consistency for users of
-existing Eclipse-based tools (I for one like to keep up-to-date
-while working in JDT).
-3. Resource and UI model provides opportunities for integration
-with other Eclipse-based tools.
+      Rich Site Summary feed browsing and subscription management.
    </description>
 
    <copyright>
