@@ -5,6 +5,7 @@ ul.menuBox {
 	border: 1px solid #ff6600;
 	margin: 4px;
 	padding: 2px 16px 2px 2px;
+	width: 140px;
 }
 
 ul.menubox li {
@@ -26,6 +27,7 @@ li.menuSelf, li.menuAncestor {
 .content {
 	border: 1px solid #ff6600;
 	padding: 4px;
+	min-height: 768px;
 }
 
 .footer {
