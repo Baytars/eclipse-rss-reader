@@ -1,0 +1,5 @@
+#Eclipse RSS Reader v1.2.0
+#Sun Mar 28 19:29:33 EST 2004
+translatorId=com.pnehrer.rss.core.default
+url=http\://examinedlife.typepad.com/johnbelle/index.rdf
+updateInterval=1440
