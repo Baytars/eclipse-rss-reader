@@ -6,9 +6,12 @@ All
 restoring/saving supported only if file provided
 - remove dependency on "rss" file extension
 - check schedule upon startup (i.e., check if update needed when channel instantiated)
+- make available "foreign elements" in channel model
+- use a namespace for internal format
+- user-selectable channel image?
 
 UI
-- browser selection (preferences)
+- browser selection (preferences, view menu)
 - re-use browser window?
 - mark items read/unread
 - label decorators
@@ -16,6 +19,8 @@ UI
 - perspective, perspective extensions
 - icons, help
 - productization (feature, update site, installation)
+- change content providers to work with files adapting to IChannel
+(rather than IChannel instances)
 
 Item Table View
 - better name/label
@@ -23,7 +28,8 @@ Item Table View
 - change to multi-page view (like content outline viewer)
 
 Channel Explorer View
-- context menu
+- context menu (new, cut, copy, paste, delete, refresh, update, team, compare,
+replace, restore, properties)
 
 Editor
-- 
+- create

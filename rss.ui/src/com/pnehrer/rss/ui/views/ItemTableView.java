@@ -140,7 +140,7 @@ public class ItemTableView extends ViewPart implements ISelectionListener {
      */
     public void selectionChanged(IWorkbenchPart part, ISelection selection) {
         IChannel channel;
-        if(selection == null || selection.isEmpty())
+        if(!(selection instanceof IStructuredSelection) || selection.isEmpty())
             channel = null;
         else {
             Object obj = ((IStructuredSelection)selection).getFirstElement();
