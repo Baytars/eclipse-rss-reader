@@ -157,6 +157,7 @@
             targetID="org.eclipse.ui.resourcePerspective">
          <view
                relative="org.eclipse.ui.views.ResourceNavigator"
+               visible="false"
                relationship="stack"
                id="com.pnehrer.rss.ui.views.ChannelNavigator">
          </view>
@@ -172,11 +173,15 @@
          <showInPart
                id="com.pnehrer.rss.ui.views.ChannelNavigator">
          </showInPart>
+         <perspectiveShortcut
+               id="com.pnehrer.rss.ui.RSSPerspective">
+         </perspectiveShortcut>
       </perspectiveExtension>
       <perspectiveExtension
             targetID="org.eclipse.jdt.ui.JavaPerspective">
          <view
                relative="org.eclipse.jdt.ui.PackagesView"
+               visible="false"
                relationship="stack"
                id="com.pnehrer.rss.ui.views.ChannelNavigator">
          </view>
@@ -192,11 +197,15 @@
          <showInPart
                id="com.pnehrer.rss.ui.views.ChannelNavigator">
          </showInPart>
+         <perspectiveShortcut
+               id="com.pnehrer.rss.ui.RSSPerspective">
+         </perspectiveShortcut>
       </perspectiveExtension>
       <perspectiveExtension
             targetID="org.eclipse.pde.ui.PDEPerspective">
          <view
                relative="org.eclipse.jdt.ui.PackagesView"
+               visible="false"
                relationship="stack"
                id="com.pnehrer.rss.ui.views.ChannelNavigator">
          </view>
@@ -212,6 +221,9 @@
          <showInPart
                id="com.pnehrer.rss.ui.views.ChannelNavigator">
          </showInPart>
+         <perspectiveShortcut
+               id="com.pnehrer.rss.ui.RSSPerspective">
+         </perspectiveShortcut>
       </perspectiveExtension>
    </extension>
    <extension
@@ -233,6 +245,18 @@
             class="com.pnehrer.rss.internal.ui.BrowserEditor"
             id="browsereditor">
       </linkbrowser>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="RSS Perspective"
+            icon="xml_16.gif"
+            class="com.pnehrer.rss.ui.RSSPerspective"
+            id="com.pnehrer.rss.ui.RSSPerspective">
+         <description>
+            Eclipse RSS Reader perspective.
+         </description>
+      </perspective>
    </extension>
 
 </plugin>

@@ -23,6 +23,7 @@
             targetID="com.ibm.etools.j2ee.J2EEPerspective">
          <view
                relative="com.ibm.etools.j2ee.ui.view.J2EENavigator"
+               visible="false"
                relationship="stack"
                id="com.pnehrer.rss.ui.views.ChannelNavigator">
          </view>
@@ -38,11 +39,15 @@
          <showInPart
                id="com.pnehrer.rss.ui.views.ChannelNavigator">
          </showInPart>
+         <perspectiveShortcut
+               id="com.pnehrer.rss.ui.RSSPerspective">
+         </perspectiveShortcut>
       </perspectiveExtension>
       <perspectiveExtension
             targetID="com.ibm.etools.server.ui.perspective">
          <view
                relative="org.eclipse.ui.views.ResourceNavigator"
+               visible="false"
                relationship="stack"
                id="com.pnehrer.rss.ui.views.ChannelNavigator">
          </view>
@@ -58,11 +63,15 @@
          <showInPart
                id="com.pnehrer.rss.ui.views.ChannelNavigator">
          </showInPart>
+         <perspectiveShortcut
+               id="com.pnehrer.rss.ui.RSSPerspective">
+         </perspectiveShortcut>
       </perspectiveExtension>
       <perspectiveExtension
             targetID="com.ibm.etools.webtools.webperspective.WebToolsPerspective">
          <view
                relative="com.ibm.etools.webtools.WebView"
+               visible="false"
                relationship="stack"
                id="com.pnehrer.rss.ui.views.ChannelNavigator">
          </view>
@@ -78,11 +87,15 @@
          <showInPart
                id="com.pnehrer.rss.ui.views.ChannelNavigator">
          </showInPart>
+         <perspectiveShortcut
+               id="com.pnehrer.rss.ui.RSSPerspective">
+         </perspectiveShortcut>
       </perspectiveExtension>
       <perspectiveExtension
             targetID="com.ibm.etools.xml.tools.XMLPerspective">
          <view
                relative="org.eclipse.ui.views.ResourceNavigator"
+               visible="false"
                relationship="stack"
                id="com.pnehrer.rss.ui.views.ChannelNavigator">
          </view>
@@ -98,9 +111,11 @@
          <showInPart
                id="com.pnehrer.rss.ui.views.ChannelNavigator">
          </showInPart>
+         <perspectiveShortcut
+               id="com.pnehrer.rss.ui.RSSPerspective">
+         </perspectiveShortcut>
       </perspectiveExtension>
    </extension>
-   
    <extension
          point="com.pnehrer.rss.ui.linkbrowser">
       <linkbrowser

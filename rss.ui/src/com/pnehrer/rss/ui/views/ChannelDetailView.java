@@ -59,6 +59,8 @@ public class ChannelDetailView extends ViewPart implements ISelectionListener {
         "Link", 
         "Date"};
 
+    private static final String TAG_WIDTH = "width";
+    private static final String TAG_SORTER = "sorter";    
     private static final String TAG_SELECTION = "selection";
     private static final String TAG_ELEMENT = "element";
     private static final String TAG_PATH = "path";
@@ -139,13 +141,20 @@ public class ChannelDetailView extends ViewPart implements ISelectionListener {
         column.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 ViewerSorter oldSorter = viewer.getSorter();
-                viewer.setSorter(
-                    new ItemSorter(
-                        sort,
-                        oldSorter instanceof ItemSorter ?
-                            !((ItemSorter)oldSorter).isReverse() :
-                            false,
-                            oldSorter));
+                if(oldSorter instanceof ItemSorter) {
+                    ItemSorter itemSorter = (ItemSorter)oldSorter;
+                    if(itemSorter.getColumn() == sort) {
+                        ((ItemSorter)oldSorter).flipOrder();
+                        viewer.refresh();
+                    }
+                    else {
+                        viewer.setSorter(
+                            new ItemSorter(sort, false, oldSorter));
+                    }
+                }
+                else {
+                    viewer.setSorter(new ItemSorter(sort, true, oldSorter));
+                }
             }
         });
         
@@ -254,6 +263,19 @@ public class ChannelDetailView extends ViewPart implements ISelectionListener {
     }
     
     private void restoreState(IMemento memento) {
+        Table table = viewer.getTable();
+        TableColumn[] columns = table.getColumns();
+        for(int i = 0; i < columns.length; ++i) {
+            Integer width = memento.getInteger(TAG_WIDTH + i);
+            if(width != null)
+                columns[i].setWidth(width.intValue());                
+        }
+            
+        IMemento sorterMem = memento.getChild(TAG_SORTER);
+        if(sorterMem != null) {
+            viewer.setSorter(ItemSorter.restoreState(sorterMem));
+        }
+
         String path = memento.getString(TAG_PATH);
         if(path == null) return;
         
@@ -301,6 +323,18 @@ public class ChannelDetailView extends ViewPart implements ISelectionListener {
                 memento.putMemento(this.memento);
         }
         else {
+            Table table = viewer.getTable();
+            TableColumn[] columns = table.getColumns();
+            for(int i = 0; i < columns.length; ++i) {
+                memento.putInteger(TAG_WIDTH + i, columns[i].getWidth());                
+            }
+            
+            ViewerSorter sorter = viewer.getSorter();
+            if(sorter instanceof ItemSorter) {
+                IMemento childMem = memento.createChild(TAG_SORTER);
+                ((ItemSorter)sorter).saveState(childMem, columns.length);
+            }
+            
             Object input = viewer.getInput();
             if(input instanceof IChannel) {
                 IChannel channel = (IChannel)input;

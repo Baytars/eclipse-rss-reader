@@ -6,6 +6,7 @@ package com.pnehrer.rss.ui.views;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.ui.IMemento;
 
 import com.pnehrer.rss.core.IItem;
 
@@ -20,8 +21,12 @@ public class ItemSorter extends ViewerSorter {
     public static final int LINK = 3;
     public static final int DATE = 4;
     
+    private static final String TAG_COLUMN = "column";
+    private static final String TAG_REVERSE = "reverse";
+    private static final String TAG_SORTER = "sorter";
+    
     private final int sortBy;
-    private final int sign;
+    private int sign;
     private final ViewerSorter oldSorter;
     
     public ItemSorter(int sortBy, boolean reverse, ViewerSorter oldSorter) {
@@ -29,7 +34,7 @@ public class ItemSorter extends ViewerSorter {
         sign = reverse ? -1 : 1;
         this.oldSorter = oldSorter;
     }
-
+    
     /* (non-Javadoc)
      * @see org.eclipse.jface.viewers.ViewerSorter#compare(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
      */
@@ -88,7 +93,39 @@ public class ItemSorter extends ViewerSorter {
         }
     }
     
+    public int getColumn() {
+        return sortBy;
+    }
+    
     public boolean isReverse() {
         return sign == -1;
+    }
+
+    public void flipOrder() {
+        sign *= -1;
+    }
+    
+    public static ItemSorter restoreState(IMemento memento) {
+        Integer sortBy = memento.getInteger(TAG_COLUMN);
+        boolean reverse = 
+            Boolean.valueOf(memento.getString(TAG_REVERSE)).booleanValue();
+        IMemento childMem = memento.getChild(TAG_SORTER);
+        ViewerSorter oldSorter = childMem == null ? 
+            null : 
+            restoreState(childMem);
+            
+        return new ItemSorter(
+            sortBy == null ? 0 : sortBy.intValue(), 
+            reverse, 
+            oldSorter);
+    }
+    
+    public void saveState(IMemento memento, int maxSorters) {
+        memento.putInteger(TAG_COLUMN, sortBy);
+        memento.putString(TAG_REVERSE, String.valueOf(sign == -1));        
+        if(maxSorters > 0 && oldSorter instanceof ItemSorter) {
+            IMemento childMem = memento.createChild(TAG_SORTER);
+            ((ItemSorter)oldSorter).saveState(childMem, maxSorters - 1);
+        }
     }
 }
