@@ -4,12 +4,12 @@
 <xsl:template match="/">
 <xsl:for-each select="site">
 	<span>
-	<h1>Update Site</h1>
 	<p><xsl:value-of select="description"/></p>
 	<table border="0"><tr><td>
 	<xsl:for-each select="category-def">
 		<xsl:sort select="@label" order="ascending" case-order="upper-first"/>
 		<xsl:sort select="@name" order="ascending" case-order="upper-first"/>
+		<xsl:if test="position()=last()"><br/><br/></xsl:if>
 		<table width="100%" border="0" cellpadding="2" cellspacing="2" class="tableList">
 	<xsl:if test="count(key('cat',@name)) != 0">
 			<caption class="tableList">
