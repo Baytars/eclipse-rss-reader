@@ -120,12 +120,7 @@ public class RSSPropertyPage
         browserGroup.createContents(topLevel);
         try {
             RSSUI ui = RSSUI.getDefault();
-            browserGroup.setSelectedBrowserFactory(
-                ui.getBrowserFactoryDescriptor(channel));
-            browserGroup.setSelectedEditorId(
-                ui.getOpenLinkEditorId(channel));
-            browserGroup.setChoice(
-                ui.getOpenLinkChoice(channel));
+            browserGroup.setSelectedBrowser(ui.getLinkBrowserId(channel));
         }
         catch(CoreException e) {
             // ignore
@@ -153,20 +148,7 @@ public class RSSPropertyPage
         updateIntervalGroup.setUpdateInterval(updateInterval);
         
         prefs = RSSUI.getDefault().getPluginPreferences();
-        try {
-            RSSUI ui = RSSUI.getDefault();
-            browserGroup.setSelectedBrowserFactory(
-                ui.getBrowserFactoryDescriptor(
-                    prefs.getString(RSSUI.PREF_BROWSER)));
-        }
-        catch(CoreException e) {
-            // ignore
-        }
-
-        browserGroup.setSelectedEditorId(
-            prefs.getString(RSSUI.PREF_EDITOR));
-        browserGroup.setChoice(
-            prefs.getString(RSSUI.PREF_OPEN_LINK));
+        browserGroup.setSelectedBrowser(prefs.getString(RSSUI.PREF_LINK_BROWSER));
     }
 
     /* (non-Javadoc)
@@ -191,15 +173,9 @@ public class RSSPropertyPage
                         channel.save(monitor);
                         
                         RSSUI ui = RSSUI.getDefault(); 
-                        ui.setBrowserFactoryDescriptor(
+                        ui.setLinkBrowserId(
                             channel, 
-                            browserGroup.getSelectedBrowserFactory());
-                        ui.setOpenLinkEditorId(
-                            channel,
-                            browserGroup.getSelectedEditorId());
-                        ui.setOpenLinkChoice(
-                            channel,
-                            browserGroup.getChoice());
+                            browserGroup.getSelectedBrowser());
                     }
                 });
             }

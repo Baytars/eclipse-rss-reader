@@ -10,9 +10,7 @@ import java.net.URL;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.PlatformObject;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistableElement;
@@ -29,9 +27,19 @@ public class LinkEditorInput
     implements IStorageEditorInput, IPersistableElement {
 
     private final IRSSElement rssElement;
+    private final URL url;
+    private final LinkStorage storage;
 
-    public LinkEditorInput(IRSSElement rssElement) {
+    public LinkEditorInput(IRSSElement rssElement) 
+        throws MalformedURLException {
+        
+        this(rssElement, new URL(rssElement.getLink()));
+    }
+    
+    public LinkEditorInput(IRSSElement rssElement, URL url) {
         this.rssElement = rssElement;
+        this.url = url;
+        storage = new LinkStorage(url);
     }
     
     public IRSSElement getRSSElement() {
@@ -42,28 +50,14 @@ public class LinkEditorInput
      * @see org.eclipse.ui.IStorageEditorInput#getStorage()
      */
     public IStorage getStorage() throws CoreException {
-        URL url;
-        try {
-            url = new URL(rssElement.getLink());
-        }
-        catch(MalformedURLException e) {
-            throw new CoreException(
-                new Status(
-                    IStatus.ERROR,
-                    RSSUI.PLUGIN_ID,
-                    0,
-                    "could not create url from link " + rssElement.getLink(),
-                    e));
-        }
-        
-        return new LinkStorage(url);
+        return storage;
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.IEditorInput#exists()
      */
     public boolean exists() {
-        return rssElement.getLink() != null;
+        return url != null;
     }
 
     /* (non-Javadoc)
@@ -92,7 +86,7 @@ public class LinkEditorInput
      * @see org.eclipse.ui.IEditorInput#getToolTipText()
      */
     public String getToolTipText() {
-        return rssElement.getLink();
+        return url.toExternalForm();
     }
 
     /* (non-Javadoc)

@@ -6,7 +6,6 @@ package com.pnehrer.rss.ui.wizards;
 
 import java.net.URL;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
@@ -21,7 +20,6 @@ import com.pnehrer.rss.core.RSSCore;
 import com.pnehrer.rss.internal.ui.BrowserGroup;
 import com.pnehrer.rss.internal.ui.ChannelPropertyGroup;
 import com.pnehrer.rss.internal.ui.UpdateIntervalGroup;
-import com.pnehrer.rss.ui.BrowserFactoryDescriptor;
 import com.pnehrer.rss.ui.IPageContainer;
 import com.pnehrer.rss.ui.RSSUI;
 
@@ -129,18 +127,9 @@ public class WizardChannelOptionsPage extends WizardPage {
 
         browserGroup.createContents(topLevel);
         prefs = RSSUI.getDefault().getPluginPreferences();
-        try {
-            browserGroup.setSelectedBrowserFactory(
-                RSSUI.getDefault().getBrowserFactoryDescriptor(
-                    prefs.getString(RSSUI.PREF_BROWSER)));
-        }
-        catch(CoreException e) {
-            // ignore
-        }
+        browserGroup.setSelectedBrowser(
+                prefs.getString(RSSUI.PREF_LINK_BROWSER));
             
-        browserGroup.setSelectedEditorId(prefs.getString(RSSUI.PREF_EDITOR));
-        browserGroup.setChoice(prefs.getString(RSSUI.PREF_OPEN_LINK));
-        
         setErrorMessage(null);
         setMessage(null);
         setControl(topLevel);
@@ -162,18 +151,10 @@ public class WizardChannelOptionsPage extends WizardPage {
         return updateIntervalGroup.getUpdateInterval();
     }
     
-    public BrowserFactoryDescriptor getSelectedBrowserFactory() {
-        return browserGroup.getSelectedBrowserFactory();
+    public String getSelectedBrowser() {
+        return browserGroup.getSelectedBrowser();
     }
     
-    public String getSelectedEditorId() {
-        return browserGroup.getSelectedEditorId();
-    }
-    
-    public String getOpenLinkChoice() {
-        return browserGroup.getChoice();
-    }
-
     private void setComplete(short bit, boolean complete) {
         if(complete) {
             pageComplete |= bit;

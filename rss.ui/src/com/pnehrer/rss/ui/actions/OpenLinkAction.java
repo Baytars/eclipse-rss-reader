@@ -6,21 +6,15 @@ package com.pnehrer.rss.ui.actions;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.help.browser.IBrowser;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorDescriptor;
-import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.SelectionListenerAction;
 
-import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IRSSElement;
-import com.pnehrer.rss.internal.ui.LinkEditorInput;
-import com.pnehrer.rss.ui.BrowserFactoryDescriptor;
+import com.pnehrer.rss.ui.ILinkBrowser;
 import com.pnehrer.rss.ui.RSSUI;
 
 /**
@@ -59,26 +53,20 @@ public class OpenLinkAction extends SelectionListenerAction {
      */
     public void run() {
         IStructuredSelection selection = getStructuredSelection();
-        IRSSElement item = (IRSSElement)selection.getFirstElement();
-        IChannel channel = item.getChannel();
-        RSSUI ui = RSSUI.getDefault(); 
+        Object element = selection.getFirstElement();
+        IRSSElement item = null;
+        if(element instanceof IAdaptable)
+            item = (IRSSElement)
+                ((IAdaptable)element).getAdapter(IRSSElement.class);
+        
+        if(item == null)
+            return;
+            
         try {
-            String choice = ui.getOpenLinkChoice(channel);
-            if(RSSUI.PREF_BROWSER.equals(choice)) {
-                BrowserFactoryDescriptor bdf = 
-                    ui.getBrowserFactoryDescriptor(channel);
-                IBrowser browser = bdf.getFactory().createBrowser();
-                browser.displayURL(item.getLink());
-            }
-            else {
-                IWorkbench wb = ui.getWorkbench();
-                IEditorRegistry reg = wb.getEditorRegistry();
-                IEditorDescriptor ed = 
-                    reg.findEditor(ui.getOpenLinkEditorId(channel));
-                    
-                if(ed == null)
-                    ed = reg.getDefaultEditor();
-
+            ILinkBrowser linkBrowser = 
+                RSSUI.getDefault().getLinkBrowser(item);
+            if(linkBrowser != null) {
+                IWorkbench wb = RSSUI.getDefault().getWorkbench();
                 IWorkbenchWindow window = wb.getActiveWorkbenchWindow();
                 if(window == null) {
                     IWorkbenchWindow[] windows = wb.getWorkbenchWindows();
@@ -87,10 +75,7 @@ public class OpenLinkAction extends SelectionListenerAction {
                 }
                 
                 if(window != null) {
-                    window.getActivePage().openEditor(
-                        new LinkEditorInput(item), 
-                        ed.getId(), 
-                        true);
+                    linkBrowser.open(item, window.getActivePage());
                 }
             }
         }
@@ -100,13 +85,6 @@ public class OpenLinkAction extends SelectionListenerAction {
                 "Browser Error",
                 "Could not open browser.",
                 ex.getStatus());
-        }
-        catch(Exception ex) {
-            MessageDialog.openError(
-                shell,
-                "Browser Error",
-                "Could not open link " + item.getLink() 
-                    + ". Exception: " + ex);
         }
     }                    
 }

@@ -135,6 +135,7 @@ public class ChannelPropertyGroup {
 
         urlText = new Text(topLevel, SWT.BORDER);
         GridData layoutData = new GridData(GridData.FILL_HORIZONTAL);
+        layoutData.widthHint = 200;
         layoutData.horizontalSpan = columns - 2;
         urlText.setLayoutData(layoutData);
         urlText.addModifyListener(new ModifyListener() {
@@ -186,7 +187,6 @@ public class ChannelPropertyGroup {
 
         layoutData = new GridData(GridData.FILL_HORIZONTAL);
         layoutData.horizontalSpan = columns;
-        layoutData.widthHint = 250;
         layoutData.heightHint = 200;
         translatorList.setLayoutData(layoutData);
         translatorList.addSelectionListener(new SelectionAdapter() {

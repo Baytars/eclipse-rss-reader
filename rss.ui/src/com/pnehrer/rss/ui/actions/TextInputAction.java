@@ -4,27 +4,19 @@
  */
 package com.pnehrer.rss.ui.actions;
 
-import java.net.URLEncoder;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.help.browser.IBrowser;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorDescriptor;
-import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.SelectionListenerAction;
 
-import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IRSSElement;
 import com.pnehrer.rss.core.ITextInput;
-import com.pnehrer.rss.internal.ui.LinkEditorInput;
-import com.pnehrer.rss.ui.BrowserFactoryDescriptor;
+import com.pnehrer.rss.ui.ILinkBrowser;
 import com.pnehrer.rss.ui.RSSUI;
 
 /**
@@ -64,9 +56,16 @@ public class TextInputAction extends SelectionListenerAction {
      */
     public void run() {
         IStructuredSelection selection = getStructuredSelection();
-        IRSSElement item = (IRSSElement)selection.getFirstElement();
-        IChannel channel = item.getChannel();
-        ITextInput textInput = channel.getTextInput();
+        Object element = selection.getFirstElement();
+        IRSSElement item = null;
+        if(element instanceof IAdaptable)
+            item = (IRSSElement)
+                ((IAdaptable)element).getAdapter(IRSSElement.class);
+        
+        if(item == null)
+            return;
+
+        ITextInput textInput = item.getChannel().getTextInput();
         if(textInput == null)
             return;
             
@@ -81,40 +80,11 @@ public class TextInputAction extends SelectionListenerAction {
         String term = dlg.getValue();
 
         if(term != null) {
-            String link = textInput.getLink();
-            StringBuffer buf = new StringBuffer(link);
-            int i = link.lastIndexOf('/');
-            String lastSegment = i >= 0 ? link.substring(i) : link;
-            if((i = lastSegment.lastIndexOf('?')) >= 0) {
-                if(i < link.length() - 1)
-                    buf.append('&'); 
-            }
-            else 
-                buf.append('?');
-                
-            buf.append(textInput.getName());
-            buf.append('=');
-            buf.append(URLEncoder.encode(term));
-            String url = buf.toString();
-                
             RSSUI ui = RSSUI.getDefault(); 
             try {
-                String choice = ui.getOpenLinkChoice(channel);
-                if(RSSUI.PREF_BROWSER.equals(choice)) {
-                    BrowserFactoryDescriptor bdf = 
-                        ui.getBrowserFactoryDescriptor(channel);
-                    IBrowser browser = bdf.getFactory().createBrowser();
-                    browser.displayURL(url);
-                }
-                else {
+                ILinkBrowser linkBrowser = ui.getLinkBrowser(item);
+                if(linkBrowser != null) {
                     IWorkbench wb = ui.getWorkbench();
-                    IEditorRegistry reg = wb.getEditorRegistry();
-                    IEditorDescriptor ed = 
-                        reg.findEditor(ui.getOpenLinkEditorId(channel));
-                    
-                    if(ed == null)
-                        ed = reg.getDefaultEditor();
-
                     IWorkbenchWindow window = wb.getActiveWorkbenchWindow();
                     if(window == null) {
                         IWorkbenchWindow[] windows = wb.getWorkbenchWindows();
@@ -123,10 +93,10 @@ public class TextInputAction extends SelectionListenerAction {
                     }
                 
                     if(window != null) {
-                        window.getActivePage().openEditor(
-                            new LinkEditorInput(textInput), 
-                            ed.getId(), 
-                            true);
+                        linkBrowser.open(
+                            textInput, 
+                            term, 
+                            window.getActivePage());
                     }
                 }
             }
@@ -136,13 +106,6 @@ public class TextInputAction extends SelectionListenerAction {
                     "Browser Error",
                     "Could not open browser.",
                     ex.getStatus());
-            }
-            catch(Exception ex) {
-                MessageDialog.openError(
-                    shell,
-                    "Browser Error",
-                    "Could not open URL " + url 
-                        + ". Exception: " + ex);
             }
         }
     }

@@ -4,19 +4,19 @@
  */
 package com.pnehrer.rss.ui;
 
-import org.eclipse.ui.IWorkbench;
+import org.eclipse.core.runtime.Preferences;
+import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Preferences;
-import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import com.pnehrer.rss.core.RSSCore;
-import com.pnehrer.rss.internal.ui.*;
+import com.pnehrer.rss.internal.ui.BrowserGroup;
+import com.pnehrer.rss.internal.ui.UpdateIntervalGroup;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
@@ -101,21 +101,7 @@ public class RSSPreferencePage
         
         browserGroup.createContents(topLevel);
         prefs = RSSUI.getDefault().getPluginPreferences();
-        String id = prefs.getString(RSSUI.PREF_BROWSER);
-        if(id != null && id.length() > 0)
-            try {
-                browserGroup.setSelectedBrowserFactory(
-                    RSSUI.getDefault().getBrowserFactoryDescriptor(id));
-            }
-            catch(CoreException e) {
-                // ignore
-            }
-        
-        id = prefs.getString(RSSUI.PREF_EDITOR);
-        if(id != null && id.length() > 0)
-            browserGroup.setSelectedEditorId(id);
-            
-        browserGroup.setChoice(prefs.getString(RSSUI.PREF_OPEN_LINK));
+        browserGroup.setSelectedBrowser(prefs.getString(RSSUI.PREF_LINK_BROWSER));
         
         setErrorMessage(null);
         setMessage(null);
@@ -140,21 +126,9 @@ public class RSSPreferencePage
         updateIntervalGroup.setUpdateInterval(updateInterval);
         
         prefs = RSSUI.getDefault().getPluginPreferences();
-        prefs.setToDefault(RSSUI.PREF_BROWSER);
-        try {
-            browserGroup.setSelectedBrowserFactory(
-                RSSUI.getDefault().getBrowserFactoryDescriptor(
-                    prefs.getString(RSSUI.PREF_BROWSER)));
-        }
-        catch(CoreException e) {
-            // ignore
-        }        
-            
-        prefs.setToDefault(RSSUI.PREF_EDITOR);
-        browserGroup.setSelectedEditorId(prefs.getString(RSSUI.PREF_EDITOR));
-
-        prefs.setToDefault(RSSUI.PREF_OPEN_LINK);        
-        browserGroup.setChoice(prefs.getString(RSSUI.PREF_OPEN_LINK));
+        prefs.setToDefault(RSSUI.PREF_LINK_BROWSER);
+        browserGroup.setSelectedBrowser(
+            prefs.getString(RSSUI.PREF_LINK_BROWSER));
     }
 
     /* (non-Javadoc)
@@ -177,19 +151,11 @@ public class RSSPreferencePage
         RSSCore.getPlugin().savePluginPreferences();
 
         prefs = RSSUI.getDefault().getPluginPreferences();
-        BrowserFactoryDescriptor bdf = browserGroup.getSelectedBrowserFactory();
-        if(bdf == null)
-            prefs.setToDefault(RSSUI.PREF_BROWSER);
-        else
-            prefs.setValue(RSSUI.PREF_BROWSER, bdf.getId());
-
-        String id = browserGroup.getSelectedEditorId();
+        String id = browserGroup.getSelectedBrowser();
         if(id == null)
-            prefs.setToDefault(RSSUI.PREF_EDITOR);
+            prefs.setToDefault(RSSUI.PREF_LINK_BROWSER);
         else
-            prefs.setValue(RSSUI.PREF_EDITOR, id);
-            
-        prefs.setValue(RSSUI.PREF_OPEN_LINK, browserGroup.getChoice());        
+            prefs.setValue(RSSUI.PREF_LINK_BROWSER, id);
                             
         RSSUI.getDefault().savePluginPreferences();
         return true;

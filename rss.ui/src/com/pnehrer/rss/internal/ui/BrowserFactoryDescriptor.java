@@ -2,7 +2,7 @@
  * Created on Dec 16, 2003
  * Version $Id$
  */
-package com.pnehrer.rss.ui;
+package com.pnehrer.rss.internal.ui;
 
 import org.eclipse.help.browser.IBrowserFactory;
 

@@ -21,6 +21,8 @@
    </requires>
 
 
+   <extension-point id="linkbrowser" name="Link Browser" schema="schema/linkbrowser.exsd"/>
+
    <extension
          point="org.eclipse.ui.views">
       <category
@@ -165,6 +167,19 @@
             class="com.pnehrer.rss.internal.ui.LinkEditorInputFactory"
             id="com.pnehrer.rss.ui.LinkEditorInputFactory">
       </factory>
+   </extension>
+   <extension
+         point="com.pnehrer.rss.ui.linkbrowser">
+      <linkbrowser
+            label="Help Browser"
+            class="com.pnehrer.rss.internal.ui.HelpBrowser"
+            id="helpbrowser">
+      </linkbrowser>
+      <linkbrowser
+            label="Browser Editor"
+            class="com.pnehrer.rss.internal.ui.BrowserEditor"
+            id="browsereditor">
+      </linkbrowser>
    </extension>
 
 </plugin>

@@ -121,16 +121,9 @@ public class NewChannelWizard extends Wizard implements INewWizard {
                                 null :
                                 new SubProgressMonitor(monitor, 1));
                                 
-                        RSSUI ui = RSSUI.getDefault();
-                        ui.setBrowserFactoryDescriptor(
+                        RSSUI.getDefault().setLinkBrowserId(
                             channel, 
-                            channelOptionsPage.getSelectedBrowserFactory());
-                        ui.setOpenLinkEditorId(
-                            channel,
-                            channelOptionsPage.getSelectedEditorId());
-                        ui.setOpenLinkChoice(
-                            channel,
-                            channelOptionsPage.getOpenLinkChoice());
+                            channelOptionsPage.getSelectedBrowser());
 
 //                        Display.getDefault().asyncExec(new Runnable() {
 //                            public void run() {    

@@ -4,6 +4,8 @@
  */
 package com.pnehrer.rss.internal.ui;
 
+import java.net.MalformedURLException;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -12,9 +14,10 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.IElementFactory;
 import org.eclipse.ui.IMemento;
 
-import com.pnehrer.rss.core.IChannel;
+import com.pnehrer.rss.core.IImage;
 import com.pnehrer.rss.core.IItem;
 import com.pnehrer.rss.core.IRSSElement;
+import com.pnehrer.rss.core.ITextInput;
 import com.pnehrer.rss.ui.RSSUI;
 
 /**
@@ -27,7 +30,7 @@ public class LinkEditorInputFactory implements IElementFactory {
 
     private static final String TAG_PATH = "path";
     private static final String TAG_LINK = "link";
-    private static final String TAG_CHANNEL = "isChannel";
+    private static final String TAG_KIND = "kind";
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.IElementFactory#createElement(org.eclipse.ui.IMemento)
@@ -38,34 +41,38 @@ public class LinkEditorInputFactory implements IElementFactory {
             return null;
 
         // Create an IResource.
-        IResource res = ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(path));
+        IResource res = 
+            ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(path));
         if(res instanceof IFile) {
             IRSSElement rssElement = (IRSSElement)
                 res.getAdapter(IRSSElement.class);
-            if(rssElement == null)
-                return null;
-            else {
-                boolean isChannel = 
-                    new Boolean(memento.getString(TAG_CHANNEL)).booleanValue();
-                if(isChannel)
-                    return new LinkEditorInput(rssElement);
-                else {
-                    String link = memento.getString(TAG_LINK);
-                    if(link == null)
-                        return new LinkEditorInput(rssElement);
-
-                    IItem[] items = rssElement.getChannel().getItems();
-                    for(int i = 0, n = items.length; i < n; ++i) {
-                        if(link.equals(items[i].getLink()))
-                            return new LinkEditorInput(items[i]);
+            if(rssElement != null) {
+                String kind = memento.getString(TAG_KIND);
+                try {
+                    if("textinput".equals(kind))
+                        return new LinkEditorInput(
+                            rssElement.getChannel().getTextInput());
+                    else if("image".equals(kind))
+                        return new LinkEditorInput(
+                            rssElement.getChannel().getImage());
+                    else if("item".equals(kind)) {
+                        String link = memento.getString(TAG_LINK);
+                        IItem[] items = rssElement.getChannel().getItems();
+                        for(int i = 0, n = items.length; i < n; ++i) {
+                            if(link.equals(items[i].getLink()))
+                                return new LinkEditorInput(items[i]);
+                        }
                     }
-                    
-                    return new LinkEditorInput(rssElement);
+                    else
+                        return new LinkEditorInput(rssElement);
+                }
+                catch(MalformedURLException ex) {
+                    return null;
                 }
             }
         }
-        else
-            return null;
+
+        return null;
     }
 
     public static void saveState(IMemento memento, LinkEditorInput input) {
@@ -74,12 +81,23 @@ public class LinkEditorInputFactory implements IElementFactory {
             TAG_PATH, 
             rssElement.getChannel().getFile().getFullPath().toString());
 
-        memento.putString(
-            TAG_LINK, 
-            rssElement.getLink());
-
-        memento.putString(
-            TAG_CHANNEL, 
-            String.valueOf(rssElement instanceof IChannel));
+        if(rssElement instanceof IItem) {
+            memento.putString(
+                TAG_KIND, 
+                "item");
+            memento.putString(
+                TAG_LINK, 
+                rssElement.getLink());
+        }
+        else if(rssElement instanceof IImage) {
+            memento.putString(
+                TAG_KIND, 
+                "image");
+        }
+        else if(rssElement instanceof ITextInput) {
+            memento.putString(
+                TAG_KIND, 
+                "textinput");
+        }
     }
 }
