@@ -1,0 +1,5 @@
+#Eclipse RSS Reader v1.2.0
+#Fri Mar 18 09:10:37 EST 2005
+translatorId=com.pnehrer.rss.core.default
+url=http\://dwlt.net/tapestry/dilbert.rdf
+updateInterval=30
