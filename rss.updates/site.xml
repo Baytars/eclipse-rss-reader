@@ -1,10 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <description url="http://morphine.sourceforge.net/updates">
-      Eclipse RSS Reader for Eclipse 3.0.
+   <description url="http://morphine.sourceforge.net">
+      This is the Eclipse RSS Reader Update Site. If you are an Eclipse 2.1.x user, point your Update Manager at http://morphine.sourceforge.net/updates and select the desired Eclipse RSS Reader features to download. If you are an Eclipse 3.x user, add the same URL as a new Remote Site when searching for new features to install.
    </description>
-   <feature url="features/com.pnehrer.rss_2.0.1.jar" id="com.pnehrer.rss" version="2.0.1"/>
-   <feature url="features/com.pnehrer.rss.source_2.0.1.jar" id="com.pnehrer.rss.source" version="2.0.1"/>
-   <feature url="features/com.pnehrer.rss_2.0.2.jar" id="com.pnehrer.rss" version="2.0.2"/>
-   <feature url="features/com.pnehrer.rss.source_2.0.2.jar" id="com.pnehrer.rss.source" version="2.0.2"/>
+   <feature url="features/com.pnehrer.rss_1.3.0.jar" id="com.pnehrer.rss" version="1.3.0">
+      <category name="default"/>
+   </feature>
+   <feature url="features/com.pnehrer.rss.source_1.3.0.jar" id="com.pnehrer.rss.source" version="1.3.0">
+      <category name="default"/>
+   </feature>
+   <feature url="features/com.pnehrer.rss.wsad_1.3.0.jar" id="com.pnehrer.rss.wsad" version="1.3.0" os="win32" ws="win32">
+      <category name="default"/>
+   </feature>
+   <feature url="features/com.pnehrer.rss_2.0.2.jar" id="com.pnehrer.rss" version="2.0.2">
+      <category name="e3"/>
+   </feature>
+   <feature url="features/com.pnehrer.rss.source_2.0.2.jar" id="com.pnehrer.rss.source" version="2.0.2">
+      <category name="e3"/>
+   </feature>
+   <category-def name="default" label="Eclipse RSS Reader 1.x">
+      <description>
+         Eclipse RSS Reader for Eclipse 2.1 and compatible.
+      </description>
+   </category-def>
+   <category-def name="e3" label="Eclipse RSS Reader 2.x">
+      <description>
+         Eclipse RSS Reader for Eclipse 3.0.
+      </description>
+   </category-def>
 </site>
