@@ -42,12 +42,14 @@ public class RSSUI extends AbstractUIPlugin {
     public static final String PLUGIN_ID = "com.pnehrer.rss.ui";
 
     public static final String XML_ICON = "xml_16.gif";
+    public static final String NEW_DECORATOR_ICON = "new_dec_16.gif";
     public static final String BROWSE_ICON = "browse_16.png";
     public static final String DETAIL_ICON = "detail_16.png";
     public static final String NAVIGATOR_ICON = "navigator_16.png";
     public static final String NEW_ICON = "new_16.png";
     public static final String UPDATE_ICON = "update_16.png";
     public static final String ITEM_ICON = "item_16.gif";
+    public static final String ITEM_NEW_ICON = "item_new_16.gif";
     public static final String TEXT_INPUT_ICON = "textinput_16.png";
     
     public static final String PREF_LINK_BROWSER = "browser";
@@ -216,12 +218,14 @@ public class RSSUI extends AbstractUIPlugin {
     protected void initializeImageRegistry(ImageRegistry reg) {
         IPluginDescriptor pd = getDescriptor();
         reg.put(XML_ICON, ImageDescriptor.createFromURL(pd.find(new Path(XML_ICON))));
+        reg.put(NEW_DECORATOR_ICON, ImageDescriptor.createFromURL(pd.find(new Path(NEW_DECORATOR_ICON))));
         reg.put(BROWSE_ICON, ImageDescriptor.createFromURL(pd.find(new Path(BROWSE_ICON))));
         reg.put(DETAIL_ICON, ImageDescriptor.createFromURL(pd.find(new Path(DETAIL_ICON))));
         reg.put(NAVIGATOR_ICON, ImageDescriptor.createFromURL(pd.find(new Path(NAVIGATOR_ICON))));
         reg.put(NEW_ICON, ImageDescriptor.createFromURL(pd.find(new Path(NEW_ICON))));
         reg.put(UPDATE_ICON, ImageDescriptor.createFromURL(pd.find(new Path(UPDATE_ICON))));
         reg.put(ITEM_ICON, ImageDescriptor.createFromURL(pd.find(new Path(ITEM_ICON))));
+        reg.put(ITEM_NEW_ICON, ImageDescriptor.createFromURL(pd.find(new Path(ITEM_NEW_ICON))));
         reg.put(TEXT_INPUT_ICON, ImageDescriptor.createFromURL(pd.find(new Path(TEXT_INPUT_ICON))));
     }
 

@@ -88,13 +88,6 @@ public class TextInput extends PlatformObject implements ITextInput {
         setLink(textInput.getAttribute(LINK));
     }
     
-    void save(Element textInput) {
-        textInput.setAttribute(TITLE, title);
-        textInput.setAttribute(DESCRIPTION, description);
-        textInput.setAttribute(NAME, name);
-        textInput.setAttribute(LINK, link);
-    }
-    
     public boolean equals(Object other) {
         if(other instanceof TextInput)
             return link.equals(((TextInput)other).link);

@@ -133,6 +133,13 @@ public class ChannelNavigator
     private void handleOpen(OpenEvent event) {
         IStructuredSelection selection = (IStructuredSelection)event.getSelection();
         actionGroup.runDefaultAction(selection);
+        for(Iterator i = selection.iterator(); i.hasNext();) {
+            Object o = i.next();
+            if(o instanceof IItem) {
+                IItem item = (IItem)o;
+                item.resetUpdateFlag();
+            }
+        }
     }
 
     /* (non-Javadoc)

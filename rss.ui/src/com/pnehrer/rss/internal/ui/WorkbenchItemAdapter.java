@@ -5,6 +5,7 @@
 package com.pnehrer.rss.internal.ui;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
 import com.pnehrer.rss.core.IItem;
@@ -28,14 +29,24 @@ public class WorkbenchItemAdapter implements IWorkbenchAdapter {
      * @see org.eclipse.ui.model.IWorkbenchAdapter#getImageDescriptor(java.lang.Object)
      */
     public ImageDescriptor getImageDescriptor(Object object) {
-        return RSSUI.getDefault().getImageRegistry().getDescriptor(RSSUI.ITEM_ICON);
+        IItem item = (IItem)object;
+        ImageRegistry reg = RSSUI.getDefault().getImageRegistry();
+        if(item.isUpdated())
+            return reg.getDescriptor(RSSUI.ITEM_NEW_ICON);
+        else
+            return reg.getDescriptor(RSSUI.ITEM_ICON);
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.model.IWorkbenchAdapter#getLabel(java.lang.Object)
      */
-    public String getLabel(Object o) {
-        return ((IItem)o).getTitle();
+    public String getLabel(Object object) {
+        IItem item = (IItem)object;
+        String title = item.getTitle();
+        if(item.isUpdated())
+            title += "*";
+            
+        return title;
     }
     
     /* (non-Javadoc)

@@ -13,5 +13,9 @@ public interface IItem extends IRSSElement {
     
     public String getDescription();    
 
-    public Date getDate();    
+    public Date getDate();
+    
+    public boolean isUpdated();
+    
+    public void resetUpdateFlag();
 }

@@ -6,11 +6,7 @@ package com.pnehrer.rss.internal.core;
 
 import java.net.URL;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -20,8 +16,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
 import org.w3c.dom.Document;
 
-import com.pnehrer.rss.core.ChannelChangeEvent;
-import com.pnehrer.rss.core.IChannelChangeListener;
 import com.pnehrer.rss.core.IRegisteredTranslator;
 import com.pnehrer.rss.core.RSSCore;
 
@@ -36,8 +30,6 @@ public class ChannelManager {
     private static ChannelManager instance;
     private final Timer timer = new Timer();
     private volatile boolean timerCancelled;
-    private final Collection listeners = 
-        Collections.synchronizedCollection(new HashSet());
     
     public ChannelManager() {
         instance = this;
@@ -101,25 +93,6 @@ public class ChannelManager {
         }
         catch(CoreException ex) {
             RSSCore.getPlugin().getLog().log(ex.getStatus());
-        }
-    }
-
-    public void addChannelChangeListener(IChannelChangeListener listener) {
-        listeners.add(listener);
-    }
-
-    public void removeChannelChangeListener(IChannelChangeListener listener) {
-        listeners.remove(listener);
-    }
-    
-    void firePropertyChange(Channel channel, int flags) {
-        ChannelChangeEvent event = new ChannelChangeEvent(channel, flags);
-        synchronized(listeners) {
-            for(Iterator i = listeners.iterator(); i.hasNext();) {
-                IChannelChangeListener listener = 
-                    (IChannelChangeListener)i.next();
-                listener.channelChanged(event);
-            }
         }
     }
 }

@@ -14,7 +14,7 @@
    </runtime>
    <requires>
       <import plugin="org.eclipse.core.resources"/>
-      <import plugin="com.ibm.etools.xalanrt" optional="true" export="true"/>
+      <import plugin="com.ibm.etools.xalanrt" export="true"/>
    </requires>
 
 
@@ -27,6 +27,17 @@
             class="com.pnehrer.rss.internal.core.DefaultTranslator"
             id="default">
       </translator>
+   </extension>
+   <extension
+         id="update"
+         name="RSS Element Update"
+         point="org.eclipse.core.resources.markers">
+      <persistent
+            value="true">
+      </persistent>
+      <attribute
+            name="link">
+      </attribute>
    </extension>
 
 </plugin>

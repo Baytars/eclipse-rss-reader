@@ -94,12 +94,6 @@ public class Image extends PlatformObject implements IImage {
         setLink(image.getAttribute(LINK));
     }
     
-    void save(Element image) {
-        image.setAttribute(TITLE, title);
-        image.setAttribute(URL, url.toExternalForm());
-        image.setAttribute(LINK, link);
-    }
-    
     public boolean equals(Object other) {
         if(other instanceof Image)
             return url.equals(((Image)other).url);

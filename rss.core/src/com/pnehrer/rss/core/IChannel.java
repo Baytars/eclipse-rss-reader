@@ -42,6 +42,10 @@ public interface IChannel extends IRSSElement {
     
     public ITextInput getTextInput();
     
+    public boolean hasUpdates();
+    
+    public void resetUpdateFlags();
+    
     public void update(IProgressMonitor monitor) throws CoreException;
     
     public void save(IProgressMonitor monitor) throws CoreException;

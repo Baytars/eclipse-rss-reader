@@ -10,6 +10,9 @@ import java.util.Iterator;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IMenuListener;
@@ -28,11 +31,14 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IViewSite;
@@ -44,13 +50,17 @@ import org.eclipse.ui.part.ViewPart;
 import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IItem;
 import com.pnehrer.rss.core.IRSSElement;
+import com.pnehrer.rss.internal.ui.NewChannelImageDescriptor;
 import com.pnehrer.rss.ui.RSSUI;
 
 /**
  * @author <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>
  * @see ViewPart
  */
-public class ChannelDetailView extends ViewPart implements ISelectionListener {
+public class ChannelDetailView 
+    extends ViewPart 
+    implements ISelectionListener,
+        IResourceChangeListener {
 
     private static final String[] COLUMNS = {
         "#", 
@@ -66,9 +76,17 @@ public class ChannelDetailView extends ViewPart implements ISelectionListener {
     private static final String TAG_PATH = "path";
     private static final String TAG_LINK = "link";
 
+    private IChannel channel;
     private IMemento memento;
     private TableViewer viewer;
     private ChannelActionGroup actionGroup;
+    private Color oldItemColor;
+    
+    public ChannelDetailView() {
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(
+            this,
+            IResourceChangeEvent.POST_CHANGE);
+    }
 
     private void initContextMenu() {
         MenuManager menuMgr = new MenuManager("#PopupMenu");
@@ -126,6 +144,10 @@ public class ChannelDetailView extends ViewPart implements ISelectionListener {
     private void handleOpen(OpenEvent event) {
         IStructuredSelection selection = (IStructuredSelection)event.getSelection();
         actionGroup.runDefaultAction(selection);
+        for(Iterator i = selection.iterator(); i.hasNext();) {
+            IItem item = (IItem)i.next();
+            item.resetUpdateFlag();
+        }
     }
 
     private TableColumn createColumn(
@@ -235,20 +257,15 @@ public class ChannelDetailView extends ViewPart implements ISelectionListener {
         }
         
         if(rssElement != null) {
-            IChannel channel = rssElement.getChannel();
+            channel = rssElement.getChannel();
             viewer.setInput(channel);
             viewer.setSelection(selection, true);
-            
-            setTitle(channel.getTitle());
-            ImageDescriptor imageDescriptor = 
-                RSSUI.getDefault().getImageDescriptor16(channel);
-            setTitleImage(imageDescriptor == null ? 
-                null : 
-                imageDescriptor.createImage());
-                    
+
             setTitleToolTip(channel.getLink());
             updateStatusLine((IStructuredSelection)selection);
             updateActionBars((IStructuredSelection)selection);
+
+            processChannelChange();
         }
     }
     
@@ -260,6 +277,8 @@ public class ChannelDetailView extends ViewPart implements ISelectionListener {
 
         super.init(site, memento);
         this.memento = memento;
+        
+        oldItemColor = new Color(site.getShell().getDisplay(), 0x80, 0x80, 0x80);
     }
     
     private void restoreState(IMemento memento) {
@@ -364,6 +383,83 @@ public class ChannelDetailView extends ViewPart implements ISelectionListener {
      */
     public void dispose() {
         getSite().getPage().removeSelectionListener(this);
+        ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+        if(oldItemColor != null)
+            oldItemColor.dispose();
+            
         super.dispose();
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
+     */
+    public void resourceChanged(IResourceChangeEvent event) {
+        if(channel == null)
+            return;
+            
+        final IResourceDelta delta = 
+            event.getDelta().findMember(channel.getFile().getFullPath());
+        if(delta != null) {
+            Control ctrl = viewer.getControl();
+            if(ctrl != null && !ctrl.isDisposed()) {
+                // Do a sync exec, not an async exec, since the resource delta
+                // must be traversed in this method.  It is destroyed
+                // when this method returns.
+                ctrl.getDisplay().syncExec(new Runnable() {
+                    public void run() {
+                        if(delta.getKind() == IResourceDelta.REMOVED
+                             && (delta.getFlags() & IResourceDelta.MOVED_TO) == 0) {
+        
+                             channel = null;
+                             viewer.setInput(null);
+                             return;
+                         }
+        
+                         if(delta.getKind() != IResourceDelta.CHANGED
+                              || (delta.getFlags() & IResourceDelta.MARKERS) == 0)
+                              return;
+ 
+                         processChannelChange();
+                    }
+                });
+            }
+
+        }
+    }
+    
+    private void processChannelChange() {
+        boolean hasUpdates = channel.hasUpdates();
+
+        String title = channel.getTitle();
+        if(hasUpdates)
+            title += "*";
+                 
+        setTitle(title);
+
+        ImageDescriptor imageDescriptor =
+            RSSUI.getDefault().getImageDescriptor16(channel);
+        if(hasUpdates && imageDescriptor != null)
+            imageDescriptor = 
+                new NewChannelImageDescriptor(
+                    imageDescriptor,
+                    RSSUI.getDefault().getImageRegistry().getDescriptor(
+                        RSSUI.NEW_DECORATOR_ICON));
+                
+        setTitleImage(
+            imageDescriptor == null ? 
+                null : 
+                imageDescriptor.createImage());
+
+        TableItem[] tableItems = viewer.getTable().getItems();
+        for(int i = 0; i < tableItems.length; ++i) {
+            Object data = tableItems[i].getData();
+            if(data instanceof IItem) {
+                IItem item = (IItem)data;
+                if(item.isUpdated())
+                    tableItems[i].setForeground(viewer.getTable().getForeground());
+                else
+                    tableItems[i].setForeground(oldItemColor);
+            }
+        }
     }
 }

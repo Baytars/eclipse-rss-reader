@@ -202,13 +202,7 @@ public class ImageManager {
                 imagePath.toString());
         }
         catch(CoreException ex) {
-            RSSUI.getDefault().getLog().log(
-                new Status(
-                    IStatus.ERROR,
-                    RSSUI.PLUGIN_ID,
-                    0,
-                    "could not set persistent property on file " + file,
-                    ex));
+            RSSUI.getDefault().getLog().log(ex.getStatus());
         }
         
         image16Map.put(
@@ -251,13 +245,7 @@ public class ImageManager {
                 imagePath.toString());
         }
         catch(CoreException ex) {
-            RSSUI.getDefault().getLog().log(
-                new Status(
-                    IStatus.ERROR,
-                    RSSUI.PLUGIN_ID,
-                    0,
-                    "could not set persistent property on file " + file,
-                    ex));
+            RSSUI.getDefault().getLog().log(ex.getStatus());
         }
 
         image16x16Map.put(

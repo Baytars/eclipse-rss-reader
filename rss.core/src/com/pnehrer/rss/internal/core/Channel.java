@@ -34,9 +34,12 @@ import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.Serializer;
 import org.apache.xml.serialize.SerializerFactory;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -50,7 +53,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.pnehrer.rss.core.ChannelChangeEvent;
 import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IImage;
 import com.pnehrer.rss.core.IItem;
@@ -93,7 +95,6 @@ public class Channel
     private final List items = new ArrayList();
     private TextInput textInput;
     
-    private boolean suppressChangeEvents;
     private long selfModificationStamp = IFile.NULL_STAMP;
 
     private Channel(IFile file) {
@@ -117,7 +118,6 @@ public class Channel
             
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
         ChannelManager.getInstance().removeChannel(this);
-        firePropertyChange(ChannelChangeEvent.REMOVED);
     }
 
     /* (non-Javadoc)
@@ -133,7 +133,6 @@ public class Channel
     
     public synchronized void setTranslator(IRegisteredTranslator translator) {
         this.translator = translator;
-        firePropertyChange(ChannelChangeEvent.CHANGED);
     }
     
     /* (non-Javadoc)
@@ -145,7 +144,6 @@ public class Channel
     
     public synchronized void setURL(URL url) {
         this.url = url;
-        firePropertyChange(ChannelChangeEvent.CHANGED);
     }
     
     /* (non-Javadoc)
@@ -161,7 +159,6 @@ public class Channel
     public synchronized void setUpdateInterval(Integer updateInterval) {
         this.updateInterval = updateInterval;
         updateUpdateSchedule();
-        firePropertyChange(ChannelChangeEvent.CHANGED);
     }
     
     /* (non-Javadoc)
@@ -244,11 +241,28 @@ public class Channel
         return textInput;
     }
     
-    private void firePropertyChange(int flags) {
-        if(suppressChangeEvents)
-            return;
+    public boolean hasUpdates() {
+        try {
+            IMarker[] markers =
+                file.findMarkers(
+                    RSSCore.MARKER_UPDATE, 
+                    true, 
+                    IResource.DEPTH_ZERO);
 
-        ChannelManager.getInstance().firePropertyChange(this, flags);            
+            return markers.length > 0;
+        }
+        catch(CoreException ex) {
+            return false;
+        }
+    }
+    
+    public void resetUpdateFlags() {
+        try {
+            file.deleteMarkers(RSSCore.MARKER_UPDATE, true, IResource.DEPTH_ZERO);
+        }
+        catch(CoreException e) {
+            // ignore
+        }
     }
     
     public void update(IProgressMonitor monitor) throws CoreException {
@@ -302,7 +316,7 @@ public class Channel
     }
     
     private synchronized void update(
-        Document sourceDocument, 
+        Document sourceDocument,
         IProgressMonitor monitor) 
         throws CoreException {
             
@@ -340,12 +354,19 @@ public class Channel
             if(monitor != null)
                 monitor.worked(1);
             
-            Element channel = document.getDocumentElement();
+            final Element channel = document.getDocumentElement();
             if(CHANNEL.equals(channel.getLocalName())) {
-                update(channel);
-                
-                if(monitor != null)
-                    monitor.worked(1);
+                IWorkspaceRunnable action = new IWorkspaceRunnable() {
+                    public void run(IProgressMonitor monitor) throws CoreException {
+                        update(channel, true);
+                    }
+                };
+
+                ResourcesPlugin.getWorkspace().run(
+                    action, 
+                    monitor == null ?
+                        null :
+                        new SubProgressMonitor(monitor, 1));
             }
             else {
                 throw new CoreException(
@@ -399,35 +420,28 @@ public class Channel
                         "could not find source translator with id " + str,
                         null));
 
-            suppressChangeEvents = true;
+            setTranslator(matchingTranslator);
+
+            str = props.getProperty(URL);
+            if(str == null)
+                break;
+
             try {
-                setTranslator(matchingTranslator);
-    
-                str = props.getProperty(URL);
-                if(str == null)
-                    break;
-    
-                try {
-                    setURL(new URL(str));
-                }
-                catch(MalformedURLException ex) {
-                    throw new CoreException(
-                        new Status(
-                            IStatus.ERROR,
-                            RSSCore.PLUGIN_ID,
-                            0,
-                            "invalid channel url " + str,
-                            ex));
-                }
-    
-                str = props.getProperty(UPDATE_INTERVAL);
-                setUpdateInterval(str == null ? null : new Integer(str));
-                return;
+                setURL(new URL(str));
             }
-            finally {
-                suppressChangeEvents = false;
-                firePropertyChange(ChannelChangeEvent.CHANGED);
+            catch(MalformedURLException ex) {
+                throw new CoreException(
+                    new Status(
+                        IStatus.ERROR,
+                        RSSCore.PLUGIN_ID,
+                        0,
+                        "invalid channel url " + str,
+                        ex));
             }
+
+            str = props.getProperty(UPDATE_INTERVAL);
+            setUpdateInterval(str == null ? null : new Integer(str));
+            return;
         }
         while(false);
 
@@ -482,11 +496,13 @@ public class Channel
         
             Element channel = document.getDocumentElement();
             if(CHANNEL.equals(channel.getLocalName()))
-                update(channel);
+                update(channel, false);
         }
     }
     
-    private void update(Element channel) throws CoreException {
+    private void update(Element channel, boolean processChanges) 
+        throws CoreException {
+            
         setTitle(channel.getAttribute(TITLE));
         setLink(channel.getAttribute(LINK));
         setDescription(channel.getAttribute(DESCRIPTION));
@@ -513,19 +529,23 @@ public class Channel
                 if(IMAGE.equals(node.getLocalName())) {
                     Object oldImage = image;
                     if(image == null)
-                        image = new Image(this);
-                    
+                        image = new Image(Channel.this);
+            
                     image.update((Element)node);
                     hasImage = true;
                 }
                 else if(ITEM.equals(node.getLocalName())) {
-                    String itemLink = ((Element)node).getAttribute(Item.LINK);
+                    String itemLink = ((Element)node).getAttribute(LINK);
                     Item item = (Item)itemMap.get(itemLink);
                     if(item == null) {
-                        item = new Item(this);
+                        item = new Item(Channel.this, itemLink);
                         items.add(itemIndex, item);
+                        if(processChanges) {
+                            IMarker marker = file.createMarker(RSSCore.MARKER_UPDATE);
+                            marker.setAttribute(RSSCore.ATTR_LINK, itemLink);
+                        }
                     }
-                    
+            
                     item.update((Element)node);
                     liveItems.add(item);
                     ++itemIndex;
@@ -533,15 +553,34 @@ public class Channel
                 else if(TEXT_INPUT.equals(node.getLocalName())) {
                     Object oldTextInput = textInput;
                     if(textInput == null)
-                        textInput = new TextInput(this);
-                        
+                        textInput = new TextInput(Channel.this);
+                
                     textInput.update((Element)node);
                     hasTextInput = true;
                 }
             }
         }
 
-        items.retainAll(liveItems);
+        if(processChanges) {        
+            IMarker[] markers = 
+                file.findMarkers(RSSCore.MARKER_UPDATE, true, IResource.DEPTH_ZERO);
+            Map markerMap = new HashMap(markers.length);
+            for(int i = 0; i < markers.length; ++i)
+                markerMap.put(markers[i].getAttribute(RSSCore.ATTR_LINK), markers[i]);
+
+            for(Iterator i = items.iterator(); i.hasNext();) {
+                Item item = (Item)i.next();
+                if(!liveItems.contains(item)) {
+                    IMarker marker = (IMarker)markerMap.get(item.getLink());
+                    if(marker != null)
+                        marker.delete();
+                
+                    i.remove();
+                }
+            }
+        }
+        else
+            items.retainAll(liveItems);
     }
     
     public synchronized void save(IProgressMonitor monitor) 
@@ -687,29 +726,24 @@ public class Channel
             monitor.beginTask("create", 2);
 
         Channel channel = new Channel(file, translator);
-        channel.suppressChangeEvents = true;
         try {
             channel.setURL(url);
-            channel.update(
-                document, 
-                monitor == null ?
-                    null :
-                    new SubProgressMonitor(monitor, 1));
-            channel.setUpdateInterval(updateInterval);
+            channel.updateInterval = updateInterval;
             channel.save(
                 monitor == null ?
                     null :
                     new SubProgressMonitor(monitor, 1));
+            channel.update(
+                document,
+                monitor == null ?
+                    null :
+                    new SubProgressMonitor(monitor, 1));
+            channel.updateUpdateSchedule();
         }
         finally {
-            channel.suppressChangeEvents = false;
             if(monitor != null)
                 monitor.done();
         }
-        
-        ChannelManager.getInstance().firePropertyChange(
-            channel, 
-            ChannelChangeEvent.ADDED);
 
         return channel;
     }
