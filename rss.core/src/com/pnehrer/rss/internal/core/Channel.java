@@ -271,7 +271,7 @@ public class Channel
             factory.setNamespaceAware(true);
             
             if(monitor != null)
-                monitor.beginTask("update", 2);
+                monitor.beginTask("Update: ", 2);
             
             try {
                 DocumentBuilder builder = factory.newDocumentBuilder();
@@ -352,44 +352,35 @@ public class Channel
     
     private void update(Document sourceDocument, IProgressMonitor monitor) 
         throws CoreException {
-            
-        if(monitor != null)
-            monitor.beginTask("update", 3);
 
-        try {
-            Document document = translator.translate(sourceDocument);
-            cache(document);
-            
-            if(monitor != null)
-                monitor.worked(1);
-            
-            final Element channel = document.getDocumentElement();
-            if(CHANNEL.equals(channel.getLocalName())) {
-                IWorkspaceRunnable action = new IWorkspaceRunnable() {
-                    public void run(IProgressMonitor monitor) throws CoreException {
-                        update(channel, true);
-                    }
-                };
+        Document document = translator.translate(sourceDocument);
+        cache(document);
+        
+        final Element channel = document.getDocumentElement();
+        if(CHANNEL.equals(channel.getLocalName())) {
+            IWorkspaceRunnable action = new IWorkspaceRunnable() {
+                public void run(IProgressMonitor monitor) throws CoreException {
+                	if (monitor != null)
+                		monitor.beginTask("Updating " + file.getName() + "... ", 1);
+                	try {
+                		update(channel, true);
+                	} finally {
+                		if (monitor != null)
+                			monitor.done();
+                	}
+                }
+            };
 
-                ResourcesPlugin.getWorkspace().run(
-                    action, 
-                    monitor == null ?
-                        null :
-                        new SubProgressMonitor(monitor, 1));
-            }
-            else {
-                throw new CoreException(
-                    new Status(
-                        IStatus.ERROR,
-                        RSSCore.PLUGIN_ID,
-                        0,
-                        "invalid channel format. File: " + file,
-                        null));
-            }
+            ResourcesPlugin.getWorkspace().run(action, monitor);
         }
-        finally {
-            if(monitor != null)
-                monitor.done();
+        else {
+            throw new CoreException(
+                new Status(
+                    IStatus.ERROR,
+                    RSSCore.PLUGIN_ID,
+                    0,
+                    "Invalid channel format. File: " + file,
+                    null));
         }
     }
     
@@ -866,7 +857,7 @@ public class Channel
         throws CoreException {
             
         if(monitor != null)
-            monitor.beginTask("create", 2);
+            monitor.beginTask("Create: ", 2);
 
         Channel channel = new Channel(file, translator);
         try {

@@ -4,20 +4,18 @@
  */
 package com.pnehrer.rss.ui.actions;
 
-import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.SelectionListenerAction;
-import org.eclipse.ui.actions.WorkspaceModifyOperation;
 
 import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IRSSElement;
@@ -53,6 +51,7 @@ public class UpdateAction extends SelectionListenerAction {
      */
     public void run() {
         IStructuredSelection selection = getStructuredSelection();
+        final ArrayList channels = new ArrayList(selection.size());
         for(Iterator i = selection.iterator(); i.hasNext();) {
             Object item = i.next();
             IRSSElement rssElement = null;
@@ -60,39 +59,43 @@ public class UpdateAction extends SelectionListenerAction {
                 rssElement = (IRSSElement)
                     ((IAdaptable)item).getAdapter(IRSSElement.class);
 
-            if(rssElement == null)
-                continue;
-
-            final IChannel channel = rssElement.getChannel();
-            Shell shell = Display.getCurrent().getActiveShell(); 
-            ProgressMonitorDialog dlg = new ProgressMonitorDialog(shell);
-            try {
-                dlg.run(true, true, new WorkspaceModifyOperation() {
-                    protected void execute(IProgressMonitor monitor) 
-                        throws CoreException, 
-                            InvocationTargetException, 
-                            InterruptedException {
-
-                        channel.update(monitor);
-                    }
-                });
-            }
-            catch(InterruptedException ex) {
-                // ignore
-            }
-            catch(InvocationTargetException ex) {
-                RSSUI.getDefault().getLog().log(
-                	new Status(
-                		Status.ERROR,
-						RSSUI.PLUGIN_ID,
-						0,
-						"Could not updates RSS feed.",
-						ex));
-                MessageDialog.openError(
-                        shell, 
-                        "RSS Feed Update Error",
-                        "Could not update RSS feed. Exception: " + ex);
-            }
+            if(rssElement != null)
+                channels.add(rssElement.getChannel());
         }
+        
+        Job job = new Job("Updating selected channels") {
+			protected IStatus run(IProgressMonitor monitor) {
+            	MultiStatus status = 
+            		new MultiStatus(
+            			RSSUI.PLUGIN_ID, 
+						0, 
+						"Errors occurred while updating selected channels.",
+						null);
+            	
+            	if (monitor != null)
+            		monitor.beginTask("Updating channels... ", channels.size());
+            	try {
+	            	for (Iterator i = channels.iterator(); i.hasNext();) {
+	            		IChannel channel = (IChannel) i.next();
+	            		try {
+		            		channel.update(
+		            			monitor == null 
+								? null 
+								: new SubProgressMonitor(monitor, 1));
+	            		} catch (CoreException ex) {
+	            			status.add(ex.getStatus());
+	            		}
+	            	}
+	            	
+	            	return status;
+	        	} finally {
+	        		if (monitor != null)
+	        			monitor.done();
+	        	}
+			}
+        };
+        
+        job.setUser(true);
+        job.schedule();
     }
 }
