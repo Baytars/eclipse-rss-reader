@@ -17,6 +17,8 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -35,8 +37,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.forms.widgets.TableWrapData;
-import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.EditorPart;
 
 import com.pnehrer.rss.core.IChannel;
@@ -141,10 +141,10 @@ public class ChannelEditor extends EditorPart implements
 
 		toolkit = new FormToolkit(parent.getDisplay());
 		form = toolkit.createScrolledForm(parent);
-		form.getBody().setLayout(new TableWrapLayout());
+		form.getBody().setLayout(new GridLayout());
 
 		title = toolkit.createImageHyperlink(form.getBody(), SWT.WRAP);
-		title.setLayoutData(new TableWrapData());
+		title.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		title.setFont(form.getFont());
 		title.setImage(image);
 		title.setUnderlined(false);
@@ -152,7 +152,7 @@ public class ChannelEditor extends EditorPart implements
 
 		description = toolkit.createLabel(form.getBody(), channel
 				.getDescription());
-		description.setLayoutData(new TableWrapData());
+		description.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		itemGroups = new ArrayList(channel.getItems().length);
 		createContent();
@@ -175,16 +175,17 @@ public class ChannelEditor extends EditorPart implements
 
 	private Composite createItemGroup(IItem item) {
 		Composite group = toolkit.createComposite(form.getBody());
-		group.setLayout(new TableWrapLayout());
+		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		group.setLayout(new GridLayout());
 
 		Composite separator = toolkit.createCompositeSeparator(group);
-		TableWrapData td = new TableWrapData(TableWrapData.FILL);
-		td.heightHint = 2;
-		separator.setLayoutData(td);
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.heightHint = 2;
+		separator.setLayoutData(gd);
 
 		ExpandableComposite section = toolkit.createExpandableComposite(group,
 				ExpandableComposite.TWISTIE);
-		section.setLayoutData(new TableWrapData(TableWrapData.FILL));
+		section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		section.setText(item.getTitle());
 		Hyperlink link = toolkit.createHyperlink(section, "Browse", SWT.NONE);
 		link.addHyperlinkListener(new LinkOpener(item));
