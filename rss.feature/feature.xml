@@ -2,13 +2,13 @@
 <feature
       id="com.pnehrer.rss"
       label="Eclipse RSS Reader"
-      version="1.3.0"
+      version="2.0.0"
       provider-name="Peter Nehrer"
       image="xml_120.png"
       primary="true">
 
    <description>
-      Eclipse RSS Reader.
+      Eclipse RSS Reader for Eclipse 3.0.
    </description>
 
    <copyright>
@@ -27,37 +27,32 @@ at http://www.eclipse.org/legal/cpl-v10.html.
    </url>
 
    <requires>
+      <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.apache.xerces"/>
       <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.help"/>
-      <import plugin="org.eclipse.help.ui"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.eclipse.search"/>
-      <import plugin="org.eclipse.update.ui.forms"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.eclipse.help.base"/>
    </requires>
 
    <plugin
          id="com.pnehrer.rss.core"
-         download-size="0"
-         install-size="0"
-         version="1.3.0"/>
+         version="2.0.0"/>
 
    <plugin
          id="com.pnehrer.rss.ui"
-         download-size="0"
-         install-size="0"
-         version="1.3.0"/>
+         version="2.0.0"/>
 
    <plugin
          id="com.pnehrer.rss"
-         download-size="0"
-         install-size="0"
-         version="1.3.0"/>
+         version="2.0.0"/>
 
    <plugin
          id="com.pnehrer.rss.doc.user"
-         download-size="0"
-         install-size="0"
-         version="1.3.0"/>
+         version="2.0.0"
+         unpack="false"/>
 
 </feature>

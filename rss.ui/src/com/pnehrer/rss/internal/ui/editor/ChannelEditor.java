@@ -284,6 +284,8 @@ public class ChannelEditor extends EditorPart implements
 
 					if (window != null) {
 						linkBrowser.open(element, window.getActivePage());
+						if(element instanceof IItem)
+							((IItem)element).resetUpdateFlag();
 					}
 				}
 			} catch (CoreException ex) {

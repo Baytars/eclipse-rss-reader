@@ -3,19 +3,20 @@
 <plugin
    id="com.pnehrer.rss.ui"
    name="%pluginName"
-   version="1.3.0"
+   version="2.0.0"
    provider-name="%providerName"
    class="com.pnehrer.rss.ui.RSSUI">
 
    <runtime>
       <library name="ui.jar">
-         <packages prefixes="com.pnehrer.rss.ui,com.pnehrer.rss.internal.ui"/>
          <export name="com.pnehrer.rss.ui.*"/>
          <export name="com.pnehrer.rss.ui.actions.*"/>
          <export name="com.pnehrer.rss.ui.views.*"/>
          <export name="com.pnehrer.rss.ui.wizards.*"/>
+         <packages prefixes="com.pnehrer.rss.ui,com.pnehrer.rss.internal.ui"/>
       </library>
    </runtime>
+
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
@@ -28,7 +29,6 @@
       <import plugin="org.eclipse.help.base"/>
       <import plugin="com.pnehrer.rss.core"/>
    </requires>
-
 
    <extension-point id="linkbrowser" name="Link Browser" schema="schema/linkbrowser.exsd"/>
 
@@ -95,8 +95,8 @@
          <action
                label="Mark as Read"
                icon="item_16.gif"
-               tooltip="Mark all items in selected channel as read."
                class="com.pnehrer.rss.ui.actions.MarkReadAction"
+               tooltip="Mark all items in selected channel as read."
                menubarPath="rss.ui.menu1/additions"
                enablesFor="+"
                id="rss.ui.action4">
@@ -104,8 +104,8 @@
          <action
                label="Text &amp;Input..."
                icon="textinput_16.png"
-               tooltip="Submit text to channel site."
                class="com.pnehrer.rss.ui.actions.TextInputActionDelegate"
+               tooltip="Submit text to channel site."
                menubarPath="rss.ui.menu1/browse"
                enablesFor="1"
                id="rss.ui.action3">
@@ -113,8 +113,8 @@
          <action
                label="Open &amp;Link"
                icon="browse_16.png"
-               tooltip="Open channel link in browser."
                class="com.pnehrer.rss.ui.actions.OpenLinkActionDelegate"
+               tooltip="Open channel link in browser."
                menubarPath="rss.ui.menu1/browse"
                enablesFor="1"
                id="rss.ui.action2">
@@ -122,8 +122,8 @@
          <action
                label="&amp;Update from Source"
                icon="update_16.png"
-               tooltip="Update channel from its source."
                class="com.pnehrer.rss.ui.actions.UpdateActionDelegate"
+               tooltip="Update channel from its source."
                menubarPath="rss.ui.menu1/update"
                enablesFor="+"
                id="rss.ui.action1">
@@ -133,8 +133,8 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            objectClass="com.pnehrer.rss.core.IRSSElement"
             adaptable="true"
+            objectClass="com.pnehrer.rss.core.IRSSElement"
             name="RSS"
             icon="xml_16.gif"
             class="com.pnehrer.rss.internal.ui.RSSPropertyPage"
@@ -144,8 +144,8 @@
             objectClass="org.eclipse.core.resources.IFile"
             name="RSS"
             icon="xml_16.gif"
-            nameFilter="*.rss"
             class="com.pnehrer.rss.internal.ui.RSSPropertyPage"
+            nameFilter="*.rss"
             id="rss.ui.page2">
       </page>
    </extension>
@@ -176,8 +176,8 @@
          <view
                relative="org.eclipse.ui.views.ResourceNavigator"
                visible="false"
-               relationship="stack"
-               id="com.pnehrer.rss.ui.views.ChannelNavigator">
+               id="com.pnehrer.rss.ui.views.ChannelNavigator"
+               relationship="stack">
          </view>
          <viewShortcut
                id="com.pnehrer.rss.ui.views.ChannelNavigator">
@@ -200,8 +200,8 @@
          <view
                relative="org.eclipse.jdt.ui.PackagesView"
                visible="false"
-               relationship="stack"
-               id="com.pnehrer.rss.ui.views.ChannelNavigator">
+               id="com.pnehrer.rss.ui.views.ChannelNavigator"
+               relationship="stack">
          </view>
          <viewShortcut
                id="com.pnehrer.rss.ui.views.ChannelNavigator">
@@ -224,8 +224,8 @@
          <view
                relative="org.eclipse.jdt.ui.PackagesView"
                visible="false"
-               relationship="stack"
-               id="com.pnehrer.rss.ui.views.ChannelNavigator">
+               id="com.pnehrer.rss.ui.views.ChannelNavigator"
+               relationship="stack">
          </view>
          <viewShortcut
                id="com.pnehrer.rss.ui.views.ChannelNavigator">
@@ -280,10 +280,10 @@
          point="org.eclipse.search.searchPages">
       <page
             showScopeSection="true"
-            label="RSS Search"
             enabled="true"
-            icon="xml_16.gif"
+            label="RSS Search"
             extensions="rss:100"
+            icon="xml_16.gif"
             class="com.pnehrer.rss.internal.ui.search.RSSSearchPage"
             id="com.pnehrer.rss.ui.page1">
       </page>
@@ -312,11 +312,9 @@
             <groupMarker
                   name="internalDialogGroup">
             </groupMarker>
-<!-- not to be used by clients  -->
             <groupMarker
                   name="dialogGroup">
             </groupMarker>
-<!-- to be used by clients      -->
             <separator
                   name="contextMenuActionsGroup">
             </separator>
@@ -333,21 +331,22 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            name="Channel Viewer"
             default="true"
-            icon="xml_16.gif"
+            name="Channel Viewer"
             extensions="rss"
-            contributorClass="com.pnehrer.rss.internal.ui.editor.ChannelEditorContributor"
+            icon="xml_16.gif"
             class="com.pnehrer.rss.internal.ui.editor.ChannelEditor"
+            contributorClass="com.pnehrer.rss.internal.ui.editor.ChannelEditorContributor"
             id="com.pnehrer.rss.ui.editor">
       </editor>
       <editor
-            class="com.pnehrer.rss.internal.ui.browser.WebBrowserEditor"
+            name="Web Browser"
+            extensions="url,html"
             icon="detail_16.png"
             contributorClass="com.pnehrer.rss.internal.ui.browser.WebBrowserEditorContributor"
-            name="Web Browser"
-            id="com.pnehrer.rss.ui.browser"
-            extensions="url,html"/>
+            class="com.pnehrer.rss.internal.ui.browser.WebBrowserEditor"
+            id="com.pnehrer.rss.ui.browser">
+      </editor>
    </extension>
 
 </plugin>
