@@ -47,8 +47,10 @@ public class DefaultTranslator implements ITranslator {
     private static final Collection RSS_VERSIONS = Arrays.asList(
         new String[] {"0.91", "0.92", "2.0"});
 
-    private static final String TEMPLATES = "internalize.xsl";
-    private static Templates templates;
+    private static final String SIMPLE_TEMPLATES = "rss-simple.xsl";
+    private static final String RDF_TEMPLATES = "rss-rdf.xsl";
+    private static Templates simpleTemplates;
+    private static Templates rdfTemplates;
 
     /* (non-Javadoc)
      * @see com.pnehrer.rss.core.ITranslator#canTranslate(org.w3c.dom.Document)
@@ -67,28 +69,24 @@ public class DefaultTranslator implements ITranslator {
      * @see com.pnehrer.rss.core.ITranslator#translate(org.w3c.dom.Document)
      */
     public Document translate(Document document) throws CoreException {
-        if(templates == null) { 
-            try {
-                createTemplates();
-            }
-            catch(TransformerConfigurationException ex) {
-                throw new CoreException(
-                    new Status(
-                        IStatus.ERROR,
-                        RSSCore.PLUGIN_ID,
-                        0,
-                        "could not create preprocessor",
-                        ex));
-            }
-            catch(IOException ex) {
-                throw new CoreException(
-                    new Status(
-                        IStatus.ERROR,
-                        RSSCore.PLUGIN_ID,
-                        0,
-                        "could not create transformation templates",
-                        ex));
-            }
+        Element element = document.getDocumentElement();
+        boolean isSimple = 
+            RSS_ELEMENT.equals(element.getLocalName())
+            && (RSS_URI == null ? element.getNamespaceURI() == null : RSS_URI.equals(element.getNamespaceURI()))
+            && RSS_VERSIONS.contains(element.getAttribute(VERSION_ATTR));
+
+        Templates templates;
+        if(isSimple) {
+            if(simpleTemplates == null)
+                createSimpleTemplates();
+
+            templates = simpleTemplates;
+        }
+        else {
+            if(rdfTemplates == null)
+                createRDFTemplates();
+                
+            templates = rdfTemplates;
         }
 
         DOMResult result = new DOMResult();
@@ -137,15 +135,65 @@ public class DefaultTranslator implements ITranslator {
         return false;
     }
     
-    private static synchronized void createTemplates() 
-        throws TransformerConfigurationException, 
-            IOException {
-
-        if(templates == null) {
-            TransformerFactory factory = TransformerFactory.newInstance();
-            templates = factory.newTemplates(
-                new StreamSource(
-                    RSSCore.getPlugin().openStream(new Path(TEMPLATES))));
+    private static synchronized void createSimpleTemplates() throws CoreException {
+        if(simpleTemplates == null) {
+            try {
+                TransformerFactory factory = TransformerFactory.newInstance();
+                simpleTemplates = 
+                    factory.newTemplates(
+                        new StreamSource(
+                            RSSCore.getPlugin().openStream(
+                                new Path(SIMPLE_TEMPLATES))));
+            }
+            catch(TransformerConfigurationException ex) {
+                throw new CoreException(
+                    new Status(
+                        IStatus.ERROR,
+                        RSSCore.PLUGIN_ID,
+                        0,
+                        "could not create transformation templates " + SIMPLE_TEMPLATES,
+                        ex));
+            }
+            catch(IOException ex) {
+                throw new CoreException(
+                    new Status(
+                        IStatus.ERROR,
+                        RSSCore.PLUGIN_ID,
+                        0,
+                        "could not read transformation templates " + SIMPLE_TEMPLATES,
+                        ex));
+            }
+        }
+    }
+    
+    private static synchronized void createRDFTemplates() throws CoreException {
+        if(rdfTemplates == null) {
+            try {
+                TransformerFactory factory = TransformerFactory.newInstance();
+                rdfTemplates = 
+                    factory.newTemplates(
+                        new StreamSource(
+                            RSSCore.getPlugin().openStream(
+                                new Path(RDF_TEMPLATES))));
+            }
+            catch(TransformerConfigurationException ex) {
+                throw new CoreException(
+                    new Status(
+                        IStatus.ERROR,
+                        RSSCore.PLUGIN_ID,
+                        0,
+                        "could not create transformation templates " + RDF_TEMPLATES,
+                        ex));
+            }
+            catch(IOException ex) {
+                throw new CoreException(
+                    new Status(
+                        IStatus.ERROR,
+                        RSSCore.PLUGIN_ID,
+                        0,
+                        "could not read transformation templates " + RDF_TEMPLATES,
+                        ex));
+            }
         }
     }
 }
