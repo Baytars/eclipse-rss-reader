@@ -1,0 +1,5 @@
+#Eclipse RSS Reader v1.2.0
+#Wed Mar 16 09:05:58 EST 2005
+translatorId=com.pnehrer.rss.bugzilla.buglist
+url=https\://bugs.eclipse.org/bugs/buglist.cgi?query_format\=specific&order\=relevance+desc&bug_status\=__open__&product\=ECF&content\=&title\=ECF+all&ctype\=rdf
+updateInterval=30
