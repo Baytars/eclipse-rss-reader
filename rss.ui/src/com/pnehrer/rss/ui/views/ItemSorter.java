@@ -8,6 +8,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.ui.IMemento;
 
+import com.pnehrer.rss.core.IChannel;
 import com.pnehrer.rss.core.IItem;
 
 /**
@@ -89,7 +90,24 @@ public class ItemSorter extends ViewerSorter {
                 }
                 
             default:
-                return 0;
+            	if (isReverse()) {
+	            	IChannel channel = item1.getChannel();
+	            	IItem[] items = channel.getItems();
+	            	int i1 = -1, i2 = -1;
+	            	for (int i = 0; i < items.length; ++i) {
+	            		if (i1 < 0 && item1.equals(items[i]))
+	            			i1 = i;
+	            		else if (i2 < 0 && item2.equals(items[i]))
+	            			i2 = i;
+	            		
+	            		if (i1 >= 0 && i2 >= 0)
+	            			break;
+	            	}
+	            	
+	                return i1 < i2 ? 1 : i1 == i2 ? 0 : -1;
+            	}
+            	else
+            		return 0;
         }
     }
     
