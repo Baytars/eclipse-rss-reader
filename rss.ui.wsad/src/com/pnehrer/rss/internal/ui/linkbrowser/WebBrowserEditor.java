@@ -11,9 +11,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
 
 import com.ibm.etools.webbrowser.WebBrowserEditorInput;
+import com.pnehrer.rss.core.IItem;
 import com.pnehrer.rss.core.IRSSElement;
 import com.pnehrer.rss.core.ITextInput;
 import com.pnehrer.rss.ui.ILinkBrowser;
@@ -46,6 +46,9 @@ public class WebBrowserEditor implements ILinkBrowser {
                     "could not create URL for link " + rssElement.getLink(),
                     e));
         }
+
+        if(rssElement instanceof IItem)
+            ((IItem)rssElement).resetUpdateFlag();
     }
 
     /* (non-Javadoc)
