@@ -44,7 +44,7 @@
     <packs>
         <pack name="Base" required="yes">
             <description>Eclipse RSS Reader base plug-ins, including user documentation.</description>
-            <file src="src/base/eclipse" targetdir="$INSTALL_PATH"/>
+            <fileset dir="src/base/eclipse" targetdir="$INSTALL_PATH/eclipse" defaultexcludes="yes"/>
             <file src="src/@FEATURE_ID@.link" targetdir="$ECLIPSE_HOME/links"/>
             <file src="res/readme.html" targetdir="$INSTALL_PATH"/>
             <parsable targetfile="$INSTALL_PATH/eclipse/.eclipseextension"/>
@@ -52,7 +52,7 @@
         </pack>
         <pack name="Sources" required="no" preselected="no">
             <description>Source code and documentation for the Eclipse RSS Reader. Useful for developers who wish to extend the application.</description>
-            <file src="src/source/eclipse" targetdir="$INSTALL_PATH"/>
+            <fileset dir="src/source/eclipse" targetdir="$INSTALL_PATH/eclipse" defaultexcludes="yes"/>
         </pack>
     </packs>
     
