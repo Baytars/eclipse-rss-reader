@@ -31,7 +31,7 @@ http://www.ibm.com/developerworks/news/dw_tech_nl.rss. Click "Load".</p>
 select Navigate -&gt; Show In -&gt; Channel  Navigator and/or Channel Detail.
 </p>
 <p>7. Browse and/or create channels in the Channel Navigator. Open the 
-Properties view to see properties of selected  items. Double-click on selected 
+Properties view to see properties of selected items. Double-click on selected 
 items to read the channel or item link.</p>
 </item>
 
@@ -43,8 +43,8 @@ which is persisted in the workspace. Third-party plug-ins may contribute
 RSS 0.90, 0.91, 0.92, 1.0, and 2.0. In case more than one registered translator 
 understands a format, the user is given a choice to select one they wish to use.
 In the future, annonymous elements external to the model will be exposed via 
-untyped property interface (map), thus giving access to third-party plug-ins 
-that may understand them.</p>
+untyped property interface (map), thus making them available to third-party 
+plug-ins that may understand and use them in a specific way.</p>
 
 <p><b>2. Periodic updates</b></p>
 <p>Based on user specification, channels are periodically updated from the 
@@ -53,19 +53,24 @@ future, markers will be used to identify changes and allow viewers to highlight
 them.</p>
 
 <p><b>3. Property page</b></p>
-<p>Individual channel files have a property page with RSS-specific options.</p>
+<p>Individual channel files have a property page with RSS-specific options,
+such as update interval, source translator, and link browser.</p>
 
 <p><b>4. Preference page</b></p>
-<p>Preference page allows the user to specify default values.</p>
+<p>Preference page allows the user to specify default values for update interval
+and link browser. In addition, default link browsers (help and editor) have
+their own category; the former allows the user to select which configured help
+browser to use, and the latter which editor to use to browse articles.</p>
 
 <p><b>5. New Channel wizard</b></p>
-<p>Allows users to create new channels from an external RSS feed source.</p>
+<p>Allows users to create new channels from an external RSS feed.</p>
 
 <p><b>6. Channel Navigator</b></p>
-<p>Allows users to navigate channels in container hierarchy.</p>
+<p>Allows users to navigate channels in a project/folder hierarchy.</p>
 
 <p><b>7. Channel Detail view</b></p>
-<p>Allows users to view details of selected channel.</p>
+<p>Allows users to view details of selected channel, such as title and
+description. Supports sorting by column.</p>
 
 <p><b>8. Pluggable News Article Browsers</b></p>
 <p>Users may choose how to view the contents of news articles. By default,
@@ -78,7 +83,8 @@ point.</p>
 </item>
 
 <item><b>Learn more </b>
-To learn more you can browse the
-<topic id="/com.pnehrer.rss.doc.user/toc.xml">User Guide</topic> (TBD).</item>
+To learn more please visit the 
+<action pluginId="com.pnehrer.rss.ui" class="com.pnehrer.rss.ui.actions.OpenHomePageAction">Eclipse RSS Reader Home</action>.
+</item>
 
 </welcomePage>
