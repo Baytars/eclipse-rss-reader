@@ -3,6 +3,8 @@
 	<name>rss.ui.wsad</name>
 	<comment></comment>
 	<projects>
+		<project>rss.core</project>
+		<project>rss.ui</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -20,8 +20,14 @@ under the terms of the Common Public License v1.0, which is available
 at http://www.eclipse.org/legal/cpl-v10.html.
    </license>
 
+   <url>
+      <update label="Eclipse RSS Reader Updates" url="http://morphine.sourceforge.net/updates" type="web"/>
+      <discovery label="Eclipse RSS Reader Home" url="http://morphine.sourceforge.net" type="web"/>
+   </url>
+
    <requires>
       <import feature="com.pnehrer.rss" version="1.0.0" patch="true"/>
+      <import plugin="com.ibm.etools.webbrowser"/>
    </requires>
 
    <plugin
