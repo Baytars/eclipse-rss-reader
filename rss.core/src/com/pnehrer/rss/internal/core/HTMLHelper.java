@@ -332,6 +332,6 @@ class HTMLHelper {
 
         reader.close();
         writer.close();
-        return writer.toString();
+        return writer.toString().trim();
     }
 }

@@ -109,13 +109,20 @@ public class DefaultTranslator implements ITranslator {
     
     private Document stripHTML(Document document) {
         Element channel = document.getDocumentElement();
-        stripHTML(channel, "title");
-        stripHTML(channel, "description");
+        if(channel.hasAttribute("title"))
+            stripHTML(channel, "title");
+            
+        if(channel.hasAttribute("description"))
+            stripHTML(channel, "description");
+            
         NodeList list = channel.getElementsByTagName("item");
         for(int i = 0, n = list.getLength(); i < n; ++i) {
-            Element element = (Element)list.item(i); 
-            stripHTML(element, "title");
-            stripHTML(element, "description");
+            Element element = (Element)list.item(i);
+            if(element.hasAttribute("title")) 
+                stripHTML(element, "title");
+                
+            if(element.hasAttribute("description"))
+                stripHTML(element, "description");
         }
 
         return document; 
