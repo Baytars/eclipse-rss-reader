@@ -4,7 +4,10 @@
  */
 package com.pnehrer.rss.core;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -214,5 +217,18 @@ public class RSSCore extends Plugin {
                 }
             }
         }
+    }
+    
+    public InputStream getAuthenticatedStream(URL url) throws IOException {
+    	String userInfo = url.getUserInfo();
+    	if (userInfo == null)
+    		return url.openStream();
+    	else {
+			URLConnection conn = url.openConnection();
+			String authorization = "Basic " + Base64.encode(userInfo.getBytes());
+			conn.setRequestProperty("Authorization", authorization);
+			conn.connect();
+			return conn.getInputStream();
+    	}
     }
 }

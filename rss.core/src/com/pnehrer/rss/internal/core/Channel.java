@@ -275,7 +275,8 @@ public class Channel
             
             try {
                 DocumentBuilder builder = factory.newDocumentBuilder();
-                Document document = builder.parse(url.openStream());
+                Document document = builder.parse(
+                		RSSCore.getPlugin().getAuthenticatedStream(url));
                 
                 if(monitor != null)
                     monitor.worked(1);
