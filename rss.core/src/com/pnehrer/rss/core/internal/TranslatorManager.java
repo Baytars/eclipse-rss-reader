@@ -50,18 +50,23 @@ public class TranslatorManager {
             if(ep != null) {
                 IExtension[] extensions = ep.getExtensions();
                 for(int i = 0, n = extensions.length; i < n; ++i) {
+                    String prefix = extensions[i]
+                        .getDeclaringPluginDescriptor()
+                        .getUniqueIdentifier() + ".";
+
                     IConfigurationElement[] elements =
                         extensions[i].getConfigurationElements();
                     for(int j = 0, m = elements.length; j < m; ++j) {
-                        if(!TRANSLATOR_ELEMENT.equals(elements[i].getName()))
+                        if(!TRANSLATOR_ELEMENT.equals(elements[j].getName()))
                             continue;
                             
                         Object translator = 
-                            elements[i].createExecutableExtension(CLASS_ATTR);
+                            elements[j].createExecutableExtension(CLASS_ATTR);
                         if(translator instanceof ITranslator) {
-                            String id = elements[i].getAttribute(ID_ATTR);
+                            String id = prefix
+                                + elements[i].getAttribute(ID_ATTR);
                             String description = 
-                                elements[i].getAttribute(DESCRIPTION_ATTR);
+                                elements[j].getAttribute(DESCRIPTION_ATTR);
                             RegisteredTranslator delegate =
                                 new RegisteredTranslator(
                                     id,
