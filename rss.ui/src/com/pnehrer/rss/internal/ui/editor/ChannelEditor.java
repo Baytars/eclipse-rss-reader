@@ -17,11 +17,8 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
@@ -33,10 +30,13 @@ import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
+import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.eclipse.ui.forms.widgets.TableWrapData;
+import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.EditorPart;
 
 import com.pnehrer.rss.core.IChannel;
@@ -61,7 +61,7 @@ public class ChannelEditor extends EditorPart implements
 
 	private ImageHyperlink title;
 
-	private Label description;
+	private FormText description;
 
 	private ArrayList itemGroups;
 
@@ -141,18 +141,17 @@ public class ChannelEditor extends EditorPart implements
 
 		toolkit = new FormToolkit(parent.getDisplay());
 		form = toolkit.createScrolledForm(parent);
-		form.getBody().setLayout(new GridLayout());
+		form.getBody().setLayout(new TableWrapLayout());
 
 		title = toolkit.createImageHyperlink(form.getBody(), SWT.WRAP);
-		title.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		title.setLayoutData(new TableWrapData(TableWrapData.LEFT));
 		title.setFont(form.getFont());
 		title.setImage(image);
 		title.setUnderlined(false);
 		title.addHyperlinkListener(new LinkOpener(channel));
 
-		description = toolkit.createLabel(form.getBody(), channel
-				.getDescription());
-		description.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		description = toolkit.createFormText(form.getBody(), false);
+		description.setLayoutData(new TableWrapData(TableWrapData.FILL));
 
 		itemGroups = new ArrayList(channel.getItems().length);
 		createContent();
@@ -160,7 +159,7 @@ public class ChannelEditor extends EditorPart implements
 
 	private void createContent() {
 		title.setText(channel.getTitle());
-		description.setText(channel.getDescription());
+		description.setText(channel.getDescription(), false, false);
 
 		for (Iterator i = itemGroups.iterator(); i.hasNext();) {
 			Composite item = (Composite) i.next();
@@ -171,27 +170,30 @@ public class ChannelEditor extends EditorPart implements
 		IItem[] items = channel.getItems();
 		for (int i = 0; i < items.length; ++i)
 			itemGroups.add(createItemGroup(items[i]));
+
+		form.reflow(true);
 	}
 
 	private Composite createItemGroup(IItem item) {
 		Composite group = toolkit.createComposite(form.getBody());
-		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		group.setLayout(new GridLayout());
+		group.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		group.setLayout(new TableWrapLayout());
 
 		Composite separator = toolkit.createCompositeSeparator(group);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.heightHint = 2;
-		separator.setLayoutData(gd);
+		TableWrapData td = new TableWrapData(TableWrapData.FILL_GRAB);
+		td.heightHint = 2;
+		separator.setLayoutData(td);
 
 		ExpandableComposite section = toolkit.createExpandableComposite(group,
 				ExpandableComposite.TWISTIE);
-		section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		section.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		section.setText(item.getTitle());
 		Hyperlink link = toolkit.createHyperlink(section, "Browse", SWT.NONE);
 		link.addHyperlinkListener(new LinkOpener(item));
 		section.setTextClient(link);
-		Label description = toolkit.createLabel(section, item.getDescription(),
-				SWT.WRAP);
+		FormText description = toolkit.createFormText(section, false);
+		description.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		description.setText(item.getDescription(), false, false);
 		section.setClient(description);
 		section.addExpansionListener(new ExpansionAdapter() {
 			public void expansionStateChanged(ExpansionEvent e) {
@@ -253,7 +255,6 @@ public class ChannelEditor extends EditorPart implements
 								&& (delta.getFlags() & IResourceDelta.MARKERS) != 0) {
 
 							createContent();
-							form.reflow(true);
 						}
 					}
 				});
