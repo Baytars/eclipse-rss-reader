@@ -9,6 +9,6 @@ fi
 TS_NOW=`date +"%s"`
 TS_YESTERDAY=`expr $TS_NOW - 86400`
 if [ ! -f blog.html -o $TS_CACHE -lt $TS_YESTERDAY ] ; then \
-	wget -q -O blog.tmp 'http://jroller.com/page/pnehrer/rssblog?catname=Eclipse%20RSS%20Reader' > /dev/null && mv -f blog.tmp blog.html
+	wget -q -O blog.tmp 'http://morphine.sourceforge.net/presence/projects/rss/blog.html' > /dev/null && mv -f blog.tmp blog.html
 fi
 cat blog.html
