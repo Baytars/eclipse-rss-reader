@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<contentsettings>
-  <file path="WebContent/theme/B-02_blue.htpl" target-device="com.ibm.etools.deviceprofile.LocalDeviceProfileRegistryAdapter/com.ibm.etools.webedit.editor.deviceProfile.standard"/>
-  <file path="WebContent/projects/cep/about.html" target-device="com.ibm.etools.deviceprofile.LocalDeviceProfileRegistryAdapter/com.ibm.etools.webedit.editor.deviceProfile.standard"/>
-</contentsettings>
