@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<features>
-	<feature id="com.pnehrer.rss" path="../../rss.feature/feature.xml"/>
-	<feature id="com.pnehrer.rss.wsad" path="../../rss.feature.wsad/feature.xml"/>
-</features>
