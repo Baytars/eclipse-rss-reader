@@ -2,10 +2,10 @@
 <fragment
    id="com.pnehrer.rss.ui.wsad"
    name="RSS UI extensions for WSAD"
-   version="1.2.2"
+   version="1.3.0"
    provider-name="Peter Nehrer"
    plugin-id="com.pnehrer.rss.ui"
-   plugin-version="1.2.2">
+   plugin-version="1.3.0">
 
    <runtime>
       <library name="wsad.jar"/>

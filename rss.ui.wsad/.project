@@ -11,6 +11,7 @@
 		<project>org.eclipse.help.ui</project>
 		<project>org.eclipse.search</project>
 		<project>org.eclipse.ui</project>
+		<project>org.eclipse.update.ui.forms</project>
 		<project>rss.core</project>
 		<project>rss.ui</project>
 	</projects>

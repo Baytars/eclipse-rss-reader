@@ -2,7 +2,7 @@
 <feature
       id="com.pnehrer.rss.source"
       label="Eclipse RSS Reader Developer Resources"
-      version="1.2.2"
+      version="1.3.0"
       provider-name="Peter Nehrer">
 
    <description>
@@ -33,12 +33,12 @@ at http://www.eclipse.org/legal/cpl-v10.html.
          id="com.pnehrer.rss.source"
          download-size="0"
          install-size="0"
-         version="1.2.2"/>
+         version="1.3.0"/>
 
    <plugin
          id="com.pnehrer.rss.doc.isv"
          download-size="0"
          install-size="0"
-         version="1.2.2"/>
+         version="1.3.0"/>
 
 </feature>
