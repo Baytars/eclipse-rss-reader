@@ -39,11 +39,14 @@
 				</page>
 				<page src="/WebContent/projects/rss/index.html" template="/WebContent/theme/home.htpl" id="15" icon="/presence/theme/icons/xml_16.gif">
 					<title>RSS Reader</title>
-					<page src="/WebContent/projects/rss/news.html" template="/WebContent/theme/home.htpl" id="16" icon="/presence/theme/icons/detail_16.png">
+					<page src="/WebContent/projects/rss/news.html" template="/WebContent/theme/home.htpl" id="16" icon="/presence/theme/icons/item_new_16.gif">
 						<title>News</title>
 					</page>
 					<page src="/WebContent/projects/rss/download.html" template="/WebContent/theme/home.htpl" id="17" icon="/presence/theme/icons/update_16.png">
 						<title>Download</title>
+					</page>
+					<page src="/WebContent/projects/rss/features.html" template="/WebContent/theme/home.htpl" id="20" icon="/presence/theme/icons/navigator_16.png">
+						<title>Features</title>
 					</page>
 					<page src="/WebContent/projects/rss/usage.html" template="/WebContent/theme/home.htpl" id="18" icon="/presence/theme/icons/browse_16.png">
 						<title>Usage</title>

@@ -35,5 +35,5 @@
 	<tr>
 		<td valign="top" class="content"><!-- tpl:insert attribute="body" -->This page is currently under construction.<!-- /tpl:insert --></td>
 	</tr>
-</table><div class="footer">Copyright &copy; 2003 <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>.<br>Version $Id$.</div></body>
+</table><div class="footer">Copyright &copy; 2003, 2004 <a href="mailto:pnehrer@freeshell.org">Peter Nehrer</a>.<br>Version $Id$.</div></body>
 </html>
