@@ -4,5 +4,15 @@
    <description url="http://morphine.sourceforge.net">
       Eclipse RSS Reader.
    </description>
-   <feature url="features/com.pnehrer.rss_1.0.0.jar" id="com.pnehrer.rss" version="1.0.0"/>
+   <feature url="features/com.pnehrer.rss_1.0.0.jar" id="com.pnehrer.rss" version="1.0.0">
+      <category name="default"/>
+   </feature>
+   <feature url="features/com.pnehrer.rss.wsad_1.0.0.jar" id="com.pnehrer.rss.wsad" version="1.0.0">
+      <category name="default"/>
+   </feature>
+   <category-def name="default" label="Eclipse RSS Reader">
+      <description>
+         Eclipse RSS Reader features.
+      </description>
+   </category-def>
 </site>
