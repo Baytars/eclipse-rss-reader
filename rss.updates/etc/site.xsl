@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Transforms a SourceForge-compatible site.xml into a mirror-specific
+	site.xml (with a particular mirror URL).
+	Author: <a href="pnehrer@freeshell.org">Peter Nehrer</a>
+	Version $Id$
+-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
 <xsl:param name="project">morphine</xsl:param>

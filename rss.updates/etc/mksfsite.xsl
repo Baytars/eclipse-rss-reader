@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Transforms a site.xml into a SourceForge-compatible site.xml
+	(i.e., explicitly resolves all archive URLs).
+	Author: <a href="pnehrer@freeshell.org">Peter Nehrer</a>
+	Version $Id$
+-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
 <xsl:param name="featureMap">featureMap.xml</xsl:param>
