@@ -19,8 +19,8 @@ Eclipse-based tools.</p>
 </intro>
 
 <item><b>Getting Started</b>
-<p>1. Start your Workbench with a new or pre-existing workspace. Switch to the 
-Resource perspective. If the workspace  is empty, create a new project.</p>
+<p>1. Start your Workbench with a new or pre-existing workspace. If the 
+workspace  is empty, create a new project.</p>
 <p>2. In Resource Navigator, right-click on a folder and select New -&gt; RSS 
 Channel.</p>
 <p>3. Enter a URL for the RSS Channel; e.g., 

@@ -289,8 +289,14 @@ public class ChannelNavigator
             for(int i = 0; i < elementMem.length; ++i) {
                 IResource res = container.findMember(
                     elementMem[i].getString(TAG_PATH));
-                if(res != null)
-                    elements.add(res);
+                if(res != null) {
+                    IRSSElement rssElement = 
+                        (IRSSElement)res.getAdapter(IRSSElement.class);
+                    if(rssElement == null)
+                        elements.add(res);
+                    else
+                        elements.add(rssElement);
+                }
             }
 
             viewer.setExpandedElements(elements.toArray());
@@ -304,16 +310,14 @@ public class ChannelNavigator
                 IResource res = container.findMember(
                     elementMem[i].getString(TAG_PATH));
                 if(res != null) {
-                    String link = elementMem[i].getString(TAG_LINK);
-                    if(link == null) {
+                    IRSSElement rssElement = 
+                        (IRSSElement)res.getAdapter(IRSSElement.class);
+                    if(rssElement == null)
                         elements.add(res);
-                    }
                     else {
-                        IRSSElement rssElement = 
-                            (IRSSElement)res.getAdapter(IRSSElement.class);
-                        if(rssElement == null) {
-                            elements.add(res);
-                        }
+                        String link = elementMem[i].getString(TAG_LINK);
+                        if(link == null)
+                            elements.add(rssElement);
                         else {
                             IItem[] items = rssElement.getChannel().getItems();
                             boolean found = false;
@@ -324,7 +328,7 @@ public class ChannelNavigator
                                     break;
                                 }
                             }
-                            
+                        
                             if(!found)
                                 elements.add(rssElement);
                         }
