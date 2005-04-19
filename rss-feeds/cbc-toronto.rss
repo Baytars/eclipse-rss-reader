@@ -1,0 +1,5 @@
+#Eclipse RSS Reader v1.2.0
+#Tue Apr 19 10:43:59 EDT 2005
+translatorId=com.pnehrer.rss.core.default
+url=http\://rss.cbc.ca/torontonews.xml
+updateInterval=30
