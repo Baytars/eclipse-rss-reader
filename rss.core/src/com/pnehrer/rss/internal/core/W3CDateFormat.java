@@ -100,8 +100,31 @@ public class W3CDateFormat extends DateFormat {
 	 *      java.text.FieldPosition)
 	 */
 	public StringBuffer format(Date date, StringBuffer buf, FieldPosition pos) {
-
-		calendar.setTime(date);
+		TimeZone tz = TimeZone.getDefault();
+		StringBuffer tzOffset;
+		if (tz.equals(TimeZone.getTimeZone("GMT")))
+			tzOffset = new StringBuffer("Z");
+		else {
+	        int offset = tz.getRawOffset();
+			if (offset > 0)
+				tzOffset = new StringBuffer("+");
+			else {
+				tzOffset = new StringBuffer("-");
+				offset = Math.abs(offset);
+			}
+	
+	        tzOffset.append(MessageFormat.format(
+				"{0,number,00}:{1,number,00}", 
+				new Object[] {
+					new Integer(offset / MILLIS_IN_HOUR),
+					new Integer(offset % MILLIS_IN_HOUR)}));
+					
+			StringBuffer tzName = new StringBuffer("GMT");
+			tz = TimeZone.getTimeZone(tzName.append(tzOffset).toString());
+		}
+		
+		setTimeZone(tz);
+        calendar.setTime(date);
 		if (calendar.isSet(Calendar.YEAR))
 			format(buf, pos, DateFormat.YEAR_FIELD,
 					calendar.get(Calendar.YEAR), 4);
@@ -153,26 +176,10 @@ public class W3CDateFormat extends DateFormat {
 				pos.setEndIndex(buf.length());
 		}
 
-		TimeZone tz = calendar.getTimeZone();
 		if (pos.getField() == DateFormat.TIMEZONE_FIELD)
 			pos.setBeginIndex(buf.length());
 
-		if (tz.equals(TimeZone.getTimeZone("GMT")))
-			buf.append('Z');
-		else {
-			int offset = tz.getRawOffset();
-			if (offset > 0)
-				buf.append('+');
-			else {
-				buf.append('-');
-				offset = Math.abs(offset);
-			}
-
-			buf.append(MessageFormat.format("{0,number,00}:{1,number,00}",
-					new Object[] { new Integer(offset / MILLIS_IN_HOUR),
-							new Integer(offset % MILLIS_IN_HOUR) }));
-		}
-
+		buf.append(tzOffset);
 		if (pos.getField() == DateFormat.TIMEZONE_FIELD)
 			pos.setEndIndex(buf.length());
 
