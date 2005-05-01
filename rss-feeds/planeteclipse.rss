@@ -1,0 +1,5 @@
+#Eclipse RSS Reader v1.2.0
+#Sat Apr 30 23:12:39 EDT 2005
+translatorId=com.pnehrer.rss.core.default
+url=http\://planeteclipse.org/planet/rss20.xml
+updateInterval=30
