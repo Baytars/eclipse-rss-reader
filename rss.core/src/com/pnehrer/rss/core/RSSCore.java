@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.osgi.framework.BundleContext;
 import org.w3c.dom.Document;
 
@@ -87,7 +88,7 @@ public class RSSCore extends Plugin {
      * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
      */
     public void stop(BundleContext context) throws Exception {
-        Platform.getJobManager().cancel(IChannel.UPDATE_JOB_FAMILY);
+        Job.getJobManager().cancel(IChannel.UPDATE_JOB_FAMILY);
         IAdapterManager mgr = Platform.getAdapterManager();
         mgr.unregisterAdapters(resourceAdapterFactory);
         mgr.unregisterAdapters(channelAdapterFactory);

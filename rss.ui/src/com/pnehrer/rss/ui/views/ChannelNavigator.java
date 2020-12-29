@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -250,7 +251,7 @@ public class ChannelNavigator extends ViewPart implements ISetSelectionTarget,
 			}
 		};
 
-		Platform.getJobManager().addJobChangeListener(jobChangeListener);
+		Job.getJobManager().addJobChangeListener(jobChangeListener);
 	}
 
 	/*
@@ -539,7 +540,7 @@ public class ChannelNavigator extends ViewPart implements ISetSelectionTarget,
 	public void dispose() {
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 		if (jobChangeListener != null)
-			Platform.getJobManager().removeJobChangeListener(jobChangeListener);
+			Job.getJobManager().removeJobChangeListener(jobChangeListener);
 
 		super.dispose();
 	}

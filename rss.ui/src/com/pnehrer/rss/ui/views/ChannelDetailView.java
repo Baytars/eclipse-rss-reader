@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -314,7 +315,7 @@ public class ChannelDetailView extends ViewPart implements ISelectionListener,
 			}
 		};
 
-		Platform.getJobManager().addJobChangeListener(jobChangeListener);
+		Job.getJobManager().addJobChangeListener(jobChangeListener);
 	}
 
 	/**
@@ -480,7 +481,7 @@ public class ChannelDetailView extends ViewPart implements ISelectionListener,
 		getSite().getPage().removeSelectionListener(this);
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 		if (jobChangeListener != null)
-			Platform.getJobManager().removeJobChangeListener(jobChangeListener);
+			Job.getJobManager().removeJobChangeListener(jobChangeListener);
 
 		if (images != null) {
 			for (Iterator i = images.values().iterator(); i.hasNext();)

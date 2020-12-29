@@ -77,6 +77,7 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
 
     public ChannelNavigatorActionGroup(ChannelNavigator navigator) {
         this.navigator = navigator;
+        ImageRegistry reg = RSSUI.getDefault().getImageRegistry();
 
         Shell shell = navigator.getSite().getShell();
         
@@ -92,7 +93,7 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
         };
         
         collapseAllAction.setToolTipText("Collapse All"); //$NON-NLS-1$
-        collapseAllAction.setImageDescriptor(getImageDescriptor("elcl16/collapseall.gif")); //$NON-NLS-1$
+        collapseAllAction.setImageDescriptor(reg.getDescriptor(RSSUI.COLLAPSE_ICON)); //$NON-NLS-1$
 
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         openProjectAction = new OpenResourceAction(shell);
@@ -102,8 +103,6 @@ public class ChannelNavigatorActionGroup extends ActionGroup {
         refreshAction = new RefreshAction(shell);
         refreshAction.setDisabledImageDescriptor(getImageDescriptor("dlcl16/refresh_nav.gif"));//$NON-NLS-1$
         refreshAction.setImageDescriptor(getImageDescriptor("elcl16/refresh_nav.gif"));//$NON-NLS-1$
-        
-        ImageRegistry reg = RSSUI.getDefault().getImageRegistry();
         
         openLinkAction = new OpenLinkAction(navigator.getSite().getShell());
         openLinkAction.setToolTipText("Open selected element's link in browser.");

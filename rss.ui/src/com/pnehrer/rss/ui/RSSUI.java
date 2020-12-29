@@ -51,6 +51,7 @@ public class RSSUI extends AbstractUIPlugin {
     public static final String ITEM_ICON = "item_16.gif";
     public static final String ITEM_NEW_ICON = "item_new_16.gif";
     public static final String TEXT_INPUT_ICON = "textinput_16.png";
+    public static final String COLLAPSE_ICON = "collapse-fill.png";
     
     public static final String PREF_LINK_BROWSER = "browser";
     private static final QualifiedName PROP_LINK_BROWSER = 
@@ -224,6 +225,7 @@ public class RSSUI extends AbstractUIPlugin {
         reg.put(ITEM_ICON, ImageDescriptor.createFromURL(Platform.find(getBundle(), new Path(ITEM_ICON))));
         reg.put(ITEM_NEW_ICON, ImageDescriptor.createFromURL(Platform.find(getBundle(), new Path(ITEM_NEW_ICON))));
         reg.put(TEXT_INPUT_ICON, ImageDescriptor.createFromURL(Platform.find(getBundle(), new Path(TEXT_INPUT_ICON))));
+        reg.put(COLLAPSE_ICON, ImageDescriptor.createFromURL(Platform.find(getBundle(), new Path(COLLAPSE_ICON))));
     }
 
     /* (non-Javadoc)
